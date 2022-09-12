@@ -1,0 +1,147 @@
+<div class="content">
+    <div class="animated fadeIn">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="card">
+                    <div class="card-header">
+                        <strong>Add Product</strong>
+                    </div>
+                    <div class="card-body card-block">
+                        <form action="/admin/addProduct" method="post" enctype="multipart/form-data" id="productForm"
+                            class="form-horizontal">
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label class=" form-control-label">Name
+                                    </label>
+                                </div>
+                                <div class="col-12 col-md-9"><input type="text" id="text-input" name="productName"
+                                        class="form-control"></div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label class=" form-control-label">Brand Name
+                                    </label>
+                                </div>
+                                <div class="col-12 col-md-9"><input type="text" id="text-input" name="brandName"
+                                        class="form-control"></div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Price
+                                    </label>
+                                </div>
+                                <div class="col-12 col-md-9"><input type="text" id="text-input" name="price"
+                                        class="form-control"></div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="text-input" class=" form-control-label">Quantity
+                                    </label>
+                                </div>
+                                <div class="col-12 col-md-9"><input type="number" id="text-input" name="quantity"
+                                        class="form-control"></div>
+                            </div>
+
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="textarea-input"
+                                        class=" form-control-label">Description</label>
+                                </div>
+                                <div class="col-12 col-md-9"><textarea rows="2" class="form-control"
+                                        name="desc"></textarea></div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="select"
+                                        class=" form-control-label">Category</label>
+                                </div>
+                                <div class="col-12 col-md-9">
+                                    <select name="category" id="select" class="form-control">
+                                        {{#each categories}}
+                                        <option value="{{this._id}}">{{this.name}}</option>
+                                        {{/each}}
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col col-md-3"><label for="file-multiple-input"
+                                        class=" form-control-label">Add Images </label></div>
+                                <div class="col-12 col-md-9"><input type="file" id="file-multiple-input"
+                                        name="product-images" multiple="" class="form-control-file"></div>
+                            </div>
+                            <div class="pt-3 ">
+                                <div class="d-inline pr-3">
+                                    <button type="submit" class="btn btn-primary btn-sm">
+                                        Submit
+                                    </button>
+                                </div>
+                                <div class="d-inline">
+                                    <button type="reset" class="btn btn-danger btn-sm">
+                                        <i class="fa fa-ban"></i> Reset
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+  $(document).ready(() => {
+
+    jQuery.validator.addMethod("lettersOnly", (value) => {
+      return /^[a-zA-Z]+$/i.test(value);
+    });
+
+    $('#productForm').validate({
+      rules: {
+        productName: {
+          required: true,
+          lettersOnly: true,
+        },
+        brandName: {
+          required:true
+          lettersOnly: true
+        },
+        price: {
+          required: true,
+          number: true,
+        },
+        quantity: {
+          required: true,
+          number: true
+        },
+        desc: {
+          required: true,
+        },
+        category: {
+          required: true,
+        },
+        product-images: {
+            required: true,
+            maxlength: 4
+        }
+      },
+      messages: {
+        productName: {
+          required: "Please enter the product name!",
+          lettersOnly: "Please enter valid name!"
+        },
+        brandName: {
+          required: "Please enter the brand name!",
+          lettersOnly: "Please enter valid name!"
+        },
+        price: "Please enter the price!",
+        quantity: "Please enter the quantity!",
+        desc: "Please enter the description!",
+        category: {
+          required: "Please enter the category!",
+        },
+        product-images: {
+            required: "Please input atleast one image!",
+            maxlength: "Please input only 4 images!"
+        }
+      }
+    })
+  })
+</script>

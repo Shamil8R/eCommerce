@@ -1,0 +1,56 @@
+<div class="container-fluid">
+    <div>
+        <h1 class="text-center">Products Data</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="content">
+                <div class="animated fadeIn">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <strong class="card-title">Products</strong>
+                            <a href="/admin/addProduct" class="btn btn-primary " style="border-radius: 0.5rem;">Add
+                                Product</a>
+                        </div>
+                        <div class="table-stats order-table ov-h">
+                            <table class="table ">
+                                <thead>
+                                    <tr>
+                                        {{!-- <th>ID</th> --}}
+                                        <th>Name</th>
+                                        <th>Brand Name</th>
+                                        <th>Description</th>
+                                        <th>Price</th>
+                                        <th>Category</th>
+                                        <th>Quantity</th>
+                                        <th>Featured</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each products}}
+
+                                    <tr>
+                                        {{!-- <td>{{this._id}}</td> --}}
+                                        <td>{{this.productName}}</td>
+                                        <td>{{this.brandName}}</td>
+                                        <td>{{this.desc}}</td>
+                                        <td>{{this.price}}</td>
+                                        <td>{{this.category.name}}</td>
+                                        <td>{{this.quantity}}</td>
+                                        <td><a href="/admin/featuredProduct/{{this._id}}" class="btn btn-primary">{{this.isFeatured}}</a></td>
+                                        <td> <a href="/admin/editProducts/{{this._id}}" class="btn btn-success">Edit</a></td>
+                                        <td> <a href="/admin/deleteProducts/{{this._id}}" class="btn btn-danger">Delete</a></td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div> <!-- /.table-stats -->
+                    </div>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>

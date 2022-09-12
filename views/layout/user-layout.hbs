@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="zxx">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>eCart</title>
+
+    <!-- Google Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Cookie&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+
+    <!-- Css Styles -->
+    {{!-- Version 4.4.0 --}}
+    <link rel="stylesheet" href="/stylesheets/user/css/bootstrap.min.css" type="text/css">
+
+    {{!-- Version 4.7.0 --}}
+    <link rel="stylesheet" href="/stylesheets/user/css/font-awesome.min.css" type="text/css">
+
+    <link rel="stylesheet" href="/stylesheets/user/css/elegant-icons.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/user/css/jquery-ui.min.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/user/css/magnific-popup.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/user/css/owl.carousel.min.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/user/css/slicknav.min.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/user/css/style.css" type="text/css">
+    <link rel="stylesheet" href="/stylesheets/user/css/signup.css" type="text/css">
+
+    {{!-- Uncompressed jQuery CDN --}}
+    <script src="https://code.jquery.com/jquery-3.6.1.js"
+        integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <!-- Page Preloder -->
+    <div id="preloder">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Offcanvas Menu Begin -->
+    <div class="offcanvas-menu-overlay"></div>
+    <div class="offcanvas-menu-wrapper">
+        <div class="offcanvas__close">+</div>
+        <ul class="offcanvas__widget">
+            <li><span class="icon_search search-switch"></span></li>
+            <li><a href="#"><span class="icon_heart_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+            <li><a href="#"><span class="icon_bag_alt"></span>
+                    <div class="tip">2</div>
+                </a></li>
+        </ul>
+        <div class="offcanvas__logo">
+            <a href="./index.html"><img src="img/logo.png"></a>
+        </div>
+        <div id="mobile-menu-wrap"></div>
+    </div>
+    <!-- Offcanvas Menu End -->
+
+    <!-- Header Section Begin -->
+    <header class="header">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-xl-3 col-lg-2">
+                    <div class="header__logo">
+                        <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                    </div>
+                </div>
+                <div class="col-xl-6 col-lg-7">
+                    <nav class="header__menu text-center">
+                        <ul>
+                            <li class="active"><a href="/">Home</a></li>
+                            <li><a href="/products">Shop</a></li>
+                            <li><a href="#">Profile</a>
+                                <ul class="dropdown">
+                                    {{#if login}}
+                                    <li><a href="/logout">Logout</a></li>
+                                    {{else}}
+                                    <li><a href="/login">Login</a></li>
+                                    {{/if}}
+                                    <li><a href="">Account</a></li>
+                                    {{#if login}}
+                                    <li><a href="">Cart</a></li>
+                                    <li><a href="">Wishlist</a></li>
+                                    {{/if}}
+                                </ul>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div class="col-lg-3">
+                    <div class="header__right">
+                        <ul class="header__right__widget">
+                            <li><span class="icon_search search-switch"></span></li>
+                            <li><a href="#"><span class="icon_heart_alt"></span>
+                                    <div class="tip">2</div>
+                                </a></li>
+                            <li><a href="#"><span class="icon_bag_alt"></span>
+                                    <div class="tip">2</div>
+                                </a></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="canvas__open">
+                <i class="fa fa-bars"></i>
+            </div>
+        </div>
+    </header>
+    <!-- Header Section End -->
+
+
+    {{{body}}}
+
+    
+
+    <!-- Js Plugins -->
+    {{!-- Default --}}
+
+    {{!--
+    <script src="javascripts/user/js/jquery-3.3.1.min.js"></script> --}}
+    <script src="/javascripts/user/js/bootstrap.min.js"></script>
+    <script src="/javascripts/user/js/jquery.magnific-popup.min.js"></script>
+    <script src="/javascripts/user/js/jquery-ui.min.js"></script>
+    <script src="/javascripts/user/js/mixitup.min.js"></script>
+    <script src="/javascripts/user/js/jquery.countdown.min.js"></script>
+    <script src="/javascripts/user/js/jquery.slicknav.js"></script>
+    <script src="/javascripts/user/js/owl.carousel.min.js"></script>
+    <script src="/javascripts/user/js/jquery.nicescroll.min.js"></script>
+    <script src="/javascripts/user/js/main.js"></script>
+    {{!-- jQuery validation CDN --}}
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,153 @@
+<!-- Section: Design Block -->
+<section class="text-center text-lg-start">
+  <style>
+    .cascading-right {
+      margin-right: -50px;
+    }
+
+    @media (max-width: 991.98px) {
+      .cascading-right {
+        margin-right: 0;
+      }
+    }
+  </style>
+
+  <!-- Jumbotron -->
+  <div class="container py-4 my-5">
+    <div class="row g-0 align-items-center">
+      <div class="col-lg-6 mb-5 mb-lg-0">
+        <div class="card cascading-right">
+          <div class="card-body p-5 shadow-lg text-center">
+            <h2 class="font-weight-bold mb-5">WELCOME</h2>
+            {{#if signupErr}}
+            <p class="font-weight-bold my-3 text-danger">{{errMessage}}</p>
+            {{/if}}
+            <form action="/signup" method="post" id="signupForm">
+              <!-- 2 column grid layout with text inputs for the first and last names -->
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <div class="form-outline">
+                    <input type="text" name="fname" class="form-control rounded-lg" placeholder="First name" />
+                    <label class="form-label"></label>
+                  </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                  <div class="form-outline">
+                    <input type="text" name="lname" class="form-control" placeholder="Last name" />
+                    <label class="form-label"></label>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Email input -->
+              <div class="form-outline mb-3">
+                <input type="email" name="email" class="form-control" placeholder="Email address" />
+                <label class="form-label" for="form3Example3"></label>
+              </div>
+
+              <!-- Password input -->
+              <div class="form-outline mb-3">
+                <input type="password" name="password" id="password" class="form-control" placeholder="Password" />
+                <label class="form-label"></label>
+              </div>
+
+              <!--Confirm Password input -->
+              <div class="form-outline mb-3">
+                <input type="password" name="confirmPassword" class="form-control" placeholder="Confirm Password" />
+                <label class="form-label"></label>
+              </div>
+
+              <!--Phone Number input -->
+              <div class="form-outline mb-3">
+                <input type="tel" name="phoneNumber" class="form-control" placeholder="Phone Number">
+                <label class="form-label"></label>
+              </div>
+
+              <!-- Submit button -->
+              <div class="pt-2">
+                <button type="submit" class="btn btn-primary rounded-pill mb-2 px-5 pt-2">
+                  Sign up
+                </button>
+              </div>
+
+              <!-- Register buttons -->
+              <div class="text-center">
+                <p>OR</p>
+
+                <button type="button" class="btn mx-1 rounded-pill btn btn-danger mb-4 px-3 py-2 text-white">
+                  <i class="fa fa-google-plus px-2"></i>Sign up with Google
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-lg-6 mb-5 mb-lg-0 d-none d-lg-block">
+        <img src="https://mdbootstrap.com/img/new/ecommerce/vertical/004.jpg" class="w-100 rounded-lg shadow-lg"
+          alt="" />
+      </div>
+    </div>
+  </div>
+  <!-- Jumbotron -->
+</section>
+<!-- Section: Design Block -->
+
+<script>
+  $(document).ready(() => {
+
+    jQuery.validator.addMethod("lettersOnly", (value) => {
+      return /^[a-zA-Z]+$/i.test(value);
+    });
+
+    $('#signupForm').validate({
+      rules: {
+        fname: {
+          required: true,
+          lettersOnly: true,
+        },
+        lname: {
+          lettersOnly: true
+        },
+        email: {
+          required: true,
+          email: true,
+        },
+        password: {
+          required: true,
+        },
+        confirmPassword: {
+          required: true,
+          equalTo: "#password"
+        },
+        phoneNumber: {
+          required: true,
+          minlength: 10,
+          maxlength: 10,
+          number: true
+        }
+      },
+      messages: {
+        fname: {
+          required: "Please enter your name!",
+          lettersOnly: "Please enter valid name!"
+        },
+        lname: {
+          lettersOnly: "Please enter valid name!"
+        },
+        email: "Please enter your email!",
+        password: "Please enter the password!",
+        confirmPassword: {
+          required: "Please enter the password!",
+          equalTo: "Password doesn't match!"
+        },
+        phoneNumber: {
+          required: "Please enter your phone number!",
+          minlength: "Invalid Number!",
+          maxlength: "Invalid Number!",
+          number: "Invalid Number!"
+        }
+      }
+    })
+  })
+</script>
