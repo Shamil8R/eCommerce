@@ -10,37 +10,37 @@
             </div>
             <div class="table-stats order-table ov-h">
                 <table class="table ">
-                    <thead>
+                    <thead class="text-center">
                         <tr>
                             <th class="serial">#</th>
                             {{!-- <th class="avatar">Avatar</th> --}}
-                            <th>ID</th>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Admin</th>
-                            <th>Block</th>
-                            <th>Orders</th>
+                            {{!-- <th>Admin</th> --}}
+                            <th>Status</th>
+                            {{!-- <th>Orders</th> --}}
+                            <th class="text-center">Details</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="text-center">
+                        {{#each userData}}
                         <tr>
-                            <td class="serial">1.</td>
-                            {{!-- <td class="avatar">
-                                <div class="round-img">
-                                    <a href="#"><img class="rounded-circle" src="images/avatar/1.jpg" alt=""></a>
-                                </div>
-                            </td> --}}
-                            <td> #5469 </td>
-                            <td> <span class="name">Louis Stanley</span> </td>
-                            <td> <span class="product">iMax</span> </td>
-                            <td><span class="count">231</span></td>
+                            <td class="serial">1</td>
+                            <td> <span class="name">{{this.name}}</span> </td>
+                            <td> <span class="email">{{this.email}}</span> </td>
                             <td>
-                                <span class="badge badge-complete">Complete</span>
+                                <a href="/admin/blocked/{{this._id}}"
+                                    class="btn btn-primary">{{this.isBlocked}}</a></td>
                             </td>
-                            <td>
-                                
+                            {{!-- <td>
+                                <span class="badge badge-complete">Complete</span>
+                            </td> --}}
+                            <td class="text-center">
+                                <a href="/admin/userDetails/{{this._id}}"
+                                    class="btn btn-primary">More Details</a></td>
                             </td>
                         </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div> <!-- /.table-stats -->

@@ -2,64 +2,44 @@ const express = require('express');
 const router = express.Router();
 
 const userController = require('../controllers/userController');
-const categoryHelper = require('../helpers/categoryHelper');
-const productHelper = require('../helpers/productHelper');
-const productModel = require('../models/productModel');
+
+
+// const trial=(req,res,next)=>{
+//     console.log("working--------------");
+//     next()
+//   }
+// router.use(trial)
+const userAuth = (req,res,next) => {
+    if(req.session.userLoggedIn){
+        next();
+    }else{
+        res.redirect('/login')
+    }
+}
 
 
 
 /* User Home Page. */
-router.get('/', userController.userHome);
-
+router.get('/',userController.userHome);
 
 /*User Login Page*/
 router.get('/login',userController.login);
 router.post('/login',userController.userLogin)
-
-router.get('/logout',(req,res)=>{
-    res.redirect('/login')
-})
+router.get('/logout',userController.logout)
 
 
 // User Signup Page
-router.get('/signup', userController.getSignup);
+router.get('/signup',userAuth, userController.getSignup);
 router.post('/signup',userController.userSignup);
 
+//User Details
+router.get('/userDetails', userController.userDetails);
 
-router.get('/products', async (req,res) => {
-    try {
-        const products = await productHelper.getAllProducts();
-        const categories = await categoryHelper.getAllCategories();
-        // console.log(products);
-        // console.log(products[0].img);
-        res.render('user/shop', {products, categories});
-    } catch (err) {
-        console.log(err);
-        res.redirect('/');
-    }
-})
-
-router.get('/:id', async (req,res) => {
-    try {
-        const products = await productModel.find({category: req.params.id}).lean().populate('category')
-        const categories = await categoryHelper.getAllCategories();
-        // console.log(products);
-        res.render('user/productsByCat', {products, categories})
-    } catch (error) {
-        
-    }
-})
-
-router.get('/productDetails/:id', async (req,res) => {
-    try {
-        const product = await productModel.find({_id: req.params.id}).lean()
-        console.log(product);
-        res.render('user/productDetails', {product})
-    } catch (error) {
-        console.log(error)
-        res.redirect('/home');
-    }
-})
+//Products
+router.get('/products', userController.getProducts);
+router.get('/category/:id',userController.productsByCategory);
+router.get('/productDetails/:id', userController.productDetails);
+router.get('/addToCart/:id', userController.addProductToCart)
 
 
 module.exports = router;

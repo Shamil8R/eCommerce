@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path')
 const productModel = require('../models/productModel');
-
+const cartModel = require('../models/cartModel');
 
 module.exports = {
 
@@ -130,6 +130,21 @@ module.exports = {
                 resolve()
             } catch (error) {
                 reject(error)
+            }
+        })
+    },
+
+    addProductToCart: (productID,userID) => {
+        return new Promise(async (resolve,reject) => {
+            const cart = await cartModel.findOne({userId: userID})
+            if(cart){
+
+            }else{
+                console.log("Creating new Cart");
+                const cart = new cartModel({
+                    userId: userID,
+                    productId: productID,
+                });
             }
         })
     }

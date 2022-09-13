@@ -52,7 +52,7 @@
                 </a></li>
         </ul>
         <div class="offcanvas__logo">
-            <a href="./index.html"><img src="img/logo.png"></a>
+            <a href="#"><img src="img/logo.png"></a>
         </div>
         <div id="mobile-menu-wrap"></div>
     </div>
@@ -64,7 +64,7 @@
             <div class="row">
                 <div class="col-xl-3 col-lg-2">
                     <div class="header__logo">
-                        <a href="./index.html"><img src="img/logo.png" alt=""></a>
+                        <a href="#"><img src="img/logo.png" alt=""></a>
                     </div>
                 </div>
                 <div class="col-xl-6 col-lg-7">
@@ -72,17 +72,16 @@
                         <ul>
                             <li class="active"><a href="/">Home</a></li>
                             <li><a href="/products">Shop</a></li>
-                            <li><a href="#">Profile</a>
+                            <li><a >Profile</a>
                                 <ul class="dropdown">
                                     {{#if login}}
                                     <li><a href="/logout">Logout</a></li>
+                                    <li><a href="/userDetails">Account</a></li>
+                                    <li><a href="/cart">Cart</a></li>
+                                    <li><a href="/wishlist">Wishlist</a></li>
                                     {{else}}
                                     <li><a href="/login">Login</a></li>
-                                    {{/if}}
-                                    <li><a href="">Account</a></li>
-                                    {{#if login}}
-                                    <li><a href="">Cart</a></li>
-                                    <li><a href="">Wishlist</a></li>
+                                    {{!-- <li><a href="/login">Account</a></li> --}}
                                     {{/if}}
                                 </ul>
                             </li>
@@ -93,12 +92,14 @@
                     <div class="header__right">
                         <ul class="header__right__widget">
                             <li><span class="icon_search search-switch"></span></li>
+                            {{#if login}}
                             <li><a href="#"><span class="icon_heart_alt"></span>
                                     <div class="tip">2</div>
                                 </a></li>
                             <li><a href="#"><span class="icon_bag_alt"></span>
                                     <div class="tip">2</div>
                                 </a></li>
+                                {{/if}}
                         </ul>
                     </div>
                 </div>

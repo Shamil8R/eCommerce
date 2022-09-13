@@ -5,6 +5,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const hbs = require('express-handlebars');
 const session = require('express-session');
+const nocache = require('nocache');
 
 const database = require('./config/connections');
 const userRouter = require('./routes/user');
@@ -33,9 +34,10 @@ app.use(session({
   }
 }))
 
+app.use(nocache());
+
 app.use('/', userRouter);
 app.use('/admin', adminRouter);
-
 
 
 // catch 404 and forward to error handler

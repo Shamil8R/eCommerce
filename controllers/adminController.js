@@ -1,12 +1,13 @@
 const adminHelper = require('../helpers/adminHelper');
 const categoryHelper = require('../helpers/categoryHelper');
 const productHelper = require('../helpers/productHelper');
+const userHelper = require('../helpers/userHelper');
 
 module.exports = {
 
     // Get Login Page
-    adminLogin:(req,res)=>{
-        res.render('admin/login', {layout: 'layout'})
+    adminLogin: (req, res) => {
+        res.render('admin/login', { layout: 'layout' })
     },
 
     checkAdminLogin: async (req, res) => {
@@ -81,11 +82,43 @@ module.exports = {
             }
             const images = product[0].img;
             res.render('admin/editProducts', { layout: 'admin-layout', product, images, categories })
-        }catch (error) {
+        } catch (error) {
             console.log(error)
             res.redirect('/admin/viewProducts')
         }
     },
 
+    updateProductDetails: async (req, res) => {
+        try {
+            req.body.id = req.params.id;
+            await productHelper.updateProductDetails(req.body, req.files['product-images']);
+            res.redirect('/admin/viewProducts')
+        } catch (error) {
+            console.log(error)
+            res.redirect('/admin/home')
+        }
+    },
+
+    featuredProduct: async (req, res) => {
+        try {
+            await productHelper.featuredOption(req.params.id)
+            res.redirect('/admin/viewProducts')
+        } catch (error) {
+            console.log(error);
+            res.redirect('/admin/home')
+        }
+    },
+
+
+
+    getUsersData: async (req, res) => {
+        try {
+            const userData = await userHelper.getAllUserData();
+            res.render('admin/viewUsers', { layout: 'admin-layout', userData })
+        } catch (error) {
+            console.log(error)
+            res.redirect('/admin/home')
+        }
+    }
 
 }

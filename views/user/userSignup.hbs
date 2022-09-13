@@ -24,19 +24,14 @@
             {{/if}}
             <form action="/signup" method="post" id="signupForm">
               <!-- 2 column grid layout with text inputs for the first and last names -->
-              <div class="row">
-                <div class="col-md-6 mb-3">
-                  <div class="form-outline">
-                    <input type="text" name="fname" class="form-control rounded-lg" placeholder="First name" />
-                    <label class="form-label"></label>
-                  </div>
-                </div>
-                <div class="col-md-6 mb-3">
-                  <div class="form-outline">
-                    <input type="text" name="lname" class="form-control" placeholder="Last name" />
-                    <label class="form-label"></label>
-                  </div>
-                </div>
+              {{!-- <div class="row">
+                
+              </div> --}}
+
+              <!-- Email input -->
+              <div class="form-outline mb-3">
+                <input type="text" name="name" class="form-control" placeholder="Name" />
+                <label class="form-label" for="form3Example3"></label>
               </div>
 
               <!-- Email input -->
@@ -97,17 +92,14 @@
   $(document).ready(() => {
 
     jQuery.validator.addMethod("lettersOnly", (value) => {
-      return /^[a-zA-Z]+$/i.test(value);
+      return /^[a-zA-Z ]+$/i.test(value);
     });
 
     $('#signupForm').validate({
       rules: {
-        fname: {
+        name: {
           required: true,
           lettersOnly: true,
-        },
-        lname: {
-          lettersOnly: true
         },
         email: {
           required: true,
@@ -128,11 +120,8 @@
         }
       },
       messages: {
-        fname: {
+        name: {
           required: "Please enter your name!",
-          lettersOnly: "Please enter valid name!"
-        },
-        lname: {
           lettersOnly: "Please enter valid name!"
         },
         email: "Please enter your email!",

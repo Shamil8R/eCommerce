@@ -15,15 +15,14 @@ module.exports = {
                 } else {
                     userData.password = await bcrypt.hash(userData.password, 10);
                     const user = new userModel({
-                        fname: userData.fname,
-                        lname: userData.lname,
+                        name: userData.name,
                         email: userData.email,
                         password: userData.password,
                         phoneNumber: userData.phoneNumber,
                     });
                     try {
                         await user.save();
-                        resolve({userExists: false})
+                        resolve({ userExists: false })
                     } catch (err) {
                         reject(err)
                     }
@@ -35,11 +34,12 @@ module.exports = {
     doLogin: (userData) => {
         return new Promise(async (resolve, reject) => {
             try {
-                const user = await userModel.findOne({ email: userData.email });
+                const user = await userModel.findOne({ email: userData.email }).select('password');
                 if (user) {
                     const isCorrect = await bcrypt.compare(userData.password, user.password);
                     if (isCorrect) {
-                        resolve({ status: true })
+                        const userDetails = await userModel.findOne({email: userData.email});
+                        resolve({userDetails, status: true })
                     } else {
                         resolve({ status: false, message: "Invalid email or password" })
                     }
@@ -51,4 +51,15 @@ module.exports = {
             }
         })
     },
+
+    getAllUserData: () => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const data = await userModel.find({}).lean();
+                resolve(data);
+            } catch (error) {
+                reject(error)
+            }
+        })
+    }
 }
