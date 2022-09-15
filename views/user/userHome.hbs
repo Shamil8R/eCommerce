@@ -35,18 +35,18 @@
                             <li><a href="/product-images/{{this.img.[0]}}" class="image-popup"><span
                                         class="arrow_expand"></span></a></li>
                             <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                            <li><a href="#"><span class="icon_bag_alt"></span></a></li>
+                            <li><a href="/addToCart/{{this._id}}"><i class="fa fa-shopping-cart"></i></a></li>
                         </ul>
                     </div>
                     <div class="product__item__text">
                         <h6><a href="/productDetails/{{this._id}}">{{this.productName}}</a></h6>
-                        <div class="rating">
+                        {{!-- <div class="rating">
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
                             <i class="fa fa-star"></i>
-                        </div>
+                        </div> --}}
                         <div class="product__price">₹ {{this.price}}</div>
                     </div>
                 </div>

@@ -25,14 +25,14 @@
             <div class="col-lg-6">
                 <div class="product__details__text">
                     <h3>{{this.productName}} <span>Brand: {{this.brandName}}</span></h3>
-                    <div class="rating">
+                    {{!-- <div class="rating">
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                         <i class="fa fa-star"></i>
                         <span>( 138 reviews )</span>
-                    </div>
+                    </div> --}}
                     <div class="product__details__price">₹ {{this.price}}<span></span></div>
                     <p>{{this.desc}}</p>
                     <div class="product__details__button">
@@ -42,7 +42,7 @@
                                 <input type="text" value="1">
                             </div>
                         </div>
-                        <a href="#" class="cart-btn"><span class="icon_bag_alt"></span> Add to cart</a>
+                        <a onclick="addToCart('{{this._id}}')" class="cart-btn"><i class="fa fa-shopping-cart pr-1"></i> Add to cart</a>
                         <ul>
                             <li><a href="#"><span class="icon_heart_alt"></span></a></li>
                             <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
@@ -55,8 +55,8 @@
                                 <div class="stock__checkbox">
                                     <label for="stockin">
                                         In Stock
-                                        <input type="checkbox" id="stockin">
-                                        <span class="checkmark"></span>
+                                        {{!-- <input type="checkbox" id="stockin">
+                                        <span class="checkmark"></span> --}}
                                     </label>
                                 </div>
                             </li>
@@ -210,7 +210,7 @@
                             <li><a href="img/product/related/rp-4.jpg" class="image-popup"><span
                                         class="arrow_expand"></span></a></li>
                             <li><a href="#"><span class="icon_heart_alt"></span></a></li>
-                            <li><a href="#"><i class="fa fa-shopping-cart"></i></a></li>
+                            <li><a href=""><i class="fa fa-shopping-cart"></i></a></li>
                         </ul>
                     </div>
                     <div class="product__item__text">
@@ -316,3 +316,20 @@
         </div>
     </div>
     <!-- Search End -->
+
+
+    <script>
+        function addToCart(productID){
+            $.ajax({
+                url: `/addToCart/${productID}`,
+                method: 'get',
+                success: (response) => {
+                    if(response.status){
+                        let count = $('#cartCount').html()
+                        count = parseInt(count) + 1;
+                        $('#cartCount').html(count);
+                    }
+                }
+            })
+        }
+    </script>

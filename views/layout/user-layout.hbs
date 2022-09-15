@@ -30,6 +30,7 @@
     {{!-- Uncompressed jQuery CDN --}}
     <script src="https://code.jquery.com/jquery-3.6.1.js"
         integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI=" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -47,7 +48,7 @@
             <li><a href="#"><span class="icon_heart_alt"></span>
                     <div class="tip">2</div>
                 </a></li>
-            <li><a href="#"><span class="icon_bag_alt"></span>
+            <li><a href="#"><i class="fa fa-shopping-cart"></i>
                     <div class="tip">2</div>
                 </a></li>
         </ul>
@@ -72,12 +73,12 @@
                         <ul>
                             <li class="active"><a href="/">Home</a></li>
                             <li><a href="/products">Shop</a></li>
-                            <li><a >Profile</a>
+                            <li><a>Profile</a>
                                 <ul class="dropdown">
-                                    {{#if login}}
+                                    {{#if user}}
                                     <li><a href="/logout">Logout</a></li>
                                     <li><a href="/userDetails">Account</a></li>
-                                    <li><a href="/cart">Cart</a></li>
+                                    <li><a href="/cart/{{user._id}}">Cart</a></li>
                                     <li><a href="/wishlist">Wishlist</a></li>
                                     {{else}}
                                     <li><a href="/login">Login</a></li>
@@ -92,14 +93,14 @@
                     <div class="header__right">
                         <ul class="header__right__widget">
                             <li><span class="icon_search search-switch"></span></li>
-                            {{#if login}}
+                            {{#if user}}
                             <li><a href="#"><span class="icon_heart_alt"></span>
                                     <div class="tip">2</div>
                                 </a></li>
-                            <li><a href="#"><span class="icon_bag_alt"></span>
-                                    <div class="tip">2</div>
+                            <li><a href="/cart/{{user._id}}"><i class="fa fa-shopping-cart"></i>
+                                    {{#if user.cartItemsCount}}<div class="tip" id="cartCount">{{user.cartItemsCount}}</div>{{/if}}
                                 </a></li>
-                                {{/if}}
+                            {{/if}}
                         </ul>
                     </div>
                 </div>
@@ -113,8 +114,6 @@
 
 
     {{{body}}}
-
-    
 
     <!-- Js Plugins -->
     {{!-- Default --}}

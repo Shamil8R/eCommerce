@@ -91,6 +91,7 @@ module.exports = {
     updateProductDetails: async (req, res) => {
         try {
             req.body.id = req.params.id;
+            console.log(req.files);
             await productHelper.updateProductDetails(req.body, req.files['product-images']);
             res.redirect('/admin/viewProducts')
         } catch (error) {

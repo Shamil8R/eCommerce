@@ -26,7 +26,7 @@ module.exports = {
                 } catch (err) {
                     reject(err)
                 }
-            }else{
+            } else {
                 reject("Please insert images")
             }
         });
@@ -103,7 +103,7 @@ module.exports = {
     updateProductDetails: (productData, imageData) => {
         return new Promise(async (resolve, reject) => {
             try {
-                console.log(productData);
+                // console.log(productData);
                 const result = await productModel.findByIdAndUpdate({ _id: productData.id }, {
                     productName: productData.productName,
                     brandName: productData.brandName,
@@ -112,8 +112,10 @@ module.exports = {
                     category: productData.category,
                     quantity: productData.quantity
                 })
-                console.log(result);
-                if(imageData){
+                // console.log(result);
+                // console.log(imageData);
+                if (imageData) {
+                    console.log("reached here");
                     let images = []
                     imageData.map(i => {
                         images.push(i.filename);
@@ -123,7 +125,7 @@ module.exports = {
                             if (err) console.log(err);
                         })
                     })
-                    await productModel.findOneAndUpdate({_id: productData.id},{
+                    await productModel.findOneAndUpdate({ _id: productData.id }, {
                         img: images
                     })
                 }
@@ -134,17 +136,120 @@ module.exports = {
         })
     },
 
-    addProductToCart: (productID,userID) => {
-        return new Promise(async (resolve,reject) => {
-            const cart = await cartModel.findOne({userId: userID})
-            if(cart){
+    addProductToCart: (productID, userID) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const cart = await cartModel.findOne({ userId: userID }).lean()
+                if (cart) {
+                    let productExist = cart.products.findIndex(i => i.product == productID)
+                    console.log(productExist);
+                    if (productExist !== -1) {
+                        await cartModel.updateOne({ userId: userID, "products.product": productID },
+                            {
+                                $inc: { "products.$.quantity": 1 }
+                            })
+                        // console.log(product);    
+                    } else {
+                        await cartModel.findOneAndUpdate({ userId: userID },
+                            {
+                                $push: { products: { product: productID } }
+                            })
+                    }
+                    resolve();
+                } else {
+                    const cart = new cartModel({
+                        userId: userID,
+                        products: { product: productID }
+                    });
+                    await cart.save();
+                    resolve();
+                }
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
 
-            }else{
-                console.log("Creating new Cart");
-                const cart = new cartModel({
-                    userId: userID,
-                    productId: productID,
-                });
+    getCartItems: (userID) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const cartData = await cartModel.findOne({ userId: userID }).populate({ path: 'products.product' }).lean()
+                resolve(cartData);
+            } catch (error) {
+                reject(error);
+            }
+        })
+    },
+
+    getCartProductsCount: (userID) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const cartItems = await cartModel.findOne({ userId: userID });
+                if (cartItems) {
+                    resolve(cartItems.products.length);
+                } else {
+                    resolve(cartItems)
+                }
+                console.log(cartItems.products.length);
+                resolve()
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+
+    changeProductQuantity: (data) => {
+        return new Promise(async (resolve, reject) => {
+            // console.log(data.count);
+            // console.log(count);
+            try {
+                const count = parseInt(data.count)
+                if (count == -1 && data.quantity == 1) {
+                    const result = await cartModel.updateOne({ "products._id": data.product },
+                        {
+                            $pull: { products: { _id: data.product } }
+                        })
+                    resolve({ removeProduct: true })
+                    console.log(result);
+                } else {
+                    await cartModel.findOneAndUpdate({ "products._id": data.product },
+                        {
+                            $inc: { "products.$.quantity": count }
+                        })
+                    resolve(true);
+                }
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+
+    removeProduct: (data) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await cartModel.updateOne({ "products._id": data.prodObjId },
+                    {
+                        $pull: { "products": { _id: data.prodObjId } }
+                    })
+                resolve(true);
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+
+    getTotalPrice: (userID) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const cartData = await cartModel.findOne({ userId: userID }).populate({ path: 'products.product' })
+                const totalPrice = cartData.products.reduce((total,curr) => {
+                    total = total + (curr.product.price * curr.quantity); 
+                    return total;
+                },0)
+                // console.log(totalPrice);
+                resolve(totalPrice)
+            } catch (error) {
+                reject(error);
             }
         })
     }
