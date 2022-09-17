@@ -39,9 +39,13 @@ router.get('/userDetails', userController.userDetails);
 router.get('/products', userController.getProducts);
 router.get('/category/:id', userController.productsByCategory);
 router.get('/productDetails/:id', userController.productDetails);
-router.get('/addToCart/:id', userAuth, userController.addProductToCart)
+router.post('/addToCart', userController.addProductToCart);
 router.get('/cart/:id', userAuth, userController.viewCart);
-router.post('/changeProductQuantity', userController.changeProductQuantity)
-router.post('/removeProduct', userController.removeProduct)
+router.post('/changeProductQuantity', userController.changeProductQuantity);
+router.post('/removeProduct', userController.removeProduct);
+router.get('/checkout',userController.checkout);
+router.get('/addToWishlist/:id',userAuth,userController.addToWishlist);
+router.get('/wishlist',userAuth,userController.getWishlist);
+router.post('/removeWishlistProduct',userController.removeWishlistProduct);
 
 module.exports = router;

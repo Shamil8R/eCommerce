@@ -29,15 +29,19 @@
                             <td> <span class="name">{{this.name}}</span> </td>
                             <td> <span class="email">{{this.email}}</span> </td>
                             <td>
-                                <a href="/admin/blocked/{{this._id}}"
-                                    class="btn btn-primary">{{this.isBlocked}}</a></td>
+                                {{#if this.isBlocked}}
+                                <a href="#" onclick="changeStatus('{{this._id}}')" class="btn btn-primary">Blocked</a>
+                            </td>
+                            {{else}}
+                            <a href="#" onclick="changeStatus('{{this._id}}')" class="btn btn-primary">Active</a></td>
+                            {{/if}}
                             </td>
                             {{!-- <td>
                                 <span class="badge badge-complete">Complete</span>
                             </td> --}}
                             <td class="text-center">
-                                <a href="/admin/userDetails/{{this._id}}"
-                                    class="btn btn-primary">More Details</a></td>
+                                <a href="/admin/userDetails/{{this._id}}" class="btn btn-primary">More Details</a>
+                            </td>
                             </td>
                         </tr>
                         {{/each}}
@@ -47,3 +51,27 @@
         </div>
     </div>
 </div>
+
+<script>
+    function changeStatus(userId) {
+        $.ajax({
+            url: '/changeStatus',
+            method: 'post',
+            data: {
+                id: userId
+            },
+            success: (response) => {
+                if (response) {
+                    swal({
+                        text: "Product removed!",
+                        icon: "success",
+                        button: false
+                    });
+                    setTimeout(() => {
+                        location.reload()
+                    }, 1000)
+                }
+            }
+        })
+    }
+</script>

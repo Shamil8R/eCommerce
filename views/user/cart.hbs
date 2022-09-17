@@ -216,10 +216,10 @@
                                         <a href="#" onclick="removeProduct('{{this._id}}')"
                                             class="card-text text-secondary pr-2" style="font-size: 13px;">Remove</a>
                                     </div>
-                                    <div>
+                                    {{!-- <div>
                                         <a href="" class="card-text text-secondary" style="font-size: 13px;">Move to
                                             Wishlist</a>
-                                    </div>
+                                    </div> --}}
                                 </div>
                             </div>
                         </div>
@@ -246,14 +246,14 @@
                         <div class="cart__total__procced">
                             <h6>Cart total</h6>
                             <ul>
-                                
+
                                 {{!-- <li>Subtotal <span>$ 750.0</span></li> --}}
                                 {{!-- <li>Coupon Discount<span>$ 750.0</span></li> --}}
                                 <li>Total <span id="price">₹ {{price}}</span></li>
                                 {{!-- <li>Convenience Fee<span>$ 750.0</span></li> --}}
-                                
+
                             </ul>
-                            <a href="#" class="primary-btn">Proceed to checkout</a>
+                            <a href="/checkout" class="primary-btn">Proceed to checkout</a>
                         </div>
                         {{!--
                     </div> --}}
@@ -410,44 +410,3 @@
     </div>
 </footer>
 <!-- Footer Section End -->
-
-<script>
-
-    function changeQuantity(cartId, count) {
-        let quantity = parseInt(document.getElementById(cartId).value)
-        $.ajax({
-            url: '/changeProductQuantity',
-            data: {
-                product: cartId,
-                count: count,
-                quantity: quantity
-            },
-            method: 'post',
-            success: (response) => {
-                if (response.result.removeProduct) {
-                    alert("Product removed");
-                    location.reload()
-                } else {
-                    document.getElementById(cartId).value = quantity + count;
-                }
-                document.getElementById('price').innerHTML = "₹ " + response.price;
-            }
-        })
-    }
-
-    function removeProduct(Id) {
-        $.ajax({
-            url: '/removeProduct',
-            data: {
-                prodObjId: Id,
-            },
-            method: 'post',
-            success: (response) => {
-                if (response) {
-                    alert("Product removed");
-                    location.reload();
-                }
-            }
-        })
-    }
-</script>

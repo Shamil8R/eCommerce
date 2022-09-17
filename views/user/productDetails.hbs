@@ -39,10 +39,10 @@
                         <div class="quantity">
                             <span>Quantity:</span>
                             <div class="pro-qty">
-                                <input type="text" value="1">
+                                <input type="text" value="1" style="pointer-events: none;">
                             </div>
                         </div>
-                        <a onclick="addToCart('{{this._id}}')" class="cart-btn"><i class="fa fa-shopping-cart pr-1"></i> Add to cart</a>
+                        <a href="#" onclick="addToCartCount('{{this._id}}')" class="cart-btn"><i class="fa fa-shopping-cart pr-1"></i> Add to cart</a>
                         <ul>
                             <li><a href="#"><span class="icon_heart_alt"></span></a></li>
                             <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
@@ -319,7 +319,7 @@
 
 
     <script>
-        function addToCart(productID){
+        function addToCartCount(productID){
             $.ajax({
                 url: `/addToCart/${productID}`,
                 method: 'get',
@@ -327,6 +327,10 @@
                     if(response.status){
                         let count = $('#cartCount').html()
                         count = parseInt(count) + 1;
+                        swal({
+                            text: "Product added to cart.",
+                            icon: "success"
+                        })
                         $('#cartCount').html(count);
                     }
                 }

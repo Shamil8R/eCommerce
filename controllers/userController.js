@@ -11,6 +11,8 @@ module.exports = {
         if (req.session.user) {
             const count = await productHelper.getCartProductsCount(req.session.user._id)
             req.session.user.cartItemsCount = count;
+            const wishlistCount = await productHelper.getWishlistProductsCount(req.session.user._id);
+            req.session.user.wishlistCount = wishlistCount;
         }
         res.render('user/userHome', { featuredProducts, user: req.session.user });
     },
@@ -70,12 +72,12 @@ module.exports = {
     },
 
     logout: (req, res) => {
+        req.session.user = null;
         req.session.userLoggedIn = false;
-        res.redirect('/login')
+        res.redirect('/')
     },
 
     userDetails: (req, res) => {
-        console.log(12221);
         res.render('user/accDetails', { layout: 'user-layout', user: req.session.user })
     },
 
@@ -117,13 +119,13 @@ module.exports = {
 
     addProductToCart: async (req, res) => {
         try {
-            // console.log(req.session.user)
-            // console.log("api call reached")
-            await productHelper.addProductToCart(req.params.id, req.session.user._id)
-            // res.json({status: true})
-            res.redirect('/products')
+            if (req.session.userLoggedIn) {
+                await productHelper.addProductToCart(req.body.productID, req.session.user._id)
+                res.json({ status: true })
+            }else{
+                res.json({status:false,url:'/login'})
+            }
         } catch (err) {
-            console.log("reached here man");
             console.log(err);
             res.redirect('/')
         }
@@ -131,7 +133,7 @@ module.exports = {
 
     viewCart: async (req, res) => {
         try {
-            const cartData = await productHelper.getCartItems(req.params.id);
+            const cartData = await productHelper.getCartItems(req.params.id); //req.params.id and user._id are both same here
             const totalPrice = await productHelper.getTotalPrice(req.session.user._id);
             // console.log(cartData);
             res.render('user/cart', { cartData, user: req.session.user, price: totalPrice })
@@ -146,7 +148,7 @@ module.exports = {
             // console.log(req.body);
             const result = await productHelper.changeProductQuantity(req.body);
             const totalPrice = await productHelper.getTotalPrice(req.session.user._id);
-            res.json({result,price:totalPrice})
+            res.json({ result, price: totalPrice })
         } catch (error) {
             console.log(error)
             res.redirect('/home')
@@ -161,5 +163,43 @@ module.exports = {
             console.log(error);
             res.redirect('/home');
         }
-    }
+    },
+
+    addToWishlist: async (req, res) => {
+        try {
+            const product = await productHelper.addToWishlist(req.params.id, req.session.user._id);
+            res.redirect('/products')
+        } catch (error) {
+            console.log(error);
+            res.redirect('/')
+        }
+    },
+
+    getWishlist: async (req, res) => {
+        try {
+            const wishlistItems = await productHelper.getWishlistItems(req.session.user._id)
+            res.render('user/wishlist', { wishlistItems, user: req.session.user });
+        } catch (error) {
+            console.log(error);
+            res.redirect('/')
+        }
+    },
+
+    removeWishlistProduct: async (req, res) => {
+        try {
+            const result = await productHelper.removeWishlistProduct(req.body)
+            res.json(result)
+        } catch (error) {
+
+        }
+    },
+
+    checkout: (req, res) => {
+        try {
+            res.render('user/checkout');
+        } catch (error) {
+            console.log(error)
+        }
+    },
+
 }

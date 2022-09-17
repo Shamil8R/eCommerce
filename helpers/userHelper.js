@@ -47,7 +47,7 @@ module.exports = {
                     resolve({ status: false, message: "Account doesn't exist" })
                 }
             } catch (error) {
-                reject("Some database error")
+                reject(error)
             }
         })
     },
@@ -57,6 +57,18 @@ module.exports = {
             try {
                 const data = await userModel.find({}).lean();
                 resolve(data);
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+
+    changeStatus: (data) => {
+        return new Promise(async (resolve,reject) => {
+            try {
+                const user = await userModel.findById(data.id);
+                console.log(user);
+                resolve();
             } catch (error) {
                 reject(error)
             }

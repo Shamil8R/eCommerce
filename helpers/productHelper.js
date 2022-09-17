@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path')
 const productModel = require('../models/productModel');
 const cartModel = require('../models/cartModel');
+const wishlistModel = require('../models/wishlistModel');
 
 module.exports = {
 
@@ -72,6 +73,7 @@ module.exports = {
             }
         })
     },
+    
     featuredOption: (id) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -142,7 +144,7 @@ module.exports = {
                 const cart = await cartModel.findOne({ userId: userID }).lean()
                 if (cart) {
                     let productExist = cart.products.findIndex(i => i.product == productID)
-                    console.log(productExist);
+                    // console.log(productExist);
                     if (productExist !== -1) {
                         await cartModel.updateOne({ userId: userID, "products.product": productID },
                             {
@@ -190,7 +192,7 @@ module.exports = {
                 } else {
                     resolve(cartItems)
                 }
-                console.log(cartItems.products.length);
+                // console.log(cartItems.products.length);
                 resolve()
             } catch (error) {
                 reject(error)
@@ -210,7 +212,7 @@ module.exports = {
                             $pull: { products: { _id: data.product } }
                         })
                     resolve({ removeProduct: true })
-                    console.log(result);
+                    // console.log(result);
                 } else {
                     await cartModel.findOneAndUpdate({ "products._id": data.product },
                         {
@@ -251,6 +253,56 @@ module.exports = {
             } catch (error) {
                 reject(error);
             }
+        })
+    },
+
+    addToWishlist: (productId,userId) => {
+        return new Promise(async (resolve,reject) => {
+            const wishlist = await wishlistModel.findOne({userId: userId})
+            if(wishlist){
+                const productExist = wishlist.products.findIndex(i => i.product == productId)
+                if(productExist !== -1){
+                    resolve()
+                }else{
+                    await wishlistModel.updateOne({userId: userId},
+                        {
+                            $push: {products: {product: productId}}
+                        })
+                    resolve()
+                } 
+            }else{
+                const wishlist = new wishlistModel({
+                    userId: userId,
+                    products: {product: productId}
+                })
+                await wishlist.save()
+                resolve();
+            }
+        })
+    },
+
+    getWishlistItems: (userId) => {
+        return new Promise(async (resolve,reject) => {
+            const wishlist = await wishlistModel.findOne({userId: userId}).populate('products.product').lean()
+            resolve(wishlist.products)
+        })
+    },
+
+    removeWishlistProduct: (data) => {
+        return new Promise (async (resolve,reject) => {
+            const result = await wishlistModel.updateOne({"products._id": data.productId},
+            {
+                $pull: {products: {_id : data.productId}}
+            })
+            // console.log(result);
+            resolve({removedProduct: true})
+        })
+    },
+
+    getWishlistProductsCount: (userId) => {
+        return new Promise( async (resolve,reject) => {
+            const result = await wishlistModel.findOne({userId: userId})
+            resolve(result.products.length)
         })
     }
 }
