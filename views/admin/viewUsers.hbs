@@ -30,10 +30,10 @@
                             <td> <span class="email">{{this.email}}</span> </td>
                             <td>
                                 {{#if this.isBlocked}}
-                                <a href="#" onclick="changeStatus('{{this._id}}')" class="btn btn-primary">Blocked</a>
+                                <a href="/admin/changeUserStatus/{{this._id}}" class="btn btn-primary">Blocked</a>
                             </td>
                             {{else}}
-                            <a href="#" onclick="changeStatus('{{this._id}}')" class="btn btn-primary">Active</a></td>
+                            <a href="/admin/changeUserStatus/{{this._id}}"  class="btn btn-primary">Active</a></td>
                             {{/if}}
                             </td>
                             {{!-- <td>
@@ -51,27 +51,3 @@
         </div>
     </div>
 </div>
-
-<script>
-    function changeStatus(userId) {
-        $.ajax({
-            url: '/changeStatus',
-            method: 'post',
-            data: {
-                id: userId
-            },
-            success: (response) => {
-                if (response) {
-                    swal({
-                        text: "Product removed!",
-                        icon: "success",
-                        button: false
-                    });
-                    setTimeout(() => {
-                        location.reload()
-                    }, 1000)
-                }
-            }
-        })
-    }
-</script>

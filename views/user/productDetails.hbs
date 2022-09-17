@@ -42,7 +42,7 @@
                                 <input type="text" value="1" style="pointer-events: none;">
                             </div>
                         </div>
-                        <a href="#" onclick="addToCartCount('{{this._id}}')" class="cart-btn"><i class="fa fa-shopping-cart pr-1"></i> Add to cart</a>
+                        <a href="#" onclick="addToCart('{{this._id}}')" class="cart-btn"><i class="fa fa-shopping-cart pr-1"></i> Add to cart</a>
                         <ul>
                             <li><a href="#"><span class="icon_heart_alt"></span></a></li>
                             <li><a href="#"><span class="icon_adjust-horiz"></span></a></li>
@@ -321,8 +321,9 @@
     <script>
         function addToCartCount(productID){
             $.ajax({
-                url: `/addToCart/${productID}`,
-                method: 'get',
+                url: `/addToCart`,
+                method: 'post',
+
                 success: (response) => {
                     if(response.status){
                         let count = $('#cartCount').html()

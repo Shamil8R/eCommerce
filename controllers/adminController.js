@@ -129,10 +129,11 @@ module.exports = {
 
     changeStatus: async (req,res) => {
         try {
-            await userHelper.changeStatus(req.body)
-            res.json(true)
+            await userHelper.changeStatus(req.params.id)
+            res.redirect('/admin/user')
         } catch (error) {
             console.log(error)
+            res.redirect('/admin/home')
         }
     }
 

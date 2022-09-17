@@ -72,7 +72,7 @@
                     <nav class="header__menu text-center">
                         <ul>
                             <li class="active"><a href="/">Home</a></li>
-                            <li><a href="/products">Shop</a></li>
+                            <li class=""><a href="/products">Shop</a></li>
                             <li><a>Profile</a>
                                 <ul class="dropdown">
                                     {{#if user}}
@@ -104,7 +104,7 @@
 
                             <li>
                                 <a href="/cart/{{user._id}}"><i class="fa fa-shopping-cart"></i>
-                                    {{#if user}}<div class="tip" id="{{this._id}}">{{user.cartItemsCount}}</div>{{/if}}
+                                    {{#if user}}<div class="tip" id="cartCount">0</div>{{/if}}
                                 </a>
                             </li>
 
@@ -114,7 +114,7 @@
                                     <div></div>
                                 </a></li>
                             <li><a href="/login"><i class="fa fa-shopping-cart"></i>
-                                    <div id="cartCount"> </div>
+                                    <div> </div>
                                 </a></li>
                             {{/if}}
                         </ul>
@@ -153,3 +153,4 @@
 </body>
 
 </html>
+

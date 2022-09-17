@@ -73,7 +73,7 @@ module.exports = {
             }
         })
     },
-    
+
     featuredOption: (id) => {
         return new Promise(async (resolve, reject) => {
             try {
@@ -193,7 +193,6 @@ module.exports = {
                     resolve(cartItems)
                 }
                 // console.log(cartItems.products.length);
-                resolve()
             } catch (error) {
                 reject(error)
             }
@@ -244,36 +243,39 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             try {
                 const cartData = await cartModel.findOne({ userId: userID }).populate({ path: 'products.product' })
-                const totalPrice = cartData.products.reduce((total,curr) => {
-                    total = total + (curr.product.price * curr.quantity); 
-                    return total;
-                },0)
-                // console.log(totalPrice);
-                resolve(totalPrice)
+                if (cartData) {
+                    const totalPrice = cartData.products.reduce((total, curr) => {
+                        total = total + (curr.product.price * curr.quantity);
+                        return total;
+                    }, 0)
+                    // console.log(totalPrice);
+                    resolve(totalPrice)
+                }
+                resolve(0)
             } catch (error) {
                 reject(error);
             }
         })
     },
 
-    addToWishlist: (productId,userId) => {
-        return new Promise(async (resolve,reject) => {
-            const wishlist = await wishlistModel.findOne({userId: userId})
-            if(wishlist){
+    addToWishlist: (productId, userId) => {
+        return new Promise(async (resolve, reject) => {
+            const wishlist = await wishlistModel.findOne({ userId: userId })
+            if (wishlist) {
                 const productExist = wishlist.products.findIndex(i => i.product == productId)
-                if(productExist !== -1){
+                if (productExist !== -1) {
                     resolve()
-                }else{
-                    await wishlistModel.updateOne({userId: userId},
+                } else {
+                    await wishlistModel.updateOne({ userId: userId },
                         {
-                            $push: {products: {product: productId}}
+                            $push: { products: { product: productId } }
                         })
                     resolve()
-                } 
-            }else{
+                }
+            } else {
                 const wishlist = new wishlistModel({
                     userId: userId,
-                    products: {product: productId}
+                    products: { product: productId }
                 })
                 await wishlist.save()
                 resolve();
@@ -282,27 +284,35 @@ module.exports = {
     },
 
     getWishlistItems: (userId) => {
-        return new Promise(async (resolve,reject) => {
-            const wishlist = await wishlistModel.findOne({userId: userId}).populate('products.product').lean()
-            resolve(wishlist.products)
+        return new Promise(async (resolve, reject) => {
+            const wishlist = await wishlistModel.findOne({ userId: userId }).populate('products.product').lean()
+            if (wishlist) {
+                resolve(wishlist.products)
+            }else{
+                resolve()
+            }
         })
     },
 
     removeWishlistProduct: (data) => {
-        return new Promise (async (resolve,reject) => {
-            const result = await wishlistModel.updateOne({"products._id": data.productId},
-            {
-                $pull: {products: {_id : data.productId}}
-            })
+        return new Promise(async (resolve, reject) => {
+            const result = await wishlistModel.updateOne({ "products._id": data.productId },
+                {
+                    $pull: { products: { _id: data.productId } }
+                })
             // console.log(result);
-            resolve({removedProduct: true})
+            resolve({ removedProduct: true })
         })
     },
 
     getWishlistProductsCount: (userId) => {
-        return new Promise( async (resolve,reject) => {
-            const result = await wishlistModel.findOne({userId: userId})
-            resolve(result.products.length)
+        return new Promise(async (resolve, reject) => {
+            const result = await wishlistModel.findOne({ userId: userId })
+            if (result) {
+                resolve(result.products.length)
+            } else {
+                resolve(0)
+            }
         })
     }
 }

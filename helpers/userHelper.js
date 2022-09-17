@@ -63,11 +63,15 @@ module.exports = {
         })
     },
 
-    changeStatus: (data) => {
+    changeStatus: (userId) => {
         return new Promise(async (resolve,reject) => {
             try {
-                const user = await userModel.findById(data.id);
-                console.log(user);
+                const user = await userModel.findById(userId);
+                if(user.isBlocked){
+                    await userModel.findByIdAndUpdate(userId,{isBlocked: false});
+                }else{
+                    await userModel.findByIdAndUpdate(userId,{isBlocked: true});
+                }
                 resolve();
             } catch (error) {
                 reject(error)

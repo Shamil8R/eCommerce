@@ -40,15 +40,15 @@ router.get('/home',adminAuth, adminController.adminHome)
 router.get('/viewProducts',adminAuth, adminController.viewProducts);
 router.get('/addProduct',adminAuth, adminController.getAddProducts);
 router.post('/addProduct',adminAuth, multipleUpload, adminController.postAddProducts);
-router.get('/deleteProducts/:id', adminController.deleteProduct);
+router.get('/deleteProducts/:id',adminAuth, adminController.deleteProduct);
 router.get('/editProducts/:id',adminAuth, adminController.viewEditProduct);
-router.post('/editProducts/:id',multipleUpload,adminController.updateProductDetails);
-router.get('/featuredProduct/:id', adminController.featuredProduct);
+router.post('/editProducts/:id',adminAuth,multipleUpload,adminController.updateProductDetails);
+router.get('/featuredProduct/:id',adminAuth, adminController.featuredProduct);
 
 
 // User
 router.get('/user',adminAuth, adminController.getUsersData)
-router.post('/changeStatus',adminController.changeStatus)
+router.get('/changeUserStatus/:id',adminAuth,adminController.changeStatus)
 
 
 
@@ -60,7 +60,7 @@ router.get('/categoryDelete/:id',adminAuth, categoryController.deleteCategory);
 
 
 //Orders
-router.get('/orders', (req, res) => {
+router.get('/orders', adminAuth, (req, res) => {
       res.render('admin/viewOrders', { layout: 'admin-layout' })
 })
 

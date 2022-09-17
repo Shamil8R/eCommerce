@@ -7,14 +7,19 @@ module.exports = {
 
     // Get User Home
     userHome: async (req, res) => {
-        const featuredProducts = await productHelper.getFeaturedProducts()
-        if (req.session.user) {
-            const count = await productHelper.getCartProductsCount(req.session.user._id)
-            req.session.user.cartItemsCount = count;
-            const wishlistCount = await productHelper.getWishlistProductsCount(req.session.user._id);
-            req.session.user.wishlistCount = wishlistCount;
+        try {
+            const featuredProducts = await productHelper.getFeaturedProducts()
+            if (req.session.user) {
+                const count = await productHelper.getCartProductsCount(req.session.user._id)
+                req.session.user.cartItemsCount = count;
+                const wishlistCount = await productHelper.getWishlistProductsCount(req.session.user._id);
+                req.session.user.wishlistCount = wishlistCount;
+            }
+            res.render('user/userHome', { featuredProducts, user: req.session.user });
+        } catch (error) {
+            console.log(error);
+            res.redirect('/login')
         }
-        res.render('user/userHome', { featuredProducts, user: req.session.user });
     },
 
 
@@ -48,7 +53,7 @@ module.exports = {
         if (req.session.userLoggedIn) {
             res.redirect('/')
         } else {
-            res.render('user/userLogin', { loginErr: req.session.userLoggedIn, errMessage: req.session.loginErrMessage });
+            res.render('user/userLogin', { loginErr: req.session.loginErr, errMessage: req.session.loginErrMessage });
             req.session.userLoggedIn = false;
         }
 
@@ -57,9 +62,15 @@ module.exports = {
     userLogin: (req, res) => {
         userHelper.doLogin(req.body).then((result) => {                    //can do it without promise too?
             if (result.status) {
-                req.session.user = result.userDetails
-                req.session.userLoggedIn = true;
-                res.redirect('/');
+                if (result.userDetails.isBlocked) {
+                    req.session.loginErr = true;
+                    req.session.loginErrMessage = "You are blocked! Please contact our team."
+                    res.redirect('/login')
+                } else {
+                    req.session.user = result.userDetails
+                    req.session.userLoggedIn = true;
+                    res.redirect('/');
+                }
             } else {
                 req.session.loginErr = true;
                 req.session.loginErrMessage = result.message;
@@ -122,8 +133,8 @@ module.exports = {
             if (req.session.userLoggedIn) {
                 await productHelper.addProductToCart(req.body.productID, req.session.user._id)
                 res.json({ status: true })
-            }else{
-                res.json({status:false,url:'/login'})
+            } else {
+                res.json({ status: false, url: '/login' })
             }
         } catch (err) {
             console.log(err);
@@ -139,7 +150,7 @@ module.exports = {
             res.render('user/cart', { cartData, user: req.session.user, price: totalPrice })
         } catch (error) {
             console.log(error);
-            res.redirect('/home')
+            res.redirect('/')
         }
     },
 
