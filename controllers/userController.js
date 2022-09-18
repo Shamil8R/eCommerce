@@ -10,15 +10,19 @@ module.exports = {
         try {
             const featuredProducts = await productHelper.getFeaturedProducts()
             if (req.session.user) {
-                const count = await productHelper.getCartProductsCount(req.session.user._id)
-                req.session.user.cartItemsCount = count;
-                const wishlistCount = await productHelper.getWishlistProductsCount(req.session.user._id);
-                req.session.user.wishlistCount = wishlistCount;
+                const [count, wishlistCount, userData] = await Promise.allSettled([
+                    productHelper.getCartProductsCount(req.session.user._id),
+                    productHelper.getWishlistProductsCount(req.session.user._id),
+                    userHelper.getUserData(req.session.user._id)
+                ]);
+                req.session.user = userData.value;
+                req.session.user.cartCount = count.value;
+                req.session.user.wishlistCount = wishlistCount.value;
             }
             res.render('user/userHome', { featuredProducts, user: req.session.user });
         } catch (error) {
             console.log(error);
-            res.redirect('/login')
+            res.redirect('/login');
         }
     },
 
@@ -54,7 +58,7 @@ module.exports = {
             res.redirect('/')
         } else {
             res.render('user/userLogin', { loginErr: req.session.loginErr, errMessage: req.session.loginErrMessage });
-            req.session.userLoggedIn = false;
+            req.session.loginErr = false;
         }
 
     },
@@ -89,16 +93,48 @@ module.exports = {
     },
 
     userDetails: (req, res) => {
-        res.render('user/accDetails', { layout: 'user-layout', user: req.session.user })
+        try {
+            res.render('user/accDetails', { layout: 'user-layout', user: req.session.user })
+        } catch (error) {
+            console.log(error);
+            res.redirect('/')
+        }
+    },
+
+    editUserData: async (req,res) => {
+        try {
+            const result = await userHelper.updateUserData(req.body,req.session.user._id);
+            if(result.status){
+                res.json({status: true, result})
+            }else{
+                res.json({status: false, result})
+            }
+        } catch (error) {
+            console.log(error);
+            res.redirect('/')
+        }
     },
 
     getProducts: async (req, res) => {
         try {
-            const products = await productHelper.getAllProducts();
-            const categories = await categoryHelper.getAllCategories();
+            // const products = await productHelper.getAllProducts();
+            // const categories = await categoryHelper.getAllCategories();
+            const [products, categories] = await Promise.allSettled([
+                productHelper.getAllProducts(),
+                categoryHelper.getAllCategories(),
+                
+            ]);
+            if(req.session.user){
+                const [cartCount, wishlistCount] = await Promise.allSettled([
+                    productHelper.getCartProductsCount(req.session.user._id),
+                    productHelper.getWishlistProductsCount(req.session.user._id)
+                ])
+                req.session.user.cartCount = cartCount.value;
+                req.session.user.wishlistCount = wishlistCount.value;
+            }
             // console.log(products);
             // console.log(products[0].img);
-            res.render('user/shop', { products, categories, user: req.session.user });
+            res.render('user/shop', { products: products.value, categories: categories.value, user: req.session.user });
         } catch (err) {
             console.log(err);
             res.redirect('/');
@@ -107,10 +143,12 @@ module.exports = {
 
     productsByCategory: async (req, res) => {
         try {
-            const products = await productModel.find({ category: req.params.id }).lean().populate('category')
-            const categories = await categoryHelper.getAllCategories();
+            const [products, categories] = await Promise.allSettled([
+                productModel.find({ category: req.params.id }).lean().populate('category'),
+                categoryHelper.getAllCategories()
+            ]);
             // console.log(products);
-            res.render('user/productsByCat', { products, categories, user: req.session.user })
+            res.render('user/productsByCat', { products: products.value, categories: categories.value, user: req.session.user })
         } catch (error) {
             console.log(error);
             res.redirect('/')
@@ -132,7 +170,9 @@ module.exports = {
         try {
             if (req.session.userLoggedIn) {
                 await productHelper.addProductToCart(req.body.productID, req.session.user._id)
-                res.json({ status: true })
+                const cartCount = await productHelper.getCartProductsCount(req.session.user._id);
+                // console.log(cartCount); Promise.allSettled not possible here
+                res.json({ status: true, cartCount: cartCount })
             } else {
                 res.json({ status: false, url: '/login' })
             }
@@ -144,10 +184,17 @@ module.exports = {
 
     viewCart: async (req, res) => {
         try {
-            const cartData = await productHelper.getCartItems(req.params.id); //req.params.id and user._id are both same here
-            const totalPrice = await productHelper.getTotalPrice(req.session.user._id);
+            const [cartData, totalPrice, cartCount, wishlistCount] = await Promise.allSettled([
+                productHelper.getCartItems(req.params.id),
+                productHelper.getTotalPrice(req.session.user._id),
+                productHelper.getCartProductsCount(req.session.user._id),
+                productHelper.getWishlistProductsCount(req.session.user._id)
+            ]);
+            req.session.user.cartCount = cartCount.value;
+            req.session.user.wishlistCount = wishlistCount.value;
             // console.log(cartData);
-            res.render('user/cart', { cartData, user: req.session.user, price: totalPrice })
+            // console.log(totalPrice.value);
+            res.render('user/cart', { cartData: cartData.value, user: req.session.user, price: totalPrice.value })
         } catch (error) {
             console.log(error);
             res.redirect('/')
@@ -156,7 +203,7 @@ module.exports = {
 
     changeProductQuantity: async (req, res) => {
         try {
-            // console.log(req.body);
+            //Promise.allSettled not possible here because the price is depended on the changeProduct quantity.
             const result = await productHelper.changeProductQuantity(req.body);
             const totalPrice = await productHelper.getTotalPrice(req.session.user._id);
             res.json({ result, price: totalPrice })
@@ -168,8 +215,11 @@ module.exports = {
 
     removeProduct: async (req, res) => {
         try {
-            const result = await productHelper.removeProduct(req.body);
-            res.json(result)
+            const [result, cartCount] = await Promise.allSettled([
+                productHelper.removeProduct(req.body),
+                productHelper.getCartProductsCount(req.session.user._id)
+            ]);
+            res.json({ result: result.value, cartCount: cartCount.value })
         } catch (error) {
             console.log(error);
             res.redirect('/home');
@@ -178,8 +228,13 @@ module.exports = {
 
     addToWishlist: async (req, res) => {
         try {
-            const product = await productHelper.addToWishlist(req.params.id, req.session.user._id);
-            res.redirect('/products')
+            if (req.session.userLoggedIn) {
+                const result = await productHelper.addToWishlist(req.body.productId, req.session.user._id);
+                const wishlistCount = await productHelper.getWishlistProductsCount(req.session.user._id);
+                res.json({ status: true, success: result.status, wishlistCount: wishlistCount, message: result.message })
+            } else {
+                res.json({ status: false, url: '/login' })
+            }
         } catch (error) {
             console.log(error);
             res.redirect('/')
@@ -188,8 +243,16 @@ module.exports = {
 
     getWishlist: async (req, res) => {
         try {
-            const wishlistItems = await productHelper.getWishlistItems(req.session.user._id)
-            res.render('user/wishlist', { wishlistItems, user: req.session.user });
+            // const wishlistItems = await productHelper.getWishlistItems(req.session.user._id);
+            // const cartCount = await productHelper.getCartProductsCount(req.session.user._id);
+            const [wishlistItems, cartCount, wishlistCount] = await Promise.allSettled([
+                productHelper.getWishlistItems(req.session.user._id),
+                productHelper.getCartProductsCount(req.session.user._id),
+                productHelper.getWishlistProductsCount(req.session.user._id)
+            ]);
+            req.session.user.cartCount = cartCount.value;
+            req.session.user.wishlistCount = wishlistCount.value;
+            res.render('user/wishlist', { wishlistItems: wishlistItems.value, user: req.session.user });
         } catch (error) {
             console.log(error);
             res.redirect('/')
@@ -201,13 +264,23 @@ module.exports = {
             const result = await productHelper.removeWishlistProduct(req.body)
             res.json(result)
         } catch (error) {
-
+            console.log(error);
+            res.redirect('/')
         }
     },
 
-    checkout: (req, res) => {
+    checkout: async (req, res) => {
         try {
-            res.render('user/checkout');
+            const [cartData, totalPrice, cartCount, wishlistCount] = await Promise.allSettled([
+                productHelper.getCartItems(req.session.user._id),
+                productHelper.getTotalPrice(req.session.user._id),
+                productHelper.getCartProductsCount(req.session.user._id),
+                productHelper.getWishlistProductsCount(req.session.user._id)
+            ]);
+            req.session.user.cartCount = cartCount.value;
+            req.session.user.wishlistCount = wishlistCount.value;
+            console.log(cartData.value.products);
+            res.render('user/checkout', { cartData: cartData.value.products, user: req.session.user, totalPrice: totalPrice.value })
         } catch (error) {
             console.log(error)
         }

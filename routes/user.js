@@ -10,9 +10,11 @@ const userController = require('../controllers/userController');
 //   }
 
 const userAuth = (req, res, next) => {
-    if (req.session.userLoggedIn) {
+    if (req.session.userLoggedIn && !req.session.user.isBlocked) {
         next();
     } else {
+        req.session.user = null;
+        req.session.userLoggedIn = false;
         res.redirect('/login')
     }
 }
@@ -34,7 +36,8 @@ router.get('/signup', userController.getSignup);
 router.post('/signup', userController.userSignup);
 
 //User Details
-router.get('/userDetails', userController.userDetails);
+router.get('/userDetails',userAuth, userController.userDetails)
+router.post('/updateUserDetails', userController.editUserData)
 
 //Products
 router.get('/products', userController.getProducts);
@@ -44,8 +47,8 @@ router.post('/addToCart', userController.addProductToCart);
 router.get('/cart/:id', userController.viewCart);
 router.post('/changeProductQuantity', userController.changeProductQuantity);
 router.post('/removeProduct', userController.removeProduct);
-router.get('/checkout', userController.checkout);
-router.get('/addToWishlist/:id', userController.addToWishlist);
+router.get('/checkout',userAuth, userController.checkout);
+router.post('/addToWishlist', userController.addToWishlist);
 router.get('/wishlist', userAuth, userController.getWishlist);
 router.post('/removeWishlistProduct', userController.removeWishlistProduct);
 

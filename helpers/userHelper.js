@@ -77,5 +77,41 @@ module.exports = {
                 reject(error)
             }
         })
+    },
+
+    getUserData: (userId) => {
+        return new Promise(async (resolve,reject) => {
+            try {
+                const user = await userModel.findById(userId);
+                resolve(user);
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+
+    updateUserData: (userData, userID) => {
+        return new Promise(async (resolve,reject) => {
+            try {
+                const emailExists = await userModel.findOne({email: userData.email});
+                if(emailExists){
+                    resolve({status: false, message: "An account with this email already exists!"})
+                }else{
+                    const phoneNumberExists = await userModel.findOne({phoneNumber: userData.phoneNumber});
+                    if(phoneNumberExists){
+                        resolve({status: false, message:"An account with this number already exists!"})
+                    }else{
+                        await userModel.findByIdAndUpdate(userID, {
+                            name: userData.name,
+                            email: userData.name,
+                            phoneNumber: userData.phoneNumber
+                        })
+                        resolve({status: true})
+                    }
+                }
+            } catch (error) {
+                reject(error);
+            }
+        })
     }
 }

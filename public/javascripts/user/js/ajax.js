@@ -1,6 +1,6 @@
 
 //Cart Ajax
-function addToCart(productID){
+function addToCart(productID) {
     $.ajax({
         url: '/addToCart',
         method: 'post',
@@ -8,19 +8,21 @@ function addToCart(productID){
             productID: productID
         },
         success: (response) => {
-            if(response.status){
+            if (response.status) {
                 swal({
-                    text: "Product added to cart",
+                    text: "Product added to cart.",
                     icon: "success",
                 })
-            }else{
+                document.getElementById('cartCount').innerHTML = response.cartCount;
+            } else {
                 swal({
                     text: "Please login first!",
+                    icon: "alert",
                     button: false,
                 })
-                setTimeout(()=>{
+                setTimeout(() => {
                     window.location.replace(response.url);
-                },1000)
+                }, 1000)
             }
         }
     })
@@ -40,6 +42,7 @@ function removeProduct(Id) {
                     icon: "success",
                     button: false
                 });
+                document.getElementById('cartCount').innerHTML = response.cartCount;
                 setTimeout(() => {
                     location.reload()
                 }, 1000)
@@ -70,14 +73,54 @@ function changeQuantity(cartId, count) {
                 }, 1000)
             } else {
                 document.getElementById(cartId).value = quantity + count;
+                document.getElementById('price').innerHTML = "₹ " + response.price;
             }
-            document.getElementById('price').innerHTML = "₹ " + response.price;
         }
     })
 }
 
 
 //Wishlist
+function addToWishlist(productId) {
+    $.ajax({
+        url: '/addToWishlist',
+        data: {
+            productId: productId
+        },
+        method: 'post',
+        success: (response) => {
+            if (response.status) {
+                if (response.success) {
+                    swal({
+                        text: "Product added to wishlist.",
+                        icon: "success",
+                    })
+                    document.getElementById('cartCount').innerHTML = response.cartCount;
+                } else {
+                    swal({
+                        text: response.message,
+                        button: false,
+                    })
+                    setTimeout(()=>{
+                        swal.close()
+                    },700)
+                }
+            } else {
+                swal({
+                    text: "Please login first!",
+                    button: false,
+                })
+                setTimeout(() => {
+                    window.location.replace(response.url);
+                }, 1000)
+            }
+        }
+    })
+}
+
+
+
+
 function removeWishlistProduct(productId) {
     $.ajax({
         url: '/removeWishlistProduct',

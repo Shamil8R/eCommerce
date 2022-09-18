@@ -190,7 +190,7 @@ module.exports = {
                 if (cartItems) {
                     resolve(cartItems.products.length);
                 } else {
-                    resolve(cartItems)
+                    resolve(0)
                 }
                 // console.log(cartItems.products.length);
             } catch (error) {
@@ -206,7 +206,7 @@ module.exports = {
             try {
                 const count = parseInt(data.count)
                 if (count == -1 && data.quantity == 1) {
-                    const result = await cartModel.updateOne({ "products._id": data.product },
+                    await cartModel.updateOne({ "products._id": data.product },
                         {
                             $pull: { products: { _id: data.product } }
                         })
@@ -264,13 +264,13 @@ module.exports = {
             if (wishlist) {
                 const productExist = wishlist.products.findIndex(i => i.product == productId)
                 if (productExist !== -1) {
-                    resolve()
+                    resolve({status:false, message: "Product already wishlisted!"})
                 } else {
                     await wishlistModel.updateOne({ userId: userId },
                         {
                             $push: { products: { product: productId } }
                         })
-                    resolve()
+                    resolve({status: true, message: "Added to wishlist"})
                 }
             } else {
                 const wishlist = new wishlistModel({
@@ -278,7 +278,7 @@ module.exports = {
                     products: { product: productId }
                 })
                 await wishlist.save()
-                resolve();
+                resolve({status: true, message: "Added to wishlist"});
             }
         })
     },
