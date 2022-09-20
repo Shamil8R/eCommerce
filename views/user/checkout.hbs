@@ -4,7 +4,9 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="breadcrumb__links">
-                    <a href="/"><i class="fa fa-home"></i> Home</a>
+                    <a href="/">
+                        <i class="fa fa-home"></i>
+                        Home</a>
                     <span>Checkout</span>
                 </div>
             </div>
@@ -18,24 +20,66 @@
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
-                <h6 class="coupon__link"><span class="icon_tag_alt"></span> <a href="#">Have a coupon?</a> Click
-                    here to enter your code.</h6>
+                <h6 class="coupon__link">
+                    <span class="icon_tag_alt"></span>
+                    <a href="#">Have a coupon?</a>
+                    Click here to enter your code.</h6>
             </div>
         </div>
         <form action="#" class="checkout__form">
             <div class="row">
                 <div class="col-lg-8">
+                    <h3 class="pb-5 text-center font-weight-bold">Address</h3>
                     <div class="row">
-                        <div class="col-sm-6">
-                            <div class="card">
-                                <div class="card-body">
-                                    <h5 class="card-title">Special title treatment</h5>
-                                    <p class="card-text">With supporting text below as a natural lead-in to additional
-                                        content.</p>
-                                    <a href="#" class="btn btn-primary">Go somewhere</a>
-                                </div>
+                        {{!-- Name  --}}
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-3">
+                                <input type="text" name="name" id="name" class="form-control" placeholder="Name"/>
                             </div>
                         </div>
+
+                        <!--phoneNumber input -->
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-3">
+                                <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="Phone">
+                            </div>
+                        </div>
+
+                        {{!-- Zip --}}
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-3">
+                                <input type="text" name="zip" id="zip" class="form-control" placeholder="Pincode/Zipcode"/>
+                            </div>
+                        </div>
+
+                        <!--State input -->
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-3">
+                                <input type="text" name="state" id="state" class="form-control" placeholder="State">
+                            </div>
+                        </div>
+
+                        {{!-- Address --}}
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-3">
+                                <input type="text" name="address" id="address" class="form-control" placeholder="Address"/>
+                            </div>
+                        </div>
+
+                        <!--Locality input -->
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-3">
+                                <input type="text" name="locality" id="locality" class="form-control" placeholder="Locality">
+                            </div>
+                        </div>
+
+                        {{!-- City Input --}}
+                        <div class="col-lg-6">
+                            <div class="form-outline mb-3">
+                                <input type="text" name="city" id="city" class="form-control" placeholder="City">
+                            </div>
+                        </div>
+                        {{!-- Existing addresses --}}
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -48,14 +92,20 @@
                                     <span class="top__text__right">Total</span>
                                 </li>
                                 {{#each cartData}}
-                                <li>{{this.product.productName}} <span>₹ {{this.product.price}}</span></li>
+                                    <li>{{this.product.productName}}
+                                        <span>₹
+                                            {{this.product.price}}</span>
+                                    </li>
                                 {{/each}}
                             </ul>
                         </div>
                         <div class="checkout__order__total">
                             <ul>
                                 {{!-- <li>Subtotal <span>$ 750.0</span></li> --}}
-                                <li>Total <span>₹ {{totalPrice}}</span></li>
+                                <li>Total
+                                    <span>₹
+                                        {{totalPrice}}</span>
+                                </li>
                             </ul>
                         </div>
                         <div class="checkout__order__widget">
@@ -84,6 +134,59 @@
         </form>
     </div>
 </section>
+
+
+<section class="container">
+    <div class="p-3">
+        <h5 class="font-weight-bold">Addresses</h5>
+    </div>
+    <div class="row gutters-sm">
+        {{#each address}}
+            <div class="col-12">
+                <div class="col-sm-6 mb-3">
+                    <div class="card" style="">
+                        <div class="">
+                            <div class="pt-2 pr-2">
+                                <a class="btn btn-primary float-right" onclick="selectAddress('{{this._id}}')">Select</a>
+                            </div>
+                        </div>
+                        <div class="card-body p-3">
+                            <p class="card-title">
+                                <span class="text-black font-weight-bold">{{this.name}}</span>
+                            </p>
+
+                            {{!-- PinCode  --}}
+                            <p class="mb-2">
+                                <span class="text-black font-weight-bold">{{this.address}},
+                                    {{this.locality}},
+                                    {{this.city}}
+                                    ,
+                                    {{this.state}}
+                                    -
+                                    {{this.zip}}
+                                </span>
+                            </p>
+
+                            <p class="mb-2">
+                                <span class="text-black font-weight-bold">{{this.phoneNumber}}</span>
+                            </p>
+                        </div>
+
+                        <div class="row">
+                            {{!-- <div class="col-6">
+                            <a href="#" data-target="#editAddress" data-id="{{this._id}}" data-toggle="modal" class="text-info">Edit</a>
+                        </div>
+                        <div class="col-6">
+                            <a href="#" onclick="deleteAddress('{{this._id}}')" class="text-danger">Delete</a>
+                        </div> --}}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        {{/each}}
+    </div>
+</section>
+
 <!-- Checkout Section End -->
 
 <!-- Instagram Begin -->
@@ -153,7 +256,7 @@
                         <a href="./index.html"><img src="img/logo.png" alt=""></a>
                     </div>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                        cilisis.</p>
+                                                                                                                                                cilisis.</p>
                     <div class="footer__payment">
                         <a href="#"><img src="img/payment/payment-1.png" alt=""></a>
                         <a href="#"><img src="img/payment/payment-2.png" alt=""></a>
@@ -193,23 +296,39 @@
                         <button type="submit" class="site-btn">Subscribe</button>
                     </form>
                     <div class="footer__social">
-                        <a href="#"><i class="fa fa-facebook"></i></a>
-                        <a href="#"><i class="fa fa-twitter"></i></a>
-                        <a href="#"><i class="fa fa-youtube-play"></i></a>
-                        <a href="#"><i class="fa fa-instagram"></i></a>
-                        <a href="#"><i class="fa fa-pinterest"></i></a>
+                        <a href="#">
+                            <i class="fa fa-facebook"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fa fa-twitter"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fa fa-youtube-play"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fa fa-instagram"></i>
+                        </a>
+                        <a href="#">
+                            <i class="fa fa-pinterest"></i>
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-lg-12">
+            <div
+                class="col-lg-12">
                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                 <div class="footer__copyright__text">
                     <p>Copyright &copy;
-                        <script>document.write(new Date().getFullYear());</script> All rights reserved | This template
-                        is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com"
-                            target="_blank">Colorlib</a>
+                        <script>
+                            document.write(new Date().getFullYear());
+                        </script>
+                        All rights reserved | This template
+                                                                                                                                                is made with
+                        <i class="fa fa-heart" aria-hidden="true"></i>
+                        by
+                        <a href="https://colorlib.com" target="_blank">Colorlib</a>
                     </p>
                 </div>
                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
@@ -229,3 +348,31 @@
     </div>
 </div>
 <!-- Search End -->
+
+<script>
+    function selectAddress(addressId) {
+        $.ajax({
+            url: '/editAddress',
+            method: 'post',
+            data: {
+                addressId: addressId
+            },
+            success: (response) => {
+                if (response) {
+                    document.getElementById('name').value = response.editAddress.name;
+                    document.getElementById('phoneNumber').value = response.editAddress.phoneNumber;
+                    document.getElementById('zip').value = response.editAddress.zip;
+                    document.getElementById('state').value = response.editAddress.state;
+                    document.getElementById('address').value = response.editAddress.address;
+                    document.getElementById('locality').value = response.editAddress.locality;
+                    document.getElementById('city').value = response.editAddress.city;
+                } else {
+                    swal({text: response.message, icon: "error", button: false})
+                    setTimeout(() => {
+                        window.location.replace(response.url)
+                    }, 700)
+                }
+            }
+        })
+    }
+</script>

@@ -290,18 +290,21 @@ module.exports = {
 
     checkout: async (req, res) => {
         try {
-            const [cartData, totalPrice, cartCount, wishlistCount] = await Promise.allSettled([
+            const [cartData, totalPrice, cartCount, wishlistCount, address] = await Promise.allSettled([
                 productHelper.getCartItems(req.session.user._id),
                 productHelper.getTotalPrice(req.session.user._id),
                 productHelper.getCartProductsCount(req.session.user._id),
-                productHelper.getWishlistProductsCount(req.session.user._id)
+                productHelper.getWishlistProductsCount(req.session.user._id),
+                addressHelper.getAddresses(req.session.user._id)
             ]);
             req.session.user.cartCount = cartCount.value;
             req.session.user.wishlistCount = wishlistCount.value;
             // console.log(cartData.value.products);
-            res.render('user/checkout', { cartData: cartData.value.products, user: req.session.user, totalPrice: totalPrice.value })
+            res.render('user/checkout', { cartData: cartData.value.products, user: req.session.user,
+                 totalPrice: totalPrice.value, address: address.value.addressObj })
         } catch (error) {
             console.log(error)
+            res.redirect('/')
         }
     },
 
@@ -344,6 +347,7 @@ module.exports = {
             console.log(error);
             res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
         }
-    }
+    },
+    
 
 }
