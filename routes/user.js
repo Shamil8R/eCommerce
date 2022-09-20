@@ -38,6 +38,11 @@ router.post('/signup', userController.userSignup);
 //User Details
 router.get('/userDetails',userAuth, userController.userDetails)
 router.post('/updateUserDetails', userController.editUserData)
+router.get('/address',userAuth, userController.getAddress);
+router.post('/addAddress',userController.addAddress);
+router.post('/editAddress', userController.editAddress);
+router.post('/updateAddress', userController.updateAddress)
+router.post('/deleteAddress',userController.deleteAddress)
 
 //Products
 router.get('/products', userController.getProducts);

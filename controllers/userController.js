@@ -2,6 +2,7 @@ const productHelper = require('../helpers/productHelper');
 const userHelper = require('../helpers/userHelper');
 const categoryHelper = require('../helpers/categoryHelper');
 const productModel = require('../models/productModel');
+const addressHelper = require('../helpers/addressHelper');
 
 module.exports = {
 
@@ -13,11 +14,12 @@ module.exports = {
                 const [count, wishlistCount, userData] = await Promise.allSettled([
                     productHelper.getCartProductsCount(req.session.user._id),
                     productHelper.getWishlistProductsCount(req.session.user._id),
-                    userHelper.getUserData(req.session.user._id)
+                    // userHelper.getUserData(req.session.user._id)
                 ]);
-                req.session.user = userData.value;
+                // req.session.user = await userData.value;
                 req.session.user.cartCount = count.value;
                 req.session.user.wishlistCount = wishlistCount.value;
+                // console.log(req.session.user.cartCount);
             }
             res.render('user/userHome', { featuredProducts, user: req.session.user });
         } catch (error) {
@@ -92,8 +94,16 @@ module.exports = {
         res.redirect('/')
     },
 
-    userDetails: (req, res) => {
+    userDetails: async (req, res) => {
         try {
+            const [userData, cartCount, wishlistCount] = await Promise.allSettled([
+                userHelper.getUserData(req.session.user._id),
+                productHelper.getCartProductsCount(req.session.user._id),
+                productHelper.getWishlistProductsCount(req.session.user._id)
+            ])
+            req.session.user = userData.value;
+            req.session.user.wishlistCount = wishlistCount.value,
+                req.session.user.cartCount = cartCount.value
             res.render('user/accDetails', { layout: 'user-layout', user: req.session.user })
         } catch (error) {
             console.log(error);
@@ -101,16 +111,25 @@ module.exports = {
         }
     },
 
-    editUserData: async (req,res) => {
+    editUserData: async (req, res) => {
         try {
-            const result = await userHelper.updateUserData(req.body,req.session.user._id);
-            if(result.status){
-                res.json({status: true, result})
-            }else{
-                res.json({status: false, result})
+            const result = await userHelper.updateUserData(req.body, req.session.user._id);
+            if (result.status) {
+                res.json({ status: true, result })
+            } else {
+                res.json({ status: false, result })
             }
         } catch (error) {
             console.log(error);
+            res.redirect('/')
+        }
+    },
+
+    getAddress: async (req, res) => {
+        try {
+            const addresses = await addressHelper.getAddresses(req.session.user._id);
+            res.render('user/address', { addresses, user: req.session.user })
+        } catch (error) {
             res.redirect('/')
         }
     },
@@ -122,9 +141,9 @@ module.exports = {
             const [products, categories] = await Promise.allSettled([
                 productHelper.getAllProducts(),
                 categoryHelper.getAllCategories(),
-                
+
             ]);
-            if(req.session.user){
+            if (req.session.user) {
                 const [cartCount, wishlistCount] = await Promise.allSettled([
                     productHelper.getCartProductsCount(req.session.user._id),
                     productHelper.getWishlistProductsCount(req.session.user._id)
@@ -279,11 +298,52 @@ module.exports = {
             ]);
             req.session.user.cartCount = cartCount.value;
             req.session.user.wishlistCount = wishlistCount.value;
-            console.log(cartData.value.products);
+            // console.log(cartData.value.products);
             res.render('user/checkout', { cartData: cartData.value.products, user: req.session.user, totalPrice: totalPrice.value })
         } catch (error) {
             console.log(error)
         }
     },
+
+    addAddress: async (req, res) => {
+        try {
+            console.log(req.body);
+            const result = await addressHelper.addAddress(req.body, req.session.user._id);
+            res.json({ status: result.status, message: result.message })
+        } catch (error) {
+            console.log(error);
+            res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
+        }
+    },
+
+    editAddress: async (req, res) => {
+        try {
+            const editAddress = await addressHelper.getOneAddress(req.body)
+            res.json({ status: true, editAddress })
+        } catch (error) {
+            console.log(error);
+            res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
+        }
+    },
+
+    updateAddress: async (req,res) => {
+        try {
+            await addressHelper.updateAddress(req.body);
+            res.json({status: true, message: "Your address have been updated."})
+        } catch (error) {
+            console.log(error);
+            res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
+        }
+    },
+
+    deleteAddress: async (req,res) => {
+        try {
+            await addressHelper.deleteAddress(req.body);
+            res.json({status: true, message: "Successfully deleted."})
+        } catch (error) {
+            console.log(error);
+            res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
+        }
+    }
 
 }

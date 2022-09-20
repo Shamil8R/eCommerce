@@ -173,15 +173,15 @@
                         </div>
                         <div class="col-md-8">
                             <div class="card-body">
-                                <h5 class="card-title font-weight-bold">{{this.product.brandName}}</h5>
-                                <h6 class="card-title">{{this.product.productName}}</h6>
+                                <a href="/productDetails/{{this._id}}" class="card-title font-weight-bold text-dark">{{this.product.productName}}</a>
+                                <h6 class="card-title ">{{this.product.brandName}}</h6>
                                 {{!-- <p class="card-text">This is a wider card with supporting text below as a natural
                                     lead-in
                                     to
                                     additional content. This content is a little bit longer.</p> --}}
                                 <div class="">
                                     <div class="d-flex">
-                                        <p class="card-text text-danger font-weight-bold pr-2">₹ {{this.product.price}}
+                                        <p class="card-text text-danger font-weight-bold pr-2 mb-1">₹ {{this.product.price}}
                                         </p>
                                         <p class="card-text"><small class="text-muted"><del>₹ 1700</del></small></p>
                                     </div>
