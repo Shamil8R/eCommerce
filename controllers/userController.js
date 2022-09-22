@@ -3,6 +3,7 @@ const userHelper = require('../helpers/userHelper');
 const categoryHelper = require('../helpers/categoryHelper');
 const productModel = require('../models/productModel');
 const addressHelper = require('../helpers/addressHelper');
+const orderHelper = require('../helpers/orderHelper')
 
 module.exports = {
 
@@ -211,9 +212,10 @@ module.exports = {
             ]);
             req.session.user.cartCount = cartCount.value;
             req.session.user.wishlistCount = wishlistCount.value;
+            // console.log(totalPrice.value);
             // console.log(cartData);
             // console.log(totalPrice.value);
-            res.render('user/cart', { cartData: cartData.value, user: req.session.user, price: totalPrice.value })
+            res.render('user/cart', { cartData: cartData.value, user: req.session.user, price: totalPrice.value.total })
         } catch (error) {
             console.log(error);
             res.redirect('/')
@@ -224,8 +226,8 @@ module.exports = {
         try {
             //Promise.allSettled not possible here because the price is depended on the changeProduct quantity.
             const result = await productHelper.changeProductQuantity(req.body);
-            const totalPrice = await productHelper.getTotalPrice(req.session.user._id);
-            res.json({ result, price: totalPrice })
+            const response = await productHelper.getTotalPrice(req.session.user._id);
+            res.json({ result, price: response.total, productPrice: response.productPrice })
         } catch (error) {
             console.log(error)
             res.redirect('/home')
@@ -299,9 +301,21 @@ module.exports = {
             ]);
             req.session.user.cartCount = cartCount.value;
             req.session.user.wishlistCount = wishlistCount.value;
+
+            const products = cartData.value.products
+
+            for (let i = 0; i < products.length; i++) {
+                products[i].totalPrice = totalPrice.value.productPrice[i];
+            }
+
+            console.log(products);
             // console.log(cartData.value.products);
-            res.render('user/checkout', { cartData: cartData.value.products, user: req.session.user,
-                 totalPrice: totalPrice.value, address: address.value.addressObj })
+            res.render('user/checkout', {
+                products,
+                user: req.session.user,
+                totalPrice: totalPrice.value.total,
+                address: address.value.addressObj
+            })
         } catch (error) {
             console.log(error)
             res.redirect('/')
@@ -329,25 +343,54 @@ module.exports = {
         }
     },
 
-    updateAddress: async (req,res) => {
+    updateAddress: async (req, res) => {
         try {
             await addressHelper.updateAddress(req.body);
-            res.json({status: true, message: "Your address have been updated."})
+            res.json({ status: true, message: "Your address have been updated." })
         } catch (error) {
             console.log(error);
             res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
         }
     },
 
-    deleteAddress: async (req,res) => {
+    deleteAddress: async (req, res) => {
         try {
             await addressHelper.deleteAddress(req.body);
-            res.json({status: true, message: "Successfully deleted."})
+            res.json({ status: true, message: "Successfully deleted." })
         } catch (error) {
             console.log(error);
             res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
         }
     },
-    
+
+    placeOrder: async (req, res) => {
+        try {
+            const [cartData, totalPrice] = await Promise.allSettled([
+                productHelper.getCartList(req.session.user._id),
+                productHelper.getTotalPrice(req.session.user._id),
+            ]);
+
+            const products = cartData.value.products
+            for (let i = 0; i < products.length; i++) {
+                products[i].totalPrice = totalPrice.value.productPrice[i];
+            }
+            const result = await orderHelper.placeOrder(req.body,products,totalPrice.value.total,req.session.user._id)
+            await productHelper.removeCartItems(req.session.user._id);
+            // orderHelper.placeOrder(req.body,products,totalPrice.value.total)
+            res.json({status: result.status,url: '/orderPlaced'})
+        } catch (error) {
+            console.log(error);
+            res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
+        }
+    },
+
+    orderPlaced: async (req,res) => {
+        try {
+            res.render('user/orderPlaced')
+        } catch (error) {
+            console.log(error)
+            res.redirect('/')
+        }
+    }
 
 }

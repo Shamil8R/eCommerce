@@ -26,7 +26,7 @@
                     Click here to enter your code.</h6>
             </div>
         </div>
-        <form action="#" class="checkout__form">
+        <form action="#" id="checkoutForm" class="checkout__form">
             <div class="row">
                 <div class="col-lg-8">
                     <h3 class="pb-5 text-center font-weight-bold">Address</h3>
@@ -34,49 +34,56 @@
                         {{!-- Name  --}}
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
-                                <input type="text" name="name" id="name" class="form-control" placeholder="Name"/>
+                                <label for="name" class="text-dark font-weight-bold">Name:</label>
+                                <input type="text" name="name" id="name" class="form-control" placeholder="Name"  required/>
                             </div>
                         </div>
 
                         <!--phoneNumber input -->
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
-                                <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="Phone">
+                                <label for="phoneNumber" class="text-dark font-weight-bold">Phone:</label>
+                                <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="Phone" required>
                             </div>
                         </div>
 
                         {{!-- Zip --}}
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
-                                <input type="text" name="zip" id="zip" class="form-control" placeholder="Pincode/Zipcode"/>
+                                <label for="zip" class="text-dark font-weight-bold">Pincode:</label>
+                                <input type="text" name="zip" id="zip" class="form-control" placeholder="Pincode/Zipcode" required/>
                             </div>
                         </div>
 
                         <!--State input -->
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
-                                <input type="text" name="state" id="state" class="form-control" placeholder="State">
+                                <label for="state" class="text-dark font-weight-bold">State:</label>
+                                <input type="text" name="state" id="state" class="form-control" placeholder="State" required>
                             </div>
                         </div>
 
                         {{!-- Address --}}
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
-                                <input type="text" name="address" id="address" class="form-control" placeholder="Address"/>
+                                <label for="address" class="text-dark font-weight-bold">Address:</label>
+                                <input type="text" name="address" id="address" class="form-control" placeholder="Address" required/>
                             </div>
                         </div>
 
                         <!--Locality input -->
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
-                                <input type="text" name="locality" id="locality" class="form-control" placeholder="Locality">
+                                <label for="locality" class="text-dark font-weight-bold">Locality:</label>
+                                <input type="text" name="locality" id="locality" class="form-control" placeholder="Locality" required>
                             </div>
                         </div>
 
                         {{!-- City Input --}}
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
-                                <input type="text" name="city" id="city" class="form-control" placeholder="City">
+                                <label for="city" class="text-dark font-weight-bold">City:</label>
+                                <input type="text" name="city" id="city" class="form-control" placeholder="City" required>
                             </div>
                         </div>
                         {{!-- Existing addresses --}}
@@ -91,10 +98,9 @@
                                     <span class="top__text">Product</span>
                                     <span class="top__text__right">Total</span>
                                 </li>
-                                {{#each cartData}}
+                                {{#each products}}
                                     <li>{{this.product.productName}}
-                                        <span>₹
-                                            {{this.product.price}}</span>
+                                        <span>₹{{this.totalPrice}}</span>
                                     </li>
                                 {{/each}}
                             </ul>
@@ -118,16 +124,16 @@
                                 login at the top of the page.</p> --}}
                             <label for="COD">
                                 Cash on Delivery
-                                <input type="radio" name="payment" id="COD">
+                                <input type="radio" name="payment" value="COD" id="COD" required>
                                 <span class="checkmark"></span>
                             </label>
                             <label for="upi">
                                 UPI
-                                <input type="radio" name="payment" id="upi">
+                                <input type="radio" name="payment" value="UPI" id="UPI" required>
                                 <span class="checkmark"></span>
                             </label>
                         </div>
-                        <button type="submit" class="site-btn">Place oder</button>
+                        <button type="submit" class="site-btn">Place order</button>
                     </div>
                 </div>
             </div>
@@ -350,29 +356,99 @@
 <!-- Search End -->
 
 <script>
-    function selectAddress(addressId) {
-        $.ajax({
-            url: '/editAddress',
-            method: 'post',
-            data: {
-                addressId: addressId
+    $(document).ready(() => {
+    jQuery.validator.addMethod("lettersOnly", (value) => {
+        return /^[a-zA-Z ]+$/i.test(value);
+    });
+
+    $('#form').validate({
+        rules: {
+            name: {
+                required: true,
+                lettersOnly: true
             },
+            phoneNumber: {
+                required: true,
+                minlength: 10,
+                maxlength: 10,
+                number: true
+            },
+            zip: {
+                required: true
+            },
+            state: {
+                required: true,
+                lettersOnly: true
+            },
+            address: {
+                required: true
+            },
+            locality: {
+                required: true
+            },
+            city: {
+                required: true
+            },
+            payment: {
+                required: true
+            }
+        },
+        messages: {
+            name: {
+                required: "Please enter your name!",
+                lettersOnly: "Please enter valid name!"
+            },
+            phoneNumber: {
+                required: "Please enter your phone number!",
+                minlength: "Invalid Number!",
+                maxlength: "Invalid Number!",
+                number: "Invalid Number!"
+            },
+            zip: {
+                required: "This is a required field!"
+            },
+            state: {
+                required: "This is a required field!",
+                lettersOnly: "Please enter valid data!"
+            },
+            address: {
+                required: "This is a required field!"
+            },
+            locality: {
+                required: "This is a required field!"
+            },
+            city: {
+                required: "This is a required field!"
+            },
+            payment: {
+                required: "Please select your payment option."
+            }
+        }
+    })
+})
+
+
+    $('#checkoutForm').submit((e) => {
+        e.preventDefault()
+
+        $.ajax({
+            url: '/placeOrder',
+            method: 'post',
+            data: $('#checkoutForm').serialize(),
             success: (response) => {
-                if (response) {
-                    document.getElementById('name').value = response.editAddress.name;
-                    document.getElementById('phoneNumber').value = response.editAddress.phoneNumber;
-                    document.getElementById('zip').value = response.editAddress.zip;
-                    document.getElementById('state').value = response.editAddress.state;
-                    document.getElementById('address').value = response.editAddress.address;
-                    document.getElementById('locality').value = response.editAddress.locality;
-                    document.getElementById('city').value = response.editAddress.city;
-                } else {
-                    swal({text: response.message, icon: "error", button: false})
+                if(response.status){
+                    window.location.replace(response.url)
+                }else{
+                    swal({
+                        text: response.message,
+                        icon: 'error',
+                        button: false
+                    })
                     setTimeout(() => {
-                        window.location.replace(response.url)
-                    }, 700)
+                        location.replace('/')
+                    },900)
                 }
             }
         })
-    }
+    })
 </script>

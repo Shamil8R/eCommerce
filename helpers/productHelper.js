@@ -117,7 +117,7 @@ module.exports = {
                 // console.log(result);
                 // console.log(imageData);
                 if (imageData) {
-                    console.log("reached here");
+                    // console.log("reached here");
                     let images = []
                     imageData.map(i => {
                         images.push(i.filename);
@@ -140,7 +140,6 @@ module.exports = {
 
     addProductToCart: (productID, userID) => {
         return new Promise(async (resolve, reject) => {
-            try {
                 const cart = await cartModel.findOne({ userId: userID }).lean()
                 if (cart) {
                     let productExist = cart.products.findIndex(i => i.product == productID)
@@ -166,9 +165,6 @@ module.exports = {
                     await cart.save();
                     resolve();
                 }
-            } catch (error) {
-                reject(error)
-            }
         })
     },
 
@@ -196,6 +192,13 @@ module.exports = {
             } catch (error) {
                 reject(error)
             }
+        })
+    },
+
+    getCartList: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            const productList = await cartModel.findOne({userId: userId}).lean();
+            resolve(productList);
         })
     },
 
@@ -244,12 +247,18 @@ module.exports = {
             try {
                 const cartData = await cartModel.findOne({ userId: userID }).populate({ path: 'products.product' })
                 if (cartData) {
-                    const totalPrice = cartData.products.reduce((total, curr) => {
-                        total = total + (curr.product.price * curr.quantity);
-                        return total;
-                    }, 0)
+                    // const totalPrice = cartData.products.reduce((total, curr) => {
+                    //     total = total + (curr.product.price * curr.quantity);
+                    //     return total;
+                    // }, 0)
                     // console.log(totalPrice);
-                    resolve(totalPrice)
+                    let total = 0;
+                    const productPrice = [];
+                    cartData.products.map((i) => {
+                        total = total + (i.product.price * i.quantity);
+                        productPrice.push(i.product.price * i.quantity); 
+                    })
+                    resolve({total, productPrice})
                 }
                 resolve(0)
             } catch (error) {
@@ -313,6 +322,13 @@ module.exports = {
             } else {
                 resolve(0)
             }
+        })
+    },
+
+    removeCartItems: (userId) => {
+        return new Promise(async (resolve,reject) => {
+            await cartModel.deleteOne({userId: userId})
+            resolve()
         })
     }
 }

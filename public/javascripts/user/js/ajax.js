@@ -186,7 +186,6 @@ $(function () {
     $('#editAddress').on('show.bs.modal', function (e) {
         const btn = $(e.relatedTarget);
         const id = btn.data('id');
-        console.log(id);
         $('.saveAddress').data('id', id);
 
         $.ajax({
@@ -269,6 +268,33 @@ function deleteAddress(addressId) {
                     location.reload()
                 }, 800)
             }   
+        }
+    })
+}
+
+// Select address (Checkout section)
+function selectAddress(addressId) {
+    $.ajax({
+        url: '/editAddress',
+        method: 'post',
+        data: {
+            addressId: addressId
+        },
+        success: (response) => {
+            if (response) {
+                document.getElementById('name').value = response.editAddress.name;
+                document.getElementById('phoneNumber').value = response.editAddress.phoneNumber;
+                document.getElementById('zip').value = response.editAddress.zip;
+                document.getElementById('state').value = response.editAddress.state;
+                document.getElementById('address').value = response.editAddress.address;
+                document.getElementById('locality').value = response.editAddress.locality;
+                document.getElementById('city').value = response.editAddress.city;
+            } else {
+                swal({text: response.message, icon: "error", button: false})
+                setTimeout(() => {
+                    window.location.replace(response.url)
+                }, 700)
+            }
         }
     })
 }

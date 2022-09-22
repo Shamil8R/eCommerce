@@ -56,5 +56,7 @@ router.get('/checkout',userAuth, userController.checkout);
 router.post('/addToWishlist', userController.addToWishlist);
 router.get('/wishlist', userAuth, userController.getWishlist);
 router.post('/removeWishlistProduct', userController.removeWishlistProduct);
+router.post('/placeOrder', userController.placeOrder)
+router.get('/orderPlaced',userController.orderPlaced)
 
 module.exports = router;
