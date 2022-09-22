@@ -7,7 +7,11 @@ module.exports = {
 
     // Get Login Page
     adminLogin: (req, res) => {
-        res.render('admin/login', { layout: 'layout' })
+        if(req.session.adminLoggedIn){
+            res.redirect('/admin/home')
+        }else{
+            res.render('admin/login', { layout: 'layout' })
+        }
     },
 
     checkAdminLogin: async (req, res) => {
@@ -15,6 +19,7 @@ module.exports = {
             const result = await adminHelper.sudoAdminLoginCheck(req.body)
             console.log(result)
             if (result.status) {
+                req.session.adminLoggedIn = true;
                 res.redirect('/admin/home');
             } else {
                 res.redirect('/admin')
@@ -116,6 +121,16 @@ module.exports = {
         try {
             const userData = await userHelper.getAllUserData();
             res.render('admin/viewUsers', { layout: 'admin-layout', userData })
+        } catch (error) {
+            console.log(error)
+            res.redirect('/admin/home')
+        }
+    },
+
+    changeStatus: async (req,res) => {
+        try {
+            await userHelper.changeStatus(req.params.id)
+            res.redirect('/admin/user')
         } catch (error) {
             console.log(error)
             res.redirect('/admin/home')

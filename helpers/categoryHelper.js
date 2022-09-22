@@ -16,10 +16,10 @@ module.exports = {
         })
     },
 
-    getAllCategories: () => {
-        return new Promise(async (resolve, reject) => {
+    getAllCategories: async () => {
+        return new Promise( (resolve, reject) => {
             try {
-                const categories = await categoryModel.find({}).lean()
+                const categories = categoryModel.find({}).lean()
                 resolve(categories)
             } catch (error) {
                 reject(error)

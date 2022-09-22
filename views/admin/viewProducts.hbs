@@ -40,7 +40,11 @@
                                         <td>{{this.price}}</td>
                                         <td>{{this.category.name}}</td>
                                         <td>{{this.quantity}}</td>
-                                        <td><a href="/admin/featuredProduct/{{this._id}}" class="btn btn-primary">{{this.isFeatured}}</a></td>
+                                        <td>{{#if this.isFeatured}}<a href="/admin/featuredProduct/{{this._id}}" class="btn btn-info">{{this.isFeatured}}</a>
+                                        {{else}}
+                                        <a href="/admin/featuredProduct/{{this._id}}" class="btn btn-dark">{{this.isFeatured}}</a>
+                                        {{/if}}
+                                        </td>
                                         <td> <a href="/admin/editProducts/{{this._id}}" class="btn btn-success">Edit</a></td>
                                         <td> <a href="/admin/deleteProducts/{{this._id}}" class="btn btn-danger">Delete</a></td>
                                     </tr>

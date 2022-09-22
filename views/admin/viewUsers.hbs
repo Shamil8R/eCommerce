@@ -12,7 +12,6 @@
                 <table class="table ">
                     <thead class="text-center">
                         <tr>
-                            <th class="serial">#</th>
                             {{!-- <th class="avatar">Avatar</th> --}}
                             <th>Name</th>
                             <th>Email</th>
@@ -25,19 +24,22 @@
                     <tbody class="text-center">
                         {{#each userData}}
                         <tr>
-                            <td class="serial">1</td>
                             <td> <span class="name">{{this.name}}</span> </td>
                             <td> <span class="email">{{this.email}}</span> </td>
                             <td>
-                                <a href="/admin/blocked/{{this._id}}"
-                                    class="btn btn-primary">{{this.isBlocked}}</a></td>
+                                {{#if this.isBlocked}}
+                                <a href="/admin/changeUserStatus/{{this._id}}" class="btn btn-danger">Blocked</a>
+                            </td>
+                            {{else}}
+                            <a href="/admin/changeUserStatus/{{this._id}}"  class="btn btn-primary">Active</a></td>
+                            {{/if}}
                             </td>
                             {{!-- <td>
                                 <span class="badge badge-complete">Complete</span>
                             </td> --}}
                             <td class="text-center">
-                                <a href="/admin/userDetails/{{this._id}}"
-                                    class="btn btn-primary">More Details</a></td>
+                                <a href="/admin/userDetails/{{this._id}}" class="btn btn-primary">More Details</a>
+                            </td>
                             </td>
                         </tr>
                         {{/each}}

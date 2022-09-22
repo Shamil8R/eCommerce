@@ -1,0 +1,142 @@
+<!-- Breadcrumb Begin -->
+<div class="breadcrumb-option">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="breadcrumb__links">
+                    <a href="/"><i class="fa fa-home"></i> Home</a>
+                    <span>Wishlist</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Breadcrumb End -->
+
+<!-- Shop Cart Section Begin -->
+<section class="shop-cart spad">
+    <div class="container">
+        <div class="row">
+            {{#each wishlistItems}}
+            <div class="col-lg-6">
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row no-gutters">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <img src="/product-images/{{this.product.img.[0]}}" class="card-img">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h5 class="card-title font-weight-bold">{{this.product.brandName}}</h5>
+                                <h6 class="card-title">{{this.product.productName}}</h6>
+                                {{!-- <p class="card-text">This is a wider card with supporting text below as a
+                                    natural
+                                    lead-in
+                                    to
+                                    additional content. This content is a little bit longer.</p> --}}
+                                <div class="">
+                                    <div class="d-flex">
+                                        <p class="card-text text-danger font-weight-bold pr-2">₹ {{this.product.price}}
+                                        </p>
+                                        <p class="card-text"><small class="text-muted"><del>₹
+                                                    3000</del></small></p>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex">
+                                    <div>
+                                        <a href="#" onclick="removeWishlistProduct('{{this._id}}')"
+                                            class="card-text text-secondary pr-2" style="font-size: 13px;">Remove</a>
+                                    </div>
+                                    <div>
+                                        <a href="#" onclick="addToCart('{{this.product._id}}')" class="card-text text-secondary" style="font-size: 13px;">Add to
+                                            Cart</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {{/each}}
+        </div>
+    </div>
+</section>
+<!-- Shop Cart Section End -->
+
+
+
+<!-- Footer Section Begin -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-7">
+                <div class="footer__about">
+                    <div class="footer__logo">
+                        <a href="./index.html"><img src="/img/logo.png" alt=""></a>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        cilisis.</p>
+                    <div class="footer__payment">
+                        <a href="#"><img src="/img/payment/payment-1.png" alt=""></a>
+                        <a href="#"><img src="/img/payment/payment-2.png" alt=""></a>
+                        <a href="#"><img src="/img/payment/payment-3.png" alt=""></a>
+                        <a href="#"><img src="/img/payment/payment-4.png" alt=""></a>
+                        <a href="#"><img src="/img/payment/payment-5.png" alt=""></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-5">
+                <div class="footer__widget">
+                    <h6>Quick links</h6>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blogs</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4">
+                <div class="footer__widget">
+                    <h6>Account</h6>
+                    <ul>
+                        <li><a href="#">My Account</a></li>
+                        <li><a href="#">Orders Tracking</a></li>
+                        <li><a href="#">Checkout</a></li>
+                        <li><a href="#">Wishlist</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-8 col-sm-8">
+                <div class="footer__newslatter">
+                    <h6>NEWSLETTER</h6>
+                    <form action="#">
+                        <input type="text" placeholder="Email">
+                        <button type="submit" class="site-btn">Subscribe</button>
+                    </form>
+                    <div class="footer__social">
+                        <a href="#"><i class="fa fa-facebook"></i></a>
+                        <a href="#"><i class="fa fa-twitter"></i></a>
+                        <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        <a href="#"><i class="fa fa-instagram"></i></a>
+                        <a href="#"><i class="fa fa-pinterest"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                <div class="footer__copyright__text">
+                    <p>Copyright &copy;
+                        <script>document.write(new Date().getFullYear());</script> All rights reserved | This template
+                        is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com"
+                            target="_blank">Colorlib</a>
+                    </p>
+                </div>
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer Section End -->

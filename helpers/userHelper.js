@@ -38,8 +38,8 @@ module.exports = {
                 if (user) {
                     const isCorrect = await bcrypt.compare(userData.password, user.password);
                     if (isCorrect) {
-                        const userDetails = await userModel.findOne({email: userData.email});
-                        resolve({userDetails, status: true })
+                        const userDetails = await userModel.findOne({ email: userData.email });
+                        resolve({ userDetails, status: true })
                     } else {
                         resolve({ status: false, message: "Invalid email or password" })
                     }
@@ -47,7 +47,7 @@ module.exports = {
                     resolve({ status: false, message: "Account doesn't exist" })
                 }
             } catch (error) {
-                reject("Some database error")
+                reject(error)
             }
         })
     },
@@ -59,6 +59,48 @@ module.exports = {
                 resolve(data);
             } catch (error) {
                 reject(error)
+            }
+        })
+    },
+
+    changeStatus: (userId) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const user = await userModel.findById(userId);
+                if (user.isBlocked) {
+                    await userModel.findByIdAndUpdate(userId, { isBlocked: false });
+                } else {
+                    await userModel.findByIdAndUpdate(userId, { isBlocked: true });
+                }
+                resolve();
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
+
+    getUserData: (userId) => {
+        return new Promise(async (resolve, reject) => {
+                const user = await userModel.findById(userId).lean()
+                resolve(user);
+        })
+    },
+
+    updateUserData: (userData, userID) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const emailExists = await userModel.findOne({ email: userData.email });
+                if (emailExists) {
+                    resolve({ status: false, message: "An account with this email already exists!" })
+                } else {
+                    await userModel.findByIdAndUpdate(userID, {
+                        name: userData.name,
+                        email: userData.email,
+                    })
+                    resolve({status: true, message:"Your profile have been updated."})
+                }
+            } catch (error) {
+                reject(error);
             }
         })
     }
