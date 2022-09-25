@@ -12,35 +12,27 @@
                 <table class="table ">
                     <thead>
                         <tr>
-                            <th class="serial">#</th>
-                            {{!-- <th class="avatar">Avatar</th> --}}
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Price</th>
-                            <th>Quantity</th>
-                            <th>Category</th>
+                            <th>Order ID</th>
+                            <th>Date</th>
+                            <th>Products</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Payment Method</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {{#each orders}}
                         <tr>
-                            <td class="serial">1.</td>
-                            {{!-- <td class="avatar">
-                                <div class="round-img">
-                                    <a href="#"><img class="rounded-circle" src="images/avatar/1.jpg" alt=""></a>
-                                </div>
-                            </td> --}}
-                            <td> #5469 </td>
-                            <td> <span class="name">Louis Stanley</span> </td>
-                            <td> <span class="product">iMax</span> </td>
-                            <td><span class="count">231</span></td>
+                            <td><span class="name">{{this._id}}</span> </td>
+                            <td><span class="">{{this.date}}</span> </td>
+                            <td><a href="/admin/viewProducts/{{this._id}}" class="btn btn-primary">View Products</a> </td>
+                            <td><span class="">{{this.amount}}</span></td>
                             <td>
-                                <span class="badge badge-complete">Complete</span>
+                                <button class="btn btn-info">{{this.status}}</button>
                             </td>
-                            <td>
-                                
-                            </td>
+                            <td><span>{{this.paymentMethod}}</span></td>
                         </tr>
+                        {{/each}}
                     </tbody>
                 </table>
             </div> <!-- /.table-stats -->

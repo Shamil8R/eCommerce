@@ -6,7 +6,17 @@ const orderSchema = new mongoose.Schema({
         ref: 'user'
     },
     products: [{
-        type: Object
+        product: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'product'
+        },
+        quantity: {
+            type: Number,
+            default: 1
+        },
+        totalPrice: {
+            type: Number
+        }    
     }],
     amount: {
         type: Number,
@@ -25,7 +35,7 @@ const orderSchema = new mongoose.Schema({
         required: true
     },
     date: {
-        type: Date
+        type: String
     }
 })
 

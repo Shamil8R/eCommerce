@@ -3,12 +3,12 @@ const userHelper = require('../helpers/userHelper');
 const categoryHelper = require('../helpers/categoryHelper');
 const productModel = require('../models/productModel');
 const addressHelper = require('../helpers/addressHelper');
-const orderHelper = require('../helpers/orderHelper')
+const orderHelper = require('../helpers/orderHelper');
 
 module.exports = {
 
     // Get User Home
-    userHome: async (req, res) => {
+    userHome: async (req, res, next) => {
         try {
             const featuredProducts = await productHelper.getFeaturedProducts()
             if (req.session.user) {
@@ -24,8 +24,8 @@ module.exports = {
             }
             res.render('user/userHome', { featuredProducts, user: req.session.user });
         } catch (error) {
-            console.log(error);
-            res.redirect('/login');
+            console.log(error)
+            next(error);
         }
     },
 
@@ -38,7 +38,7 @@ module.exports = {
     },
 
     // Post Signup Page
-    userSignup: async (req, res) => {
+    userSignup: async (req, res, next) => {
         try {
             const result = await userHelper.doSignup(req.body);
             if (result.userExists) {
@@ -49,8 +49,8 @@ module.exports = {
                 res.redirect('/login')
             }
         } catch (err) {
-            console.log(err)
-            res.redirect('/signup')
+            console.log(error)
+            next(error);
         }
     },
 
@@ -66,7 +66,7 @@ module.exports = {
 
     },
     //Post Login
-    userLogin: (req, res) => {
+    userLogin: (req, res, next) => {
         userHelper.doLogin(req.body).then((result) => {                    //can do it without promise too?
             if (result.status) {
                 if (result.userDetails.isBlocked) {
@@ -84,8 +84,8 @@ module.exports = {
                 res.redirect('/login')
             }
         }).catch((err) => {
-            console.log(err);
-            res.redirect('/login')
+            console.log(error)
+            next(error);
         })
     },
 
@@ -95,7 +95,7 @@ module.exports = {
         res.redirect('/')
     },
 
-    userDetails: async (req, res) => {
+    userDetails: async (req, res, next) => {
         try {
             const [userData, cartCount, wishlistCount] = await Promise.allSettled([
                 userHelper.getUserData(req.session.user._id),
@@ -107,12 +107,12 @@ module.exports = {
                 req.session.user.cartCount = cartCount.value
             res.render('user/accDetails', { layout: 'user-layout', user: req.session.user })
         } catch (error) {
-            console.log(error);
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    editUserData: async (req, res) => {
+    editUserData: async (req, res, next) => {
         try {
             const result = await userHelper.updateUserData(req.body, req.session.user._id);
             if (result.status) {
@@ -121,21 +121,22 @@ module.exports = {
                 res.json({ status: false, result })
             }
         } catch (error) {
-            console.log(error);
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    getAddress: async (req, res) => {
+    getAddress: async (req, res, next) => {
         try {
             const addresses = await addressHelper.getAddresses(req.session.user._id);
             res.render('user/address', { addresses, user: req.session.user })
         } catch (error) {
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    getProducts: async (req, res) => {
+    getProducts: async (req, res, next) => {
         try {
             // const products = await productHelper.getAllProducts();
             // const categories = await categoryHelper.getAllCategories();
@@ -156,12 +157,12 @@ module.exports = {
             // console.log(products[0].img);
             res.render('user/shop', { products: products.value, categories: categories.value, user: req.session.user });
         } catch (err) {
-            console.log(err);
-            res.redirect('/');
+            console.log(error)
+            next(error);
         }
     },
 
-    productsByCategory: async (req, res) => {
+    productsByCategory: async (req, res, next) => {
         try {
             const [products, categories] = await Promise.allSettled([
                 productModel.find({ category: req.params.id }).lean().populate('category'),
@@ -170,23 +171,23 @@ module.exports = {
             // console.log(products);
             res.render('user/productsByCat', { products: products.value, categories: categories.value, user: req.session.user })
         } catch (error) {
-            console.log(error);
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    productDetails: async (req, res) => {
+    productDetails: async (req, res, next) => {
         try {
             const product = await productModel.find({ _id: req.params.id }).lean()
             // console.log(product);
             res.render('user/productDetails', { product, user: req.session.user })
         } catch (error) {
             console.log(error)
-            res.redirect('/');
+            next(error);
         }
     },
 
-    addProductToCart: async (req, res) => {
+    addProductToCart: async (req, res, next) => {
         try {
             if (req.session.userLoggedIn) {
                 await productHelper.addProductToCart(req.body.productID, req.session.user._id)
@@ -197,12 +198,12 @@ module.exports = {
                 res.json({ status: false, url: '/login' })
             }
         } catch (err) {
-            console.log(err);
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    viewCart: async (req, res) => {
+    viewCart: async (req, res, next) => {
         try {
             const [cartData, totalPrice, cartCount, wishlistCount] = await Promise.allSettled([
                 productHelper.getCartItems(req.params.id),
@@ -217,12 +218,12 @@ module.exports = {
             // console.log(totalPrice.value);
             res.render('user/cart', { cartData: cartData.value, user: req.session.user, price: totalPrice.value.total })
         } catch (error) {
-            console.log(error);
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    changeProductQuantity: async (req, res) => {
+    changeProductQuantity: async (req, res, next) => {
         try {
             //Promise.allSettled not possible here because the price is depended on the changeProduct quantity.
             const result = await productHelper.changeProductQuantity(req.body);
@@ -230,11 +231,11 @@ module.exports = {
             res.json({ result, price: response.total, productPrice: response.productPrice })
         } catch (error) {
             console.log(error)
-            res.redirect('/home')
+            next(error);
         }
     },
 
-    removeProduct: async (req, res) => {
+    removeProduct: async (req, res, next) => {
         try {
             const [result, cartCount] = await Promise.allSettled([
                 productHelper.removeProduct(req.body),
@@ -242,12 +243,12 @@ module.exports = {
             ]);
             res.json({ result: result.value, cartCount: cartCount.value })
         } catch (error) {
-            console.log(error);
-            res.redirect('/home');
+            console.log(error)
+            next(error);
         }
     },
 
-    addToWishlist: async (req, res) => {
+    addToWishlist: async (req, res, next) => {
         try {
             if (req.session.userLoggedIn) {
                 const result = await productHelper.addToWishlist(req.body.productId, req.session.user._id);
@@ -257,12 +258,12 @@ module.exports = {
                 res.json({ status: false, url: '/login' })
             }
         } catch (error) {
-            console.log(error);
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    getWishlist: async (req, res) => {
+    getWishlist: async (req, res, next) => {
         try {
             // const wishlistItems = await productHelper.getWishlistItems(req.session.user._id);
             // const cartCount = await productHelper.getCartProductsCount(req.session.user._id);
@@ -275,22 +276,22 @@ module.exports = {
             req.session.user.wishlistCount = wishlistCount.value;
             res.render('user/wishlist', { wishlistItems: wishlistItems.value, user: req.session.user });
         } catch (error) {
-            console.log(error);
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    removeWishlistProduct: async (req, res) => {
+    removeWishlistProduct: async (req, res, next) => {
         try {
             const result = await productHelper.removeWishlistProduct(req.body)
             res.json(result)
         } catch (error) {
-            console.log(error);
-            res.redirect('/')
+            console.log(error)
+            next(error);
         }
     },
 
-    checkout: async (req, res) => {
+    checkout: async (req, res, next) => {
         try {
             const [cartData, totalPrice, cartCount, wishlistCount, address] = await Promise.allSettled([
                 productHelper.getCartItems(req.session.user._id),
@@ -318,11 +319,11 @@ module.exports = {
             })
         } catch (error) {
             console.log(error)
-            res.redirect('/')
+            next(error);
         }
     },
 
-    addAddress: async (req, res) => {
+    addAddress: async (req, res, next) => {
         try {
             console.log(req.body);
             const result = await addressHelper.addAddress(req.body, req.session.user._id);
@@ -371,25 +372,85 @@ module.exports = {
             ]);
 
             const products = cartData.value.products
+            const total = totalPrice.value.total;
+
+
             for (let i = 0; i < products.length; i++) {
                 products[i].totalPrice = totalPrice.value.productPrice[i];
             }
-            const result = await orderHelper.placeOrder(req.body,products,totalPrice.value.total,req.session.user._id)
+
+            
+            const orderId = await orderHelper.placeOrder(req.body, products, total, req.session.user._id)
+            const stringId = orderId.toString()
             await productHelper.removeCartItems(req.session.user._id);
-            // orderHelper.placeOrder(req.body,products,totalPrice.value.total)
-            res.json({status: result.status,url: '/orderPlaced'})
+            if (req.body.payment == 'COD') {
+                res.json({ codSuccess: true, url: '/orderPlaced' })
+            } else {
+                const response = await orderHelper.generateRazorPay(stringId, total);
+                res.json(response);
+            }
+
+
         } catch (error) {
             console.log(error);
             res.json({ status: false, message: "Sorry for the inconvenience. Please, try again later.", url: '/' })
         }
     },
 
-    orderPlaced: async (req,res) => {
+    orderPlaced: async (req, res, next) => {
         try {
             res.render('user/orderPlaced')
         } catch (error) {
             console.log(error)
-            res.redirect('/')
+            next(error);
+        }
+    },
+
+    getOrders: async (req, res, next) => {
+        try {
+            const [orders, wishlistCount, cartCount] = await Promise.allSettled([
+                await orderHelper.getOrders(req.session.user._id),
+                await productHelper.getWishlistProductsCount(req.session.user._id),
+                await productHelper.getCartProductsCount(req.session.user._id)
+            ])
+            req.session.user.wishlistCount = wishlistCount.value;
+            req.session.user.cartCount = cartCount.value;
+            // console.log(orders.value[0].products)
+            res.render('user/orderPage', { user: req.session.user, orders: orders.value })
+        } catch (error) {
+            console.log(error)
+            next(error);
+        }
+    },
+
+    getSingleOrder: async (req, res, next) => {
+        try {
+            // const response = await orderHelper.getSingleOrderDetails(req.params.id);
+            // console.log(response.selectedProduct);
+            // console.log('--------------------------------');
+            // console.log(response.orderDetails);
+            res.render('user/moreDetails', { layout: 'user-layout' })
+        } catch (error) {
+            console.log(error)
+            console.log("what error");
+            next(error);
+        }
+    },
+
+    verifyPayment: async (req,res,next) => {
+        try{
+            console.log(req.body);
+            const result = await orderHelper.verifyPayment(req.body)
+            if(result.status){
+                await orderHelper.changePaymentStatus(req.body['order[receipt]'])
+                res.json({status: true, url: '/orderPlaced'})
+            }else{
+                console.log("Payment failed");
+                res.json({status: false})
+            }
+        }catch(err){
+            console.log(err)
+            next(err)
         }
     }
 

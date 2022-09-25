@@ -1,5 +1,6 @@
 const adminHelper = require('../helpers/adminHelper');
 const categoryHelper = require('../helpers/categoryHelper');
+const orderHelper = require('../helpers/orderHelper');
 const productHelper = require('../helpers/productHelper');
 const userHelper = require('../helpers/userHelper');
 
@@ -7,9 +8,9 @@ module.exports = {
 
     // Get Login Page
     adminLogin: (req, res) => {
-        if(req.session.adminLoggedIn){
+        if (req.session.adminLoggedIn) {
             res.redirect('/admin/home')
-        }else{
+        } else {
             res.render('admin/login', { layout: 'layout' })
         }
     },
@@ -25,9 +26,14 @@ module.exports = {
                 res.redirect('/admin')
             }
         } catch (err) {
-            console.log(err)
-            res.redirect('/admin/home')
+            console.log(error)
+            next(error);
         }
+    },
+
+    logout: (req, res) => {
+        req.session.adminLoggedIn = false;
+        res.redirect('/admin');
     },
 
     // Get Admin Home Page
@@ -42,7 +48,7 @@ module.exports = {
             res.render('admin/viewProducts', { layout: 'admin-layout', products: products })
         } catch (error) {
             console.log(error)
-            res.redirect('/admin/home')
+            next(error);
         }
     },
 
@@ -51,8 +57,8 @@ module.exports = {
             const categories = await categoryHelper.getAllCategories();
             res.render('admin/addProduct', { layout: 'admin-layout', categories })
         } catch (error) {
-            console.log(error);
-            res.redirect('/admin/home')
+            console.log(error)
+            next(error);
         }
     },
 
@@ -61,8 +67,8 @@ module.exports = {
             await productHelper.addProduct(req.body, req.files['product-images'])
             res.redirect('/admin/viewProducts')
         } catch (err) {
-            console.log(err)
-            res.redirect('/admin/home')
+            console.log(error)
+            next(error);
         }
     },
 
@@ -71,8 +77,8 @@ module.exports = {
             await productHelper.deleteProduct(req.params.id);
             res.redirect('/admin/viewProducts');
         } catch (error) {
-            console.log(error);
-            res.redirect('/admin/home');
+            console.log(error)
+            next(error);
         }
     },
 
@@ -89,7 +95,7 @@ module.exports = {
             res.render('admin/editProducts', { layout: 'admin-layout', product, images, categories })
         } catch (error) {
             console.log(error)
-            res.redirect('/admin/viewProducts')
+            next(error);
         }
     },
 
@@ -101,7 +107,7 @@ module.exports = {
             res.redirect('/admin/viewProducts')
         } catch (error) {
             console.log(error)
-            res.redirect('/admin/home')
+            next(error);
         }
     },
 
@@ -110,8 +116,8 @@ module.exports = {
             await productHelper.featuredOption(req.params.id)
             res.redirect('/admin/viewProducts')
         } catch (error) {
-            console.log(error);
-            res.redirect('/admin/home')
+            console.log(error)
+            next(error);
         }
     },
 
@@ -123,17 +129,38 @@ module.exports = {
             res.render('admin/viewUsers', { layout: 'admin-layout', userData })
         } catch (error) {
             console.log(error)
-            res.redirect('/admin/home')
+            next(error);
         }
     },
 
-    changeStatus: async (req,res) => {
+    changeStatus: async (req, res, next) => {
         try {
             await userHelper.changeStatus(req.params.id)
             res.redirect('/admin/user')
         } catch (error) {
             console.log(error)
-            res.redirect('/admin/home')
+            next(error);
+        }
+    },
+
+    viewOrders: async (req, res, next) => {
+        try {
+            const orders = await orderHelper.getAllOrders();
+            res.render('admin/viewOrders', { layout: 'admin-layout', orders })
+        } catch (error) {
+            console.log("reached spot 1");
+            console.log(error)
+            next(error);
+        }
+    },
+
+    getOrderedProducts: async (req,res,next) => {
+        try {
+            const orders = await orderHelper.getOrderDetails(req.params.id)
+            res.render('admin/moreDetails', {layout: 'admin-layout', orders})
+        } catch (error) {
+            console.log(error);
+            next(error);
         }
     }
 

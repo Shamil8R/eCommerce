@@ -52,8 +52,9 @@ app.use(function(err, req, res, next) {
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
+  console.log("app error route handler")
   res.status(err.status || 500);
-  res.render('error',{layout: 'layout'});
+  res.render('user/error',{layout: 'layout'});
 });
 
 module.exports = app;
