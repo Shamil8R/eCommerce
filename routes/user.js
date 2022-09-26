@@ -34,6 +34,7 @@ router.get('/logout', userController.logout)
 // User Signup Page
 router.get('/signup', userController.getSignup);
 router.post('/signup', userController.userSignup);
+router.post('/otpVerify', userController.otpVerification);
 
 //User Details
 router.get('/userDetails',userAuth, userController.userDetails)

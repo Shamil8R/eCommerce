@@ -36,6 +36,22 @@ const orderSchema = new mongoose.Schema({
     },
     date: {
         type: String
+    },
+    isShipped: {
+        type: Boolean,
+        default: false,
+    },
+    isOutForDelivery: {
+        type: Boolean,
+        default: false,
+    },
+    isDelivered: {
+        type: Boolean,
+        default: false,
+    },
+    isCancelled: {
+        type: Boolean,
+        default: false,
     }
 })
 

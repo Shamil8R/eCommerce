@@ -18,7 +18,6 @@ module.exports = {
     checkAdminLogin: async (req, res) => {
         try {
             const result = await adminHelper.sudoAdminLoginCheck(req.body)
-            console.log(result)
             if (result.status) {
                 req.session.adminLoggedIn = true;
                 res.redirect('/admin/home');
@@ -161,6 +160,17 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error);
+        }
+    },
+
+    changeDeliveryStatus: async (req,res,next) => {
+        try {
+            console.log(req.body);
+            await orderHelper.changeDeliveryStatus(req.body.orderId)
+            res.json(true);
+        } catch (error) {
+            console.log(error);
+            reject(error)
         }
     }
 

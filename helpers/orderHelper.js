@@ -5,7 +5,7 @@ const orderModel = require('../models/orderModel');
 const instance = new RazorPay({
     key_id: process.env.RAZORPAY_TEST_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
-  });
+});
 
 module.exports = {
 
@@ -33,7 +33,7 @@ module.exports = {
     getAllOrders: () => {
         return new Promise(async (resolve, reject) => {
             try {
-                const orders = await orderModel.find({}).sort({date: -1}).lean()
+                const orders = await orderModel.find({}).sort({ date: -1 }).lean()
                 resolve(orders)
             } catch (error) {
                 reject(error)
@@ -77,18 +77,18 @@ module.exports = {
     },
 
     generateRazorPay: (orderId, total) => {
-        return new Promise(async (resolve,reject) => {
+        return new Promise(async (resolve, reject) => {
             try {
                 const options = {
                     amount: total * 100,  // amount in the smallest currency unit
                     currency: "INR",
                     receipt: orderId
-                  };
-                  instance.orders.create(options, function(err, order) {
-                    if(err){
+                };
+                instance.orders.create(options, function (err, order) {
+                    if (err) {
                         reject(err)
-                    }else{
-                        resolve(order)  
+                    } else {
+                        resolve(order)
                     }
                 });
             } catch (error) {
@@ -98,27 +98,79 @@ module.exports = {
     },
 
     verifyPayment: (details) => {
-        return new Promise(async (resolve,reject) => {
+        return new Promise(async (resolve, reject) => {
             const crypto = require('crypto');
             let hmac = crypto.createHmac('sha256', process.env.RAZORPAY_KEY_SECRET);
 
             hmac.update(details['payment[razorpay_order_id]'] + '|' + details['payment[razorpay_payment_id]']);
             hmac = hmac.digest('hex');
-            if(hmac == details['payment[razorpay_signature]']){
-                resolve({status: true})
-            }else{
-                resolve({status: false})
+            if (hmac == details['payment[razorpay_signature]']) {
+                resolve({ status: true })
+            } else {
+                resolve({ status: false })
             }
         })
     },
 
     changePaymentStatus: (orderId) => {
-        return new Promise(async (resolve,reject) => {
-            await orderModel.updateOne({_id: orderId}, 
+        return new Promise(async (resolve, reject) => {
+            await orderModel.updateOne({ _id: orderId },
                 {
                     status: "Placed"
                 })
-            resolve();    
+            resolve();
+        })
+    },
+
+    changeDeliveryStatus: (orderId) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const order = await orderModel.findById(orderId);
+                // if (order.status === "Placed") {
+                //     await orderModel.findByIdAndUpdate(orderId,
+                //         {
+                //             status: "Shipped",
+                //             isShipped: true,
+                //         });
+                //     resolve();
+                // }
+                if (order) {
+                    switch (order.status) {
+                        case "Placed": await orderModel.findByIdAndUpdate(orderId,
+                            {
+                                status: "Shipped",
+                                isShipped: true,
+                            });
+                            break;
+                        case "Shipped": await orderModel.findByIdAndUpdate(orderId,
+                            {
+                                status: "Out For Delivery",
+                                isShipped: false,
+                                isOutForDelivery: true,
+                            });
+                            break;
+                        case "Out For Delivery": await orderModel.findByIdAndUpdate(orderId,
+                            {
+                                status: "Delivered",
+                                isOutForDelivery: false,
+                                isDelivered: true
+                            });
+                            break;
+                        case "Delivered": await orderModel.findByIdAndUpdate(orderId,
+                            {
+                                status: "Cancelled",
+                                isDelivered: false,
+                                isCancelled: true,
+                            });
+                            break;
+                        default: ""
+                            break;
+                    }
+                    resolve();
+                }
+            } catch (error) {
+                reject(error)
+            }
         })
     }
 }

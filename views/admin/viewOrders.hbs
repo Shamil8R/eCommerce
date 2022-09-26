@@ -25,17 +25,38 @@
                         <tr>
                             <td><span class="name">{{this._id}}</span> </td>
                             <td><span class="">{{this.date}}</span> </td>
-                            <td><a href="/admin/viewProducts/{{this._id}}" class="btn btn-primary">View Products</a> </td>
+                            <td><a href="/admin/viewProducts/{{this._id}}" class="btn btn-primary">View Products</a>
+                            </td>
                             <td><span class="">{{this.amount}}</span></td>
                             <td>
-                                <button class="btn btn-info">{{this.status}}</button>
+                                <button onclick="changeStatus('{{this._id}}')" class="btn btn-info">{{this.status}}</button>
                             </td>
                             <td><span>{{this.paymentMethod}}</span></td>
                         </tr>
                         {{/each}}
                     </tbody>
                 </table>
-            </div> <!-- /.table-stats -->
+                
+            </div>
         </div>
     </div>
 </div>
+
+<script>
+    function changeStatus(orderId) {
+        jQuery.ajax({
+            url: '/admin/changeDeliveryStatus',
+            method: "post",
+            data: {
+                orderId: orderId
+            },
+            success: (response) => {
+                if (response) {
+                   console.log(response)
+                }
+            }
+        })
+    } 
+
+
+</script>

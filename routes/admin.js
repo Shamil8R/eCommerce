@@ -61,9 +61,9 @@ router.get('/categoryDelete/:id',adminAuth, categoryController.deleteCategory);
 
 
 //Orders
-router.get('/orders', adminAuth, adminController.viewOrders)
-router.get('/viewProducts/:id',adminAuth, adminController.getOrderedProducts)
-
+router.get('/orders', adminAuth, adminController.viewOrders);
+router.get('/viewProducts/:id',adminAuth, adminController.getOrderedProducts);
+router.post('/changeDeliveryStatus',adminController.changeDeliveryStatus);
 
 // router.use((req,res,next) => {
 //       next(createError(404))

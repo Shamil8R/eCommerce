@@ -4,6 +4,7 @@ const categoryHelper = require('../helpers/categoryHelper');
 const productModel = require('../models/productModel');
 const addressHelper = require('../helpers/addressHelper');
 const orderHelper = require('../helpers/orderHelper');
+const auth = require('../config/auth');
 
 module.exports = {
 
@@ -40,17 +41,38 @@ module.exports = {
     // Post Signup Page
     userSignup: async (req, res, next) => {
         try {
-            const result = await userHelper.doSignup(req.body);
+            const result = await userHelper.checkAccountExists(req.body);
             if (result.userExists) {
                 req.session.signupErr = true;
                 req.session.errMessage = result.errMessage;
                 res.redirect('/signup');
             } else {
-                res.redirect('/login')
+                req.session.userData = req.body;
+                await auth.sendOtp(req.body);
+                res.render('user/otp',{layout: 'layout', phoneNumber: req.body.phoneNumber});
             }
         } catch (err) {
-            console.log(error)
-            next(error);
+            console.log(err)
+            next(err);
+        }
+    },
+
+    otpVerification: async (req,res,next) => {
+        try{
+            const otp = req.body.f1 + req.body.f2 + req.body.f3 + req.body.f4 + req.body.f5 + req.body.f6;
+            const result = await auth.verifyOtp(otp,req.session.userData.phoneNumber);
+            if(result){
+                // console.log(result);
+                await userHelper.doSignup(req.session.userData);
+                res.redirect('/login')
+            }else{
+                req.session.signupErr = true;
+                req.session.errMessage = "The otp entered is invalid! Please try again!";
+                res.redirect('/signup');
+            }
+        }catch(err){
+            console.log(err);
+            next(err)
         }
     },
 
