@@ -45,11 +45,8 @@
         <div class="offcanvas__close">+</div>
         <ul class="offcanvas__widget">
             <li><span class="icon_search search-switch"></span></li>
-            <li><a href="#"><span class="icon_heart_alt"></span>
-                    <div class="tip">2</div>
-                </a></li>
-            <li><a href="#"><i class="fa fa-shopping-cart"></i>
-                    <div class="tip">2</div>
+            <li><a href="/wishlist"><span class="icon_heart_alt"></span></a></li>
+            <li><a href="/cart/{{user._id}}"><i class="fa fa-shopping-cart"></i>
                 </a></li>
         </ul>
         <div class="offcanvas__logo">
@@ -76,9 +73,10 @@
                             <li><a style="cursor: pointer;">Profile</a>
                                 <ul class="dropdown">
                                     {{#if user}}
-                                    <li><a href="/cart/{{user._id}}">Cart</a></li>
-                                    <li><a href="/wishlist">Wishlist</a></li>
-                                    <li><a href="/userDetails">Account</a></li>
+                                    <li><a href="/cart/{{user._id}}">My Cart</a></li>
+                                    <li><a href="/wishlist">My Wishlist</a></li>
+                                    <li><a href="/orders">My Orders</a></li>
+                                    <li><a href="/userDetails">My Account</a></li>
                                     <li><a href="/logout">Logout</a></li>
                                     {{else}}
                                     <li><a href="/login">Login</a></li>
@@ -107,8 +105,7 @@
                                     {{#if user.cartCount}}<div class="tip" id="cartCount">{{user.cartCount}}</div>{{/if}}
                                 </a>
                             </li>
-
-
+                            
                             {{else}}
                             <li><a href="/login"><span class="icon_heart_alt"></span>
                                     <div></div>

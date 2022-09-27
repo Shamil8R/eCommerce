@@ -35,7 +35,7 @@
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
                                 <label for="name" class="text-dark font-weight-bold">Name:</label>
-                                <input type="text" name="name" id="name" class="form-control" placeholder="Name"  required/>
+                                <input type="text" name="name" id="name" class="form-control" placeholder="Name" required/>
                             </div>
                         </div>
 
@@ -124,12 +124,12 @@
                                 login at the top of the page.</p> --}}
                             <label for="COD">
                                 Cash on Delivery
-                                <input type="radio" name="payment" value="COD" id="COD" required>
+                                <input type="radio" name="payment" value="COD" id="COD">
                                 <span class="checkmark"></span>
                             </label>
-                            <label for="upi">
+                            <label for="UPI">
                                 UPI
-                                <input type="radio" name="payment" value="UPI" id="UPI" required>
+                                <input type="radio" name="payment" value="UPI" id="UPI">
                                 <span class="checkmark"></span>
                             </label>
                         </div>
@@ -262,7 +262,7 @@
                         <a href="./index.html"><img src="img/logo.png" alt=""></a>
                     </div>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                                                                                                                                                cilisis.</p>
+                                                                                                                                                                                                                        cilisis.</p>
                     <div class="footer__payment">
                         <a href="#"><img src="img/payment/payment-1.png" alt=""></a>
                         <a href="#"><img src="img/payment/payment-2.png" alt=""></a>
@@ -331,7 +331,7 @@
                             document.write(new Date().getFullYear());
                         </script>
                         All rights reserved | This template
-                                                                                                                                                is made with
+                                                                                                                                                                                                                        is made with
                         <i class="fa fa-heart" aria-hidden="true"></i>
                         by
                         <a href="https://colorlib.com" target="_blank">Colorlib</a>
@@ -354,78 +354,78 @@
     </div>
 </div>
 <!-- Search End -->
-
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script>
     $(document).ready(() => {
-    jQuery.validator.addMethod("lettersOnly", (value) => {
-        return /^[a-zA-Z ]+$/i.test(value);
-    });
+        jQuery.validator.addMethod("lettersOnly", (value) => {
+            return /^[a-zA-Z ]+$/i.test(value);
+        });
 
-    $('#form').validate({
-        rules: {
-            name: {
-                required: true,
-                lettersOnly: true
+        $('#form').validate({
+            rules: {
+                name: {
+                    required: true,
+                    lettersOnly: true
+                },
+                phoneNumber: {
+                    required: true,
+                    minlength: 10,
+                    maxlength: 10,
+                    number: true
+                },
+                zip: {
+                    required: true
+                },
+                state: {
+                    required: true,
+                    lettersOnly: true
+                },
+                address: {
+                    required: true
+                },
+                locality: {
+                    required: true
+                },
+                city: {
+                    required: true
+                },
+                payment: {
+                    required: true
+                }
             },
-            phoneNumber: {
-                required: true,
-                minlength: 10,
-                maxlength: 10,
-                number: true
-            },
-            zip: {
-                required: true
-            },
-            state: {
-                required: true,
-                lettersOnly: true
-            },
-            address: {
-                required: true
-            },
-            locality: {
-                required: true
-            },
-            city: {
-                required: true
-            },
-            payment: {
-                required: true
+            messages: {
+                name: {
+                    required: "Please enter your name!",
+                    lettersOnly: "Please enter valid name!"
+                },
+                phoneNumber: {
+                    required: "Please enter your phone number!",
+                    minlength: "Invalid Number!",
+                    maxlength: "Invalid Number!",
+                    number: "Invalid Number!"
+                },
+                zip: {
+                    required: "This is a required field!"
+                },
+                state: {
+                    required: "This is a required field!",
+                    lettersOnly: "Please enter valid data!"
+                },
+                address: {
+                    required: "This is a required field!"
+                },
+                locality: {
+                    required: "This is a required field!"
+                },
+                city: {
+                    required: "This is a required field!"
+                },
+                payment: {
+                    required: "Please select your payment option."
+                }
             }
-        },
-        messages: {
-            name: {
-                required: "Please enter your name!",
-                lettersOnly: "Please enter valid name!"
-            },
-            phoneNumber: {
-                required: "Please enter your phone number!",
-                minlength: "Invalid Number!",
-                maxlength: "Invalid Number!",
-                number: "Invalid Number!"
-            },
-            zip: {
-                required: "This is a required field!"
-            },
-            state: {
-                required: "This is a required field!",
-                lettersOnly: "Please enter valid data!"
-            },
-            address: {
-                required: "This is a required field!"
-            },
-            locality: {
-                required: "This is a required field!"
-            },
-            city: {
-                required: "This is a required field!"
-            },
-            payment: {
-                required: "Please select your payment option."
-            }
-        }
+        })
     })
-})
 
 
     $('#checkoutForm').submit((e) => {
@@ -436,19 +436,67 @@
             method: 'post',
             data: $('#checkoutForm').serialize(),
             success: (response) => {
-                if(response.status){
+                if (response.codSuccess) {
                     window.location.replace(response.url)
-                }else{
-                    swal({
-                        text: response.message,
-                        icon: 'error',
-                        button: false
-                    })
-                    setTimeout(() => {
-                        location.replace('/')
-                    },900)
+                } else {
+                    razorpayPayment(response)
                 }
             }
         })
     })
+
+    function razorpayPayment(order) {
+        var options = {
+            "key": "rzp_test_q8bY4ubFwUmMoO", // Enter the Key ID generated from the Dashboard
+            "amount": order.amount, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
+            "currency": "INR",
+            "name": "eCart",
+            "description": "Test Transaction",
+            "image": "https://example.com/your_logo",
+            "order_id": order.id, // This is a sample Order ID. Pass the `id` obtained in the response of Step 1
+            "handler": function (response) {
+                verifyPayment(response, order);
+            },
+            "prefill": {
+                "name": "Gaurav Kumar",
+                "email": "gaurav.kumar@example.com",
+                "contact": "9999999999"
+            },
+            "notes": {
+                "address": "Razorpay Corporate Office"
+            },
+            "theme": {
+                "color": "#3399cc"
+            }
+        };
+        const rzp1 = new Razorpay(options);
+        rzp1.open();
+
+
+    }
+
+    function verifyPayment(payment, order) {
+        $.ajax({
+            url: '/verifyPayment',
+            method: 'post',
+            data: {
+                payment,
+                order
+            },
+            success: (response) => {
+                if (response.status) {
+                    window.location.replace(response.url)
+                }
+            }
+        })
+    }
 </script>
+
+
+{{!-- 
+            alert(response.error.code);
+            alert(response.error.source);
+            alert(response.error.step);
+            alert(response.error.reason);
+            alert(response.error.metadata.order_id);
+            alert(response.error.metadata.payment_id); --}}

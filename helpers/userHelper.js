@@ -1,32 +1,52 @@
+
 const bcrypt = require('bcrypt');
 const userModel = require('../models/userModel');
 
+
 module.exports = {
+
+    checkAccountExists: (userData) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const emailExists = await userModel.findOne({ email: userData.email }).lean()
+                if (emailExists) {
+                    resolve({ userExists: true, errMessage: "An account with this email already exists!" })
+                } else {
+                    const phoneNumberExists = await userModel.findOne({ phoneNumber: userData.phoneNumber }).lean()
+                    if (phoneNumberExists) {
+                        resolve({ userExists: true, errMessage: "An account with this phone number already exists!" })
+                    } else {
+                        // userData.password = await bcrypt.hash(userData.password, 10);
+                        // const user = new userModel({
+                        //     name: userData.name,
+                        //     email: userData.email,
+                        //     password: userData.password,
+                        //     phoneNumber: userData.phoneNumber,
+                        // });
+                        // await user.save();
+                        resolve({ userExists: false })
+                    }
+                }
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
 
     doSignup: (userData) => {
         return new Promise(async (resolve, reject) => {
-            const emailExists = await userModel.findOne({ email: userData.email }).lean()
-            if (emailExists) {
-                resolve({ userExists: true, errMessage: "An account with this email already exists!" })
-            } else {
-                const phoneNumberExists = await userModel.findOne({ phoneNumber: userData.phoneNumber }).lean()
-                if (phoneNumberExists) {
-                    resolve({ userExists: true, errMessage: "An account with this phone number already exists!" })
-                } else {
-                    userData.password = await bcrypt.hash(userData.password, 10);
-                    const user = new userModel({
-                        name: userData.name,
-                        email: userData.email,
-                        password: userData.password,
-                        phoneNumber: userData.phoneNumber,
-                    });
-                    try {
-                        await user.save();
-                        resolve({ userExists: false })
-                    } catch (err) {
-                        reject(err)
-                    }
-                }
+            try {
+                userData.password = await bcrypt.hash(userData.password, 10);
+                const user = new userModel({
+                    name: userData.name,
+                    email: userData.email,
+                    password: userData.password,
+                    phoneNumber: userData.phoneNumber,
+                });
+                await user.save();
+                resolve();
+            } catch (error) {
+                reject(error)
             }
         })
     },
@@ -81,8 +101,8 @@ module.exports = {
 
     getUserData: (userId) => {
         return new Promise(async (resolve, reject) => {
-                const user = await userModel.findById(userId).lean()
-                resolve(user);
+            const user = await userModel.findById(userId).lean()
+            resolve(user);
         })
     },
 
@@ -97,11 +117,12 @@ module.exports = {
                         name: userData.name,
                         email: userData.email,
                     })
-                    resolve({status: true, message:"Your profile have been updated."})
+                    resolve({ status: true, message: "Your profile have been updated." })
                 }
             } catch (error) {
                 reject(error);
             }
         })
-    }
+    },
+
 }

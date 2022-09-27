@@ -1,0 +1,68 @@
+<div>
+    <h2 class="text-center">Order ID: {{orders.[0]._id}}</h2>
+</div>
+
+<div>
+    <!-- Shop Cart Section Begin -->
+<section class="shop-cart spad">
+    <div class="pl-4 pt-4">
+        <div class="row">
+            <div class="col-6">
+                {{#each orders}}
+                {{#each this.products}}
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row no-gutters">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <img src="/product-images/{{this.product.img.[0]}}" class="card-img">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <h6 class="card-title font-weight-bold mb-0">{{this.product.productName}}</h6>
+                                <h5 class="card-title">{{this.product.brandName}}</h5>
+                                {{!-- <p class="card-text">This is a wider card with supporting text below as a
+                                    natural
+                                    lead-in
+                                    to
+                                    additional content. This content is a little bit longer.</p> --}}
+                                <div class="">
+                                    <div class="">
+                                        <p class="card-text text-danger font-weight-bold mb-0">₹ {{this.totalPrice}}
+                                        </p>
+                                        <p class="text-dark mb-0">Quantity:
+                                            <span class="font-weight-bold">{{this.quantity}}</span>
+                                        </p>
+                                        {{!-- <p class="text-dark mb-0">Status:
+                                            <span class="font-weight-bold"></span>
+                                        </p> --}}
+                                    </div>
+                                </div>
+
+                                <div class="">
+                                    <div>
+                                        <p class="card-text pr-2" style="font-size: 13px;">Order Date: 
+                                            <span class="font-weight-bold">{{../this.date}}</span>
+                                        </p>
+                                    </div>
+                                    {{!-- <div>
+                                        <a href="/moreDetails/{{this._id}}" class="card-text text-primary" style="font-size: 13px;">More Details</a>
+                                    </div> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+                {{/each}}
+            </div>
+            <div class="col-6">
+                <div class="bg-primary h-100">
+                    
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+<!-- Shop Cart Section End -->
+
+</div>

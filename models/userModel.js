@@ -27,11 +27,7 @@ const userSchema = new mongoose.Schema({
     isBlocked: {
         type: Boolean,
         default: false
-    },
-    orders: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'orders'
-    }]
+    }
 }, { timestamps: true })
 
 module.exports = mongoose.model("user", userSchema);

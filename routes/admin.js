@@ -29,9 +29,10 @@ const adminAuth = (req,res,next) => {
 
 
 /*Admin Login. */
-
 router.get('/', adminController.adminLogin)
 router.post('/', adminController.checkAdminLogin)     
+router.get('/logout', adminController.logout)
+
 
 // GET Admin Home
 router.get('/home',adminAuth, adminController.adminHome)
@@ -60,13 +61,18 @@ router.get('/categoryDelete/:id',adminAuth, categoryController.deleteCategory);
 
 
 //Orders
-router.get('/orders', adminAuth, (req, res) => {
-      res.render('admin/viewOrders', { layout: 'admin-layout' })
-})
+router.get('/orders', adminAuth, adminController.viewOrders);
+router.get('/viewProducts/:id',adminAuth, adminController.getOrderedProducts);
+router.post('/changeDeliveryStatus',adminController.changeDeliveryStatus);
 
-router.get('/logout', ((req, res) => {
-      req.session.adminLoggedIn = false;
-      res.redirect('/admin')
-}))
+// router.use((req,res,next) => {
+//       next(createError(404))
+// })
+
+router.use((err,req,res,next) => {
+      console.log("admin error route handler");
+      res.status(err.status || 500);
+      res.render('admin/adminError', {layout: 'layout'})
+})
 
 module.exports = router;

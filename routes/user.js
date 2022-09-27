@@ -34,6 +34,7 @@ router.get('/logout', userController.logout)
 // User Signup Page
 router.get('/signup', userController.getSignup);
 router.post('/signup', userController.userSignup);
+router.post('/otpVerify', userController.otpVerification);
 
 //User Details
 router.get('/userDetails',userAuth, userController.userDetails)
@@ -41,8 +42,10 @@ router.post('/updateUserDetails', userController.editUserData)
 router.get('/address',userAuth, userController.getAddress);
 router.post('/addAddress',userController.addAddress);
 router.post('/editAddress', userController.editAddress);
-router.post('/updateAddress', userController.updateAddress)
-router.post('/deleteAddress',userController.deleteAddress)
+router.post('/updateAddress', userController.updateAddress);
+router.post('/deleteAddress',userController.deleteAddress);
+router.get('/orders',userController.getOrders);
+router.get('/moreDetails/:id', userController.getSingleOrder)
 
 //Products
 router.get('/products', userController.getProducts);
@@ -56,7 +59,17 @@ router.get('/checkout',userAuth, userController.checkout);
 router.post('/addToWishlist', userController.addToWishlist);
 router.get('/wishlist', userAuth, userController.getWishlist);
 router.post('/removeWishlistProduct', userController.removeWishlistProduct);
-router.post('/placeOrder', userController.placeOrder)
-router.get('/orderPlaced',userController.orderPlaced)
+router.post('/placeOrder', userController.placeOrder);
+router.get('/orderPlaced',userController.orderPlaced);
+router.post('/verifyPayment', userController.verifyPayment)
+
+
+
+router.use((err,req,res,next) => {
+    console.log("reached user router error handler");
+    res.status(err.status || 500);
+    res.render('user/error', {layout: 'layout'})
+})
+
 
 module.exports = router;
