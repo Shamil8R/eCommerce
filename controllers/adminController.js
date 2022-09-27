@@ -165,7 +165,6 @@ module.exports = {
 
     changeDeliveryStatus: async (req,res,next) => {
         try {
-            console.log(req.body);
             await orderHelper.changeDeliveryStatus(req.body.orderId)
             res.json(true);
         } catch (error) {

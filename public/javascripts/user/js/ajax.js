@@ -13,6 +13,7 @@ function addToCart(productID) {
                     text: "Product added to cart.",
                     icon: "success",
                 })
+                $("#cartCount").load(location.href + " #cartCount");
                 document.getElementById('cartCount').innerHTML = response.cartCount;
             } else {
                 swal({
@@ -92,10 +93,13 @@ function addToWishlist(productId) {
             if (response.status) {
                 if (response.success) {
                     swal({
-                        text: "Product added to wishlist.",
                         icon: "success",
+                        button: false
                     })
-                    document.getElementById('cartCount').innerHTML = response.cartCount;
+                    $("#wishCount").load(location.href + " #wishCount");
+                    setTimeout(()=> {
+                        swal.close()
+                    },100)
                 } else {
                     swal({
                         text: response.message,
@@ -137,7 +141,7 @@ function removeWishlistProduct(productId) {
                 });
                 setTimeout(() => {
                     location.reload()
-                }, 1000)
+                }, 600)
             }
         }
     })
