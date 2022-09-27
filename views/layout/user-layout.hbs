@@ -94,18 +94,24 @@
                             {{#if user}}
 
                             <li>
+                                <div id="wishCount">
                                 <a href="/wishlist"><span class="icon_heart_alt"></span>
-                                    {{#if user.wishlistCount}}<div class="tip" id="wishlistCount">{{user.wishlistCount}}</div>{{/if}}
+                                    {{#if user.wishlistCount}}<div class="tip" id="wishlistCount">{{user.wishlistCount}}
+                                    </div>{{/if}}
                                 </a>
+                                </div>
                             </li>
 
 
                             <li>
-                                <a href="/cart/{{user._id}}"><i class="fa fa-shopping-cart"></i>
-                                    {{#if user.cartCount}}<div class="tip" id="cartCount">{{user.cartCount}}</div>{{/if}}
-                                </a>
+                                <div id="cartCount">
+                                    <a href="/cart/{{user._id}}"><i class="fa fa-shopping-cart"></i>
+                                        {{#if user.cartCount}}<div class="tip" id="cartCount">{{user.cartCount}}</div>
+                                        {{/if}}
+                                    </a>
+                                </div>
                             </li>
-                            
+
                             {{else}}
                             <li><a href="/login"><span class="icon_heart_alt"></span>
                                     <div></div>
@@ -150,4 +156,3 @@
 </body>
 
 </html>
-

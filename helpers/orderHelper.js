@@ -163,6 +163,12 @@ module.exports = {
                                 isCancelled: true,
                             });
                             break;
+                        case "Cancelled": await orderModel.findByIdAndUpdate(orderId,
+                            {
+                                status: "Placed",
+                                isCancelled: false,
+                            });
+                            break;
                         default: ""
                             break;
                     }
