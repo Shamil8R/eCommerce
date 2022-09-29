@@ -17,53 +17,47 @@
 <section class="shop-cart spad">
     <div class="container">
         <div class="row">
-            {{#each orders}}
-            <div class="col-12">
-                {{#each this.products}}
-                <div class="card mb-3" style="max-width: 540px;">
-                    <div class="row no-gutters">
-                        <div class="col-md-4 d-flex align-items-center">
-                            <img src="/product-images/{{this.product.img.[0]}}" class="card-img">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h6 class="card-title font-weight-bold mb-0">{{this.product.productName}}</h6>
-                                <h5 class="card-title">{{this.product.brandName}}</h5>
-                                {{!-- <p class="card-text">This is a wider card with supporting text below as a
-                                    natural
-                                    lead-in
-                                    to
-                                    additional content. This content is a little bit longer.</p> --}}
-                                <div class="">
-                                    <div class="">
-                                        <p class="card-text text-danger font-weight-bold mb-0">₹ {{this.totalPrice}}
-                                        </p>
-                                        <p class="text-dark mb-0">Payment Method: <span class="font-weight-bold">{{../this.paymentMethod}}</span></p>
-                                        <p class="text-dark mb-0">Status: <span class="font-weight-bold">{{../this.status}}</span></p>
-                                        
-                                    </div>
-                                </div>
-
-                                <div class="">
-                                    <div>
-                                        <p class="card-text pr-2" style="font-size: 13px;">Order Date: <span class="font-weight-bold">{{../this.date}}</span></p>
-                                    </div>
-                                    <div>
-                                        <p class="card-text pr-2" style="font-size: 13px;">Order ID: <span class="font-weight-bold">{{../this._id}}</span></p>
-                                    </div>
-                                    <div>
-                                        <a href="/moreDetails/{{this._id}}" class="card-text text-primary" style="font-size: 13px;">More Details</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="shop__cart__table">
+                        <table>
+                            <thead>
+                                {{#if orders}}
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Address</th>
+                                    <th>Mobile</th>
+                                    <th>Total</th>
+                                    <th>Products</th>
+                                </tr>
+                                {{else}}
+                                NO orders bro!
+                                {{/if}}
+                            </thead>
+                                {{#each orders}}
+                            <tbody>
+                                <tr>
+                                    <td class="cart__product__item__title">
+                                        <div class="cart__price">
+                                            <h6>{{this.date}}</h6>
+                                        </div>
+                                    </td>
+                                    <td class="cart__product__item">{{this.deliveryDetails.address}}, {{this.deliveryDetails.locality}}, {{this.deliveryDetails.city}},
+                                        {{this.deliveryDetails.state}}, {{this.deliveryDetails.zip}}
+                                    </td>
+                                    <td class="cart__quantity">
+                                        {{this.deliveryDetails.phoneNumber}}
+                                    </td>
+                                    <td class="cart__total">₹ {{this.amount}}</td>
+                                    <td class="cart__close"><a href="/viewOrderedProducts/{{this._id}}" class="btn btn-primary">View</a></td>
+                                </tr>
+                            </tbody>
+                                {{/each}}
+                        </table>
                     </div>
                 </div>
-                {{/each}}
-            </div>
-            {{/each}}
+            </div>  
         </div>
-    </div>
 </section>
 <!-- Shop Cart Section End -->
 
@@ -80,7 +74,7 @@
                     </div>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
                         cilisis.</p>
-                    <div class="footer__payment">
+                    <div class="">
                         <a href="#"><img src="/img/payment/payment-1.png" alt=""></a>
                         <a href="#"><img src="/img/payment/payment-2.png" alt=""></a>
                         <a href="#"><img src="/img/payment/payment-3.png" alt=""></a>
@@ -146,5 +140,5 @@
 <!-- Footer Section End -->
 
 <script>
-   
+
 </script>

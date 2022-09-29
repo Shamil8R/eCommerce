@@ -16,7 +16,11 @@ const orderSchema = new mongoose.Schema({
         },
         totalPrice: {
             type: Number
-        }    
+        },
+        status: {
+            type: String,
+            default: "Pending"
+        },    
     }],
     amount: {
         type: Number,
@@ -26,32 +30,12 @@ const orderSchema = new mongoose.Schema({
         type: Object,
         required: true,
     },
-    status: {
-        type: String,
-        default: "Pending"
-    },
     paymentMethod: {
         type: String,
         required: true
     },
     date: {
         type: String
-    },
-    isShipped: {
-        type: Boolean,
-        default: false,
-    },
-    isOutForDelivery: {
-        type: Boolean,
-        default: false,
-    },
-    isDelivered: {
-        type: Boolean,
-        default: false,
-    },
-    isCancelled: {
-        type: Boolean,
-        default: false,
     }
 })
 

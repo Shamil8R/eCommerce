@@ -65,9 +65,9 @@ router.get('/orders', adminAuth, adminController.viewOrders);
 router.get('/viewProducts/:id',adminAuth, adminController.getOrderedProducts);
 router.post('/changeDeliveryStatus',adminController.changeDeliveryStatus);
 
-// router.use((req,res,next) => {
-//       next(createError(404))
-// })
+router.use((req,res,next) => {
+      next(createError(404))
+})
 
 router.use((err,req,res,next) => {
       console.log("admin error route handler");

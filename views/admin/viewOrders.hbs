@@ -18,7 +18,7 @@
                             <th>Date</th>
                             <th>Products</th>
                             <th>Total</th>
-                            <th>Status</th>
+                            {{!-- <th>Status</th>  --}}
                             <th>Payment Method</th>
                         </tr>
                     </thead>
@@ -31,7 +31,7 @@
                                 <td><a href="/admin/viewProducts/{{this._id}}" class="btn btn-primary">View Products</a>
                                 </td>
                                 <td><span class="">{{this.amount}}</span></td>
-                                <td id="">
+                                {{!-- <td id="">
                                     {{#if this.isShipped}}
                                     <button id="statusbtn" onclick="changeStatus('{{this._id}}')"
                                         class="btn btn-info">{{this.status}}</button>
@@ -48,7 +48,7 @@
                                     <button id="statusbtn" onclick="changeStatus('{{this._id}}')"
                                         class="btn btn-primary">{{this.status}}</button>
                                     {{/if}}
-                                </td>
+                                </td> --}}
                                 <td><span>{{this.paymentMethod}}</span></td>
                             </tr>
                         </div>
