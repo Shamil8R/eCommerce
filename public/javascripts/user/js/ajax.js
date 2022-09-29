@@ -13,7 +13,7 @@ function addToCart(productID) {
                     text: "Product added to cart.",
                     icon: "success",
                 })
-                $("#cartCount").load(location.href + " #cartCount");
+                $("#cartItemsCount").load(location.href + " #cartItemsCount ");
                 document.getElementById('cartCount').innerHTML = response.cartCount;
             } else {
                 swal({

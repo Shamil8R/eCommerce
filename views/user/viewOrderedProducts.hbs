@@ -1,0 +1,302 @@
+<style>
+    .product_count {
+        display: inline-block;
+        position: relative;
+        margin-bottom: 24px;
+    }
+
+    .product_count label {
+        font-size: 14px;
+        color: #777777;
+        font-family: "Roboto", sans-serif;
+        font-weight: normal;
+        padding-right: 10px;
+    }
+
+    .product_count input {
+        width: 76px;
+        border: 1px solid #eeeeee;
+        border-radius: 3px;
+        padding-left: 10px;
+    }
+
+    .product_count button {
+        display: block;
+        border: none;
+        background: transparent;
+        box-shadow: none;
+        cursor: pointer;
+        position: absolute;
+        right: 0px;
+        font-size: 14px;
+        color: #cccccc;
+        -webkit-transition: all 0.3s ease 0s;
+        -moz-transition: all 0.3s ease 0s;
+        -o-transition: all 0.3s ease 0s;
+        transition: all 0.3s ease 0s;
+    }
+
+    .product_count button:hover {
+        color: #222222;
+    }
+
+    .product_count .increase {
+        top: -4px;
+    }
+
+    .product_count .reduced {
+        bottom: -8px;
+    }
+</style>
+{{#if order}}
+<!-- Shop Cart Section Begin -->
+<section class="shop-cart spad">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                {{#each order.products}}
+                <div class="card mb-3" style="max-width: 540px;">
+                    <div class="row no-gutters">
+                        <div class="col-md-4 d-flex align-items-center">
+                            <img src="/product-images/{{this.product.img.[0]}}" class="card-img">
+                        </div>
+                        <div class="col-md-8">
+                            <div class="card-body">
+                                <a href="/productDetails/{{this._id}}"
+                                    class="card-title font-weight-bold text-dark">{{this.product.productName}}</a>
+                                <h6 class="card-title ">{{this.product.brandName}}</h6>
+                                {{!-- <p class="card-text">This is a wider card with supporting text below as a natural
+                                    lead-in
+                                    to
+                                    additional content. This content is a little bit longer.</p> --}}
+                                <div class="">
+                                    <div class="d-flex">
+                                        <p class="card-text text-danger font-weight-bold pr-2 mb-1">₹
+                                            {{this.product.price}}
+                                        </p>
+
+                                    </div>
+                                    <div class="d-flex">
+                                        <p class="card-text font-weight-bold pr-2 mb-1">
+                                           Qty: <span style="color: #111;">{{this.quantity}}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                                <p class="card-text m-0"><strong class="">Status: <span style="color: #111;">{{this.status}}</span></strong></p>
+                                <p class="card-text"><small class="text-muted">Delivery by one week.</small></p>
+                                {{!-- <div class="cart__quantity">
+                                    <div class="pro-qty">
+                                        <input type="text" value={{this.quantity}}>
+                                    </div>
+                                </div> --}}
+
+                                <div class="d-flex">
+                                    {{#if (delivered this.status)}}
+                                    <div>
+                                        <a href="#" onclick="changeStatus('{{this._id}}')"
+                                            class="card-text text-secondary pr-2" style="font-size: 13px;">Return</a>
+                                    </div>
+                                    {{/if}}
+                                    {{#if (cancelled this.status)}}
+                                    <div>
+                                        <a href="#" onclick="changeProductOrderStatus('{{this._id}}', 'Cancelled')"
+                                            class="card-text text-danger pr-2" style="font-size: 13px;">Cancel</a>
+                                    </div>
+                                    {{/if}}
+                                    {{!-- <div>
+                                        <a href="" class="card-text text-secondary" style="font-size: 13px;">Move to
+                                            Wishlist</a>
+                                    </div> --}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+            <div class="col-lg-6">
+                {{!-- <div class="row"> --}}
+                    {{!-- <div class="col-lg-6"> --}}
+                        {{!--
+                    </div> --}}
+                    {{!-- <div class="col-lg-4 offset-lg-2"> --}}
+                        <div class="cart__total__procced">
+                            <div class="">
+                                <div>
+                                    <p  class="text-black font-weight-bold m-0">Order ID: <span style="color: #111;" class="">{{order._id}}</span>
+                                    </p>
+                                    <p  class="text-black font-weight-bold m-0">Order Date: <span style="color: #111;" class="">{{order.date}}</span>
+                                    </p>
+                                    <p  class="text-black font-weight-bold m-0">Payment Method:
+                                        <span style="color: #111;" class="">{{order.paymentMethod}}</span></p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="">
+                                <div>
+                                    <p class="text-black font-weight-bold">Address: </p>
+                                    <p style="color: #111;" class="text-black font-weight-bold m-0">{{order.deliveryDetails.name}}</p>
+                                    <p style="color: #111;" class="text-black font-weight-bold m-0">{{order.deliveryDetails.phoneNumber}}</p>
+                                    <p style="color: #111;" class="text-black font-weight-bold">{{order.deliveryDetails.address}},
+                                        {{order.deliveryDetails.locality}},
+                                        {{order.deliveryDetails.city}}
+                                        ,
+                                        {{order.deliveryDetails.state}}
+                                        -
+                                        {{order.deliveryDetails.zip}}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="pt-3">
+                                <p class="text-black font-weight-bold"></p>
+                                {{#each order.products}}
+                                <div class="d-flex">
+                                    <div class="pr-2">
+                                        <p class="text-black font-weight-bold m-0">{{inc @index}}.</p>
+                                    </div>
+                                    <div class="w-75">
+                                        <p  style="color: #111;" class="text-black font-weight-bold m-0">{{this.product.productName}}</p>
+                                    </div>
+                                    <div style="width:20%" class="">
+                                        <p class="text-black font-weight-bold m-0"> x{{this.quantity}}</p>
+                                    </div>
+                                    <div style="width: 15%" class="">
+                                        <p  style="color: #111;" class="text-danger font-weight-bold m-0">₹ {{this.totalPrice}}</p>
+                                    </div>
+                                </div>
+                                {{/each}}
+                            </div>
+                            <hr>
+                            <ul>
+                                {{!-- <li>Subtotal <span>$ 750.0</span></li> --}}
+                                {{!-- <li>Coupon Discount<span>$ 750.0</span></li> --}}
+                                <li>Total <span id="price">₹ {{order.amount}}</span></li>
+                                {{!-- <li>Convenience Fee<span>$ 750.0</span></li> --}}
+
+                            </ul>
+                            <a class="primary-btn">Invoice</a>
+                        </div>
+                        {{!--
+                    </div> --}}
+                    {{!-- </div> --}}
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-6 col-md-6 col-sm-12">
+                <div class="cart__btn">
+                    <a href="/products">Continue Shopping</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{{/if}}
+
+<!-- Footer Section Begin -->
+<footer class="footer">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-4 col-md-6 col-sm-7">
+                <div class="footer__about">
+                    <div class="footer__logo">
+                        <a href="./index.html"><img src="/img/logo.png" alt=""></a>
+                    </div>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+                        cilisis.</p>
+                    <div class="footer__payment">
+                        <a href="#"><img src="/img/payment/payment-1.png" alt=""></a>
+                        <a href="#"><img src="/img/payment/payment-2.png" alt=""></a>
+                        <a href="#"><img src="/img/payment/payment-3.png" alt=""></a>
+                        <a href="#"><img src="/img/payment/payment-4.png" alt=""></a>
+                        <a href="#"><img src="/img/payment/payment-5.png" alt=""></a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-5">
+                <div class="footer__widget">
+                    <h6>Quick links</h6>
+                    <ul>
+                        <li><a href="#">About</a></li>
+                        <li><a href="#">Blogs</a></li>
+                        <li><a href="#">Contact</a></li>
+                        <li><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-2 col-md-3 col-sm-4">
+                <div class="footer__widget">
+                    <h6>Account</h6>
+                    <ul>
+                        <li><a href="#">My Account</a></li>
+                        <li><a href="#">Orders Tracking</a></li>
+                        <li><a href="#">Checkout</a></li>
+                        <li><a href="#">Wishlist</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-8 col-sm-8">
+                <div class="footer__newslatter">
+                    <h6>NEWSLETTER</h6>
+                    <form action="#">
+                        <input type="text" placeholder="Email">
+                        <button type="submit" class="site-btn">Subscribe</button>
+                    </form>
+                    <div class="footer__social">
+                        <a href="#"><i class="fa fa-facebook"></i></a>
+                        <a href="#"><i class="fa fa-twitter"></i></a>
+                        <a href="#"><i class="fa fa-youtube-play"></i></a>
+                        <a href="#"><i class="fa fa-instagram"></i></a>
+                        <a href="#"><i class="fa fa-pinterest"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+                <div class="footer__copyright__text">
+                    <p>Copyright &copy;
+                        <script>document.write(new Date().getFullYear());</script> All rights reserved | This template
+                        is made with <i class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com"
+                            target="_blank">Colorlib</a>
+                    </p>
+                </div>
+                <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- Footer Section End -->
+
+<script>
+    function changeProductOrderStatus(orderedProductId, status) {
+        swal({
+            text: "Are you sure that you want to cancel this product?",
+            icon: "warning",
+            buttons: true,
+            dangerMode: true,
+        }).then((willDelete) => {
+            if (willDelete) {
+                $.ajax({
+                    url: '/changeOrderStatus',
+                    method: 'post',
+                    data: {
+                        orderedProductId,
+                        status
+                    },
+                    success: (response) => {
+                        swal("Your order have been cancelled.", {
+                            icon: "success",
+                            button: false
+                        });
+                        setTimeout(() => {
+                            location.reload()
+                        }, 1000)
+                    }
+                })
+            }
+        });
+
+    }
+</script>

@@ -46,6 +46,7 @@ router.post('/updateAddress', userController.updateAddress);
 router.post('/deleteAddress',userController.deleteAddress);
 router.get('/orders',userController.getOrders);
 router.get('/moreDetails/:id', userController.getSingleOrder)
+router.get('/viewOrderedProducts/:id', userController.getSingleOrder)
 
 //Products
 router.get('/products', userController.getProducts);
@@ -60,16 +61,16 @@ router.post('/addToWishlist', userController.addToWishlist);
 router.get('/wishlist', userAuth, userController.getWishlist);
 router.post('/removeWishlistProduct', userController.removeWishlistProduct);
 router.post('/placeOrder', userController.placeOrder);
-router.get('/orderPlaced',userController.orderPlaced);
-router.post('/verifyPayment', userController.verifyPayment)
+router.get('/orderPlaced',userAuth,userController.orderPlaced);
+router.post('/verifyPayment', userController.verifyPayment);
+router.post('/changeOrderStatus', userController.changeOrderStatus);
 
 
-
-router.use((err,req,res,next) => {
-    console.log("reached user router error handler");
-    res.status(err.status || 500);
-    res.render('user/error', {layout: 'layout'})
-})
+// router.use((err,req,res,next) => {
+//     console.log("user error route handler")
+//     res.status(err.status || 500);
+//     res.render('user/error',{layout: 'layout'});
+// })
 
 
 module.exports = router;

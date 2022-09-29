@@ -4,65 +4,127 @@
 
 <div>
     <!-- Shop Cart Section Begin -->
-<section class="shop-cart spad">
-    <div class="pl-4 pt-4">
-        <div class="row">
-            <div class="col-6">
-                {{#each orders}}
-                {{#each this.products}}
-                <div class="card mb-3" style="max-width: 540px;">
-                    <div class="row no-gutters">
-                        <div class="col-md-4 d-flex align-items-center">
-                            <img src="/product-images/{{this.product.img.[0]}}" class="card-img">
-                        </div>
-                        <div class="col-md-8">
-                            <div class="card-body">
-                                <h6 class="card-title font-weight-bold mb-0">{{this.product.productName}}</h6>
-                                <h5 class="card-title">{{this.product.brandName}}</h5>
-                                {{!-- <p class="card-text">This is a wider card with supporting text below as a
-                                    natural
-                                    lead-in
-                                    to
-                                    additional content. This content is a little bit longer.</p> --}}
-                                <div class="">
+    <section class="shop-cart spad">
+        <div class="pl-4 pt-4">
+            <div class="row">
+                <div class="col-6">
+                    {{#each orders.products}}
+                    <div class="card mb-3" style="max-width: 540px;">
+                        <div class="row no-gutters">
+                            <div class="col-md-4 d-flex align-items-center">
+                                <img src="/product-images/{{this.product.img.[0]}}" class="card-img">
+                            </div>
+                            <div class="col-md-8">
+                                <div class="card-body">
+                                    <h6 class="card-title font-weight-bold mb-0">{{this.product.productName}}</h6>
+                                    <h5 class="card-title">{{this.product.brandName}}</h5>
+                                    {{!-- <p class="card-text">This is a wider card with supporting text below as a
+                                        natural
+                                        lead-in
+                                        to
+                                        additional content. This content is a little bit longer.</p> --}}
                                     <div class="">
-                                        <p class="card-text text-danger font-weight-bold mb-0">₹ {{this.totalPrice}}
-                                        </p>
-                                        <p class="text-dark mb-0">Quantity:
-                                            <span class="font-weight-bold">{{this.quantity}}</span>
-                                        </p>
-                                        {{!-- <p class="text-dark mb-0">Status:
-                                            <span class="font-weight-bold"></span>
-                                        </p> --}}
+                                        <div class="">
+                                            <p class="card-text text-danger font-weight-bold mb-0">₹ {{this.totalPrice}}
+                                            </p>
+                                            <p class="text-dark mb-0">Quantity:
+                                                <span class="font-weight-bold">{{this.quantity}}</span>
+                                            </p>
+                                            {{!-- <p class="text-dark mb-0">Status:
+                                                <span class="font-weight-bold"></span>
+                                            </p> --}}
+                                        </div>
                                     </div>
-                                </div>
 
-                                <div class="">
-                                    <div>
-                                        <p class="card-text pr-2" style="font-size: 13px;">Order Date: 
-                                            <span class="font-weight-bold">{{../this.date}}</span>
-                                        </p>
+                                    <div class="">
+                                        <div>
+                                            <p class="card-text pr-2" style="font-size: 13px;">Order Date:
+                                                <span class="font-weight-bold">{{../this.date}}</span>
+                                            </p>
+                                        </div>
+                                        {{!-- <div>
+                                            <a href="/moreDetails/{{this._id}}" class="card-text text-primary"
+                                                style="font-size: 13px;">More Details</a>
+                                        </div> --}}
                                     </div>
-                                    {{!-- <div>
-                                        <a href="/moreDetails/{{this._id}}" class="card-text text-primary" style="font-size: 13px;">More Details</a>
-                                    </div> --}}
                                 </div>
                             </div>
                         </div>
                     </div>
+                    {{/each}}
                 </div>
-                {{/each}}
-                {{/each}}
-            </div>
-            <div class="col-6">
-                <div class="bg-primary h-100">
-                    
-                </div>
-            </div>
+                <div class="col-6">
+                    <div class="h-100">
+                        <div class="cart__total__procced">
+                            <div class="pt-4">
+                                <div>
+                                    <p style="color: #111;" class="text-black font-weight-bold">Order ID: {{orders._id}}
+                                    </p>
+                                    <p style="color: #111;" class="text-black font-weight-bold">Payment Method:
+                                        {{orders.paymentMethod}}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="">
+                                <div>
+                                    <p style="color: #111';" class="text-black font-weight-bold">Address: </p>
+                                    <p style="color: #111;" class="text-black font-weight-bold m-0">
+                                        {{orders.deliveryDetails.name}}</p>
+                                    <p style="color: #111;" class="text-black font-weight-bold m-0">
+                                        {{orders.deliveryDetails.phoneNumber}}</p>
+                                    <p style="color: #111;" class="text-black font-weight-bold">
+                                        {{orders.deliveryDetails.address}},
+                                        {{orders.deliveryDetails.locality}},
+                                        {{orders.deliveryDetails.city}}
+                                        ,
+                                        {{orders.deliveryDetails.state}}
+                                        -
+                                        {{orders.deliveryDetails.zip}}</p>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="pt-3">
+                                <p style="color: #111';" class="text-black font-weight-bold"></p>
+                                {{#each orders.products}}
+                                <div class="d-flex">
+                                    <div class="pr-2">
+                                        <p class="text-black font-weight-bold m-0">{{inc @index}}.</p>
+                                    </div>
+                                    <div class="w-75">
+                                        <p style="color: #111;" class="text-black font-weight-bold m-0">
+                                            {{this.product.productName}}</p>
+                                    </div>
+                                    <div style="width:20%" class="">
+                                        <p class="text-black font-weight-bold m-0"> x{{this.quantity}}</p>
+                                    </div>
+                                    <div style="width: 15%" class="">
+                                        <p class="text-danger font-weight-bold m-0">₹ {{this.totalPrice}}</p>
+                                    </div>
+                                </div>
+                                {{/each}}
+                            </div>
+                            <hr>
+                            <div class="">
 
+                                {{!-- <li>Subtotal <span>$ 750.0</span></li> --}}
+                                {{!-- <li>Coupon Discount<span>$ 750.0</span></li> --}}
+                                <div class="d-flex justify-content-between">
+                                    <div>
+                                        <p style="color: #111;" class="text-black font-weight-bold">Total </p>
+                                    </div>
+                                    <div>
+                                        <p style="" class="text-danger font-weight-bold pr-5" id="price">₹ {{orders.amount}}</p>
+                                    </div>
+                                </div>
+                                {{!-- <li>Convenience Fee<span>$ 750.0</span></li> --}}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
         </div>
-    </div>
-</section>
-<!-- Shop Cart Section End -->
+    </section>
+    <!-- Shop Cart Section End -->
 
 </div>
