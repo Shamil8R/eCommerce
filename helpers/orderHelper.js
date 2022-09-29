@@ -13,20 +13,22 @@ module.exports = {
     placeOrder: (orderDetails, products, totalPrice, userId) => {
         return new Promise(async (resolve, reject) => {
             // console.log(products)
-            const date = new Date();
-            const orderDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + (date.getHours() + 1) + ":" + (date.getMinutes() + 1);
-            let status = orderDetails.payment === 'COD' ? 'Placed' : 'Pending';
-            const order = new orderModel({
-                userId: userId,
-                products: products,
-                deliveryDetails: orderDetails,
-                amount: totalPrice,
-                status: status,
-                paymentMethod: orderDetails.payment,
-                date: orderDate
-            })
-            const result = await order.save()
-            resolve(result._id)
+            try {
+                const date = new Date();
+                const orderDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + (date.getHours() + 1) + ":" + (date.getMinutes() + 1);
+                const order = new orderModel({
+                    userId: userId,
+                    products: products,
+                    deliveryDetails: orderDetails,
+                    amount: totalPrice,
+                    paymentMethod: orderDetails.payment,
+                    date: orderDate
+                })
+                const result = await order.save()
+                resolve(result._id)
+            } catch (error) {
+                reject(error);
+            }
         })
     },
 
@@ -52,24 +54,22 @@ module.exports = {
         })
     },
 
-    // getSingleOrderDetails: (id) => {
-    //     return new Promise(async (resolve,reject) => {
-    //         try {//Pull, store and insert
-    //             const selectedProduct = await orderModel.findOne({"products._id": id},{_id: 0, "products.$": 1}).populate('products.product').lean()
-    //             // await orderModel.findOne({"products._id": selectedProduct})
-    //             resolve({selectedProduct, orderDetails})
-    //         } catch (error) {
-    //             reject(error)                
-    //         }
-    //     })
-    // },
+    getSingleOrderDetails: (id) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const order = await orderModel.findById(id).populate('products.product').lean()
+                resolve(order)
+            } catch (error) {
+                reject(error)
+            }
+        })
+    },
 
     getOrderDetails: (id) => {
         return new Promise(async (resolve, reject) => {
             try {
-                const orders = await orderModel.find({ _id: id }).populate('products.product').lean()
-                console.log(orders);
-                resolve(orders)
+                const orders = await orderModel.find({ _id: id }).populate('products.product').lean();
+                resolve(orders[0])
             } catch (error) {
                 reject(error)
             }
@@ -114,11 +114,13 @@ module.exports = {
 
     changePaymentStatus: (orderId) => {
         return new Promise(async (resolve, reject) => {
+            const product2 = await orderModel.findById(orderId).lean();
             await orderModel.updateOne({ _id: orderId },
                 {
-                    status: "Placed"
+                    "products.$[].status": "Placed"
                 })
             resolve();
+            const product = await orderModel.findById(orderId).lean();
         })
     },
 
@@ -163,6 +165,12 @@ module.exports = {
                                 isCancelled: true,
                             });
                             break;
+                        case "Cancelled": await orderModel.findByIdAndUpdate(orderId,
+                            {
+                                status: "Placed",
+                                isCancelled: false,
+                            });
+                            break;
                         default: ""
                             break;
                     }
@@ -170,6 +178,19 @@ module.exports = {
                 }
             } catch (error) {
                 reject(error)
+            }
+        })
+    },
+
+    changeOrderStatusUser: (orderedProductId, status) => {
+        return new Promise(async (resolve, reject) => {
+            try {
+                await orderModel.updateOne({ "products._id": orderedProductId },
+                    {
+                        "products.$.status": status
+                    })
+            } catch (error) {
+                reject(error);
             }
         })
     }

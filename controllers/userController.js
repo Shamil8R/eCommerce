@@ -331,14 +331,22 @@ module.exports = {
                 products[i].totalPrice = totalPrice.value.productPrice[i];
             }
 
-            console.log(products);
+            // console.log(products);
             // console.log(cartData.value.products);
-            res.render('user/checkout', {
-                products,
-                user: req.session.user,
-                totalPrice: totalPrice.value.total,
-                address: address.value.addressObj
-            })
+            if(address.value){
+                res.render('user/checkout', {
+                    products,
+                    user: req.session.user,
+                    totalPrice: totalPrice.value.total,
+                    address: address.value.addressObj
+                })
+            }else{
+                res.render('user/checkout', {
+                    products,
+                    user: req.session.user,
+                    totalPrice: totalPrice.value.total,
+                })
+            }
         } catch (error) {
             console.log(error)
             next(error);
@@ -399,6 +407,8 @@ module.exports = {
 
             for (let i = 0; i < products.length; i++) {
                 products[i].totalPrice = totalPrice.value.productPrice[i];
+                if(req.body.payment === 'COD')
+                    products[i].status = "Placed"
             }
 
             
@@ -447,11 +457,15 @@ module.exports = {
 
     getSingleOrder: async (req, res, next) => {
         try {
-            // const response = await orderHelper.getSingleOrderDetails(req.params.id);
-            // console.log(response.selectedProduct);
-            // console.log('--------------------------------');
-            // console.log(response.orderDetails);
-            res.render('user/moreDetails', { layout: 'user-layout' })
+            const [orders, wishlistCount, cartCount] = await Promise.allSettled([
+                orderHelper.getSingleOrderDetails(req.params.id),
+                productHelper.getWishlistProductsCount(req.session.user._id),
+                productHelper.getCartProductsCount(req.session.user._id)
+            ])
+            console.log(orders.value);
+            req.session.user.wishlistCount = wishlistCount.value;
+            req.session.user.cartCount = cartCount.value;
+            res.render('user/viewOrderedProducts',{layout: 'user-layout', order: orders.value, user: req.session.user})
         } catch (error) {
             console.log(error)
             console.log("what error");
@@ -461,7 +475,6 @@ module.exports = {
 
     verifyPayment: async (req,res,next) => {
         try{
-            console.log(req.body);
             const result = await orderHelper.verifyPayment(req.body)
             if(result.status){
                 await orderHelper.changePaymentStatus(req.body['order[receipt]'])
@@ -474,6 +487,16 @@ module.exports = {
             console.log(err)
             next(err)
         }
-    }
+    },
 
+
+    changeOrderStatus: async (req,res,next) => {
+        try {
+            await orderHelper.changeOrderStatusUser(req.body.orderedProductId, req.body.status);
+            res.json(true)            
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    }
 }

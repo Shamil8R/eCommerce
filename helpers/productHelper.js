@@ -41,7 +41,6 @@ module.exports = {
             } catch (error) {
                 reject(error);
             }
-
         })
     },
 
@@ -52,6 +51,7 @@ module.exports = {
                 // console.log(product[0].img[0]);
                 resolve(product);
             } catch (error) {
+                console.log("reached catch");
                 reject(error);
             }
         })

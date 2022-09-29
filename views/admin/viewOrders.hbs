@@ -1,3 +1,5 @@
+{{!-- <script src="https://code.jquery.com/jquery-3.6.1.js" integrity="sha256-3zlB5s2uwoUzrXK3BT7AX3FyvojsraNFxCc2vC/7pNI="
+    crossorigin="anonymous"></script> --}}
 <div>
     <h1 class="text-center">Order Data</h1>
 </div>
@@ -16,27 +18,44 @@
                             <th>Date</th>
                             <th>Products</th>
                             <th>Total</th>
-                            <th>Status</th>
+                            {{!-- <th>Status</th>  --}}
                             <th>Payment Method</th>
                         </tr>
                     </thead>
                     <tbody>
                         {{#each orders}}
-                        <tr>
-                            <td><span class="name">{{this._id}}</span> </td>
-                            <td><span class="">{{this.date}}</span> </td>
-                            <td><a href="/admin/viewProducts/{{this._id}}" class="btn btn-primary">View Products</a>
-                            </td>
-                            <td><span class="">{{this.amount}}</span></td>
-                            <td>
-                                <button onclick="changeStatus('{{this._id}}')" class="btn btn-info">{{this.status}}</button>
-                            </td>
-                            <td><span>{{this.paymentMethod}}</span></td>
-                        </tr>
+                        <div id="status">
+                            <tr>
+                                <td><span class="name">{{this._id}}</span> </td>
+                                <td><span class="">{{this.date}}</span> </td>
+                                <td><a href="/admin/viewProducts/{{this._id}}" class="btn btn-primary">View Products</a>
+                                </td>
+                                <td><span class="">{{this.amount}}</span></td>
+                                {{!-- <td id="">
+                                    {{#if this.isShipped}}
+                                    <button id="statusbtn" onclick="changeStatus('{{this._id}}')"
+                                        class="btn btn-info">{{this.status}}</button>
+                                    {{else if this.isOutForDelivery}}
+                                    <button id="statusbtn" onclick="changeStatus('{{this._id}}')"
+                                        class="btn btn-warning">{{this.status}}</button>
+                                    {{else if this.isDelivered}}
+                                    <button id="statusbtn" onclick="changeStatus('{{this._id}}')"
+                                        class="btn btn-success">{{this.status}}</button>
+                                    {{else if this.isCancelled}}
+                                    <button id="statusbtn" onclick="changeStatus('{{this._id}}')"
+                                        class="btn btn-danger">{{this.status}}</button>
+                                    {{else}}
+                                    <button id="statusbtn" onclick="changeStatus('{{this._id}}')"
+                                        class="btn btn-primary">{{this.status}}</button>
+                                    {{/if}}
+                                </td> --}}
+                                <td><span>{{this.paymentMethod}}</span></td>
+                            </tr>
+                        </div>
                         {{/each}}
                     </tbody>
                 </table>
-                
+
             </div>
         </div>
     </div>
@@ -52,11 +71,14 @@
             },
             success: (response) => {
                 if (response) {
-                   console.log(response)
+                    setTimeout(($) => {
+                        $("#status").load(location.href + " #status");
+                    }, 10)
                 }
             }
         })
-    } 
+    }
+
 
 
 </script>
