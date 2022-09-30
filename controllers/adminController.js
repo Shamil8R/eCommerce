@@ -3,6 +3,7 @@ const categoryHelper = require('../helpers/categoryHelper');
 const orderHelper = require('../helpers/orderHelper');
 const productHelper = require('../helpers/productHelper');
 const userHelper = require('../helpers/userHelper');
+const couponHelper = require('../helpers/couponHelper');
 
 module.exports = {
 
@@ -25,8 +26,8 @@ module.exports = {
                 res.redirect('/admin')
             }
         } catch (err) {
-            console.log(error)
-            next(error);
+            console.log(err)
+            next(err);
         }
     },
 
@@ -66,8 +67,8 @@ module.exports = {
             await productHelper.addProduct(req.body, req.files['product-images'])
             res.redirect('/admin/viewProducts')
         } catch (err) {
-            console.log(error)
-            next(error);
+            console.log(err)
+            next(err);
         }
     },
 
@@ -171,6 +172,24 @@ module.exports = {
         } catch (error) {
             console.log(error);
             next(error)
+        }
+    },
+
+    changeOrderedProductStatus: async (req,res,next) => {
+        try {
+            await orderHelper.changeOrderStatusUser(req.body.orderedProductId, req.body.status);
+            res.json({status: true})
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+
+    getCoupons: async (req,res,next) => {
+        try {
+            await couponHelper.addCoupons(req.body);
+        } catch (error) {
+            console.log(error)
         }
     }
 }

@@ -189,6 +189,7 @@ module.exports = {
                     {
                         "products.$.status": status
                     })
+                resolve();    
             } catch (error) {
                 reject(error);
             }

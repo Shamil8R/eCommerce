@@ -20,23 +20,63 @@ app.engine('hbs', hbs.engine(
   {
     helpers:
     {
+      not: value => !value,
+
       inc: function (value) {
         return parseInt(value) + 1;
       },
-      cancelled: function (value) { 
-        if (value === 'Cancelled' || value === 'Delivered') {   //For cancel button
-          return false;
-        } else {
+      cancelled: function (value) {
+        if (value === 'Cancelled') {   //For cancel button
           return true;
+        } else {
+          return false;
         }
       },
       delivered: (value) => {
-        if(value === 'Delivered'){    //For cancel button
+        if (value === 'Delivered') {    //For cancel button
+          return true;
+        } else {
+          return false;
+        }
+      },
+      rejected: (value) => {
+        if (value === 'Rejected') {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      shipped: (value) => {
+        if (value === 'Shipped') {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      outForDelivery: (value) => {
+        if (value === 'Out For Delivery') {
+          return true;
+        } else {
+          return false;
+        }
+      },
+
+      delivered: (value) => {
+        if(value === 'Delivered'){
           return true;
         }else{
           return false;
         }
-      }
+      },
+      upi: (value) => {
+        if(value === 'UPI'){
+          return true;
+        }else{
+          return false;
+        }
+      } 
     },
 
     extname: 'hbs', defaultLayout: 'user-layout', layoutsDir: __dirname + '/views/layout/'

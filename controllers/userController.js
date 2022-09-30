@@ -493,7 +493,7 @@ module.exports = {
     changeOrderStatus: async (req,res,next) => {
         try {
             await orderHelper.changeOrderStatusUser(req.body.orderedProductId, req.body.status);
-            res.json(true)            
+            res.json({status: true});            
         } catch (error) {
             console.log(error);
             next(error);

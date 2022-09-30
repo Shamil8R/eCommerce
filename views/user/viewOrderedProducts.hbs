@@ -78,12 +78,34 @@
                                     </div>
                                     <div class="d-flex">
                                         <p class="card-text font-weight-bold pr-2 mb-1">
-                                           Qty: <span style="color: #111;">{{this.quantity}}</span>
+                                            Qty: <span style="color: #111;">{{this.quantity}}</span>
                                         </p>
                                     </div>
                                 </div>
-                                <p class="card-text m-0"><strong class="">Status: <span style="color: #111;">{{this.status}}</span></strong></p>
-                                <p class="card-text"><small class="text-muted">Delivery by one week.</small></p>
+                                <p class="card-text m-0"><strong class="">Status: <span
+                                            style="color: #111;">{{this.status}}</span></strong></p>
+                                {{#if (rejected this.status)}}
+                                <p class="card-text">
+                                <p class="text-muted">Your order has been rejected by the admin.
+                                    Refund will be initiated within 72hrs.
+                                </p>
+                                </p>
+                                {{/if}}
+
+                                {{#if (cancelled this.status)}}
+                                <p class="card-text">
+                                <p class="text-muted">You cancelled this order.</p>
+                                </p>
+                                {{/if}}
+
+                                {{#if (delivered this.status)}}
+                                <p class="text-muted">Delivered on Monday, 23/10/2022</p>
+                                </p>
+                                {{/if}}
+
+
+
+
                                 {{!-- <div class="cart__quantity">
                                     <div class="pro-qty">
                                         <input type="text" value={{this.quantity}}>
@@ -91,17 +113,23 @@
                                 </div> --}}
 
                                 <div class="d-flex">
-                                    {{#if (delivered this.status)}}
+                                    {{!-- {{#if (delivered this.status)}}
                                     <div>
-                                        <a href="#" onclick="changeStatus('{{this._id}}')"
+                                        <a href="#" onclick="returnProduct('{{this._id}}','Return Applied')"
                                             class="card-text text-secondary pr-2" style="font-size: 13px;">Return</a>
                                     </div>
-                                    {{/if}}
-                                    {{#if (cancelled this.status)}}
+                                    {{/if}} --}}
+
+
+                                    {{#if (not (delivered this.status))}}
+                                    {{#if (not (rejected this.status))}}
+                                    {{#if (not (cancelled this.status))}}
                                     <div>
                                         <a href="#" onclick="changeProductOrderStatus('{{this._id}}', 'Cancelled')"
                                             class="card-text text-danger pr-2" style="font-size: 13px;">Cancel</a>
                                     </div>
+                                    {{/if}}
+                                    {{/if}}
                                     {{/if}}
                                     {{!-- <div>
                                         <a href="" class="card-text text-secondary" style="font-size: 13px;">Move to
@@ -123,21 +151,27 @@
                         <div class="cart__total__procced">
                             <div class="">
                                 <div>
-                                    <p  class="text-black font-weight-bold m-0">Order ID: <span style="color: #111;" class="">{{order._id}}</span>
+                                    <p class="text-black font-weight-bold m-0">Order ID: <span style="color: #111;"
+                                            class="">{{order._id}}</span>
                                     </p>
-                                    <p  class="text-black font-weight-bold m-0">Order Date: <span style="color: #111;" class="">{{order.date}}</span>
+                                    <p class="text-black font-weight-bold m-0">Order Date: <span style="color: #111;"
+                                            class="">{{order.date}}</span>
                                     </p>
-                                    <p  class="text-black font-weight-bold m-0">Payment Method:
-                                        <span style="color: #111;" class="">{{order.paymentMethod}}</span></p>
+                                    <p class="text-black font-weight-bold m-0">Payment Method:
+                                        <span style="color: #111;" class="">{{order.paymentMethod}}</span>
+                                    </p>
                                 </div>
                             </div>
                             <hr>
                             <div class="">
                                 <div>
                                     <p class="text-black font-weight-bold">Address: </p>
-                                    <p style="color: #111;" class="text-black font-weight-bold m-0">{{order.deliveryDetails.name}}</p>
-                                    <p style="color: #111;" class="text-black font-weight-bold m-0">{{order.deliveryDetails.phoneNumber}}</p>
-                                    <p style="color: #111;" class="text-black font-weight-bold">{{order.deliveryDetails.address}},
+                                    <p style="color: #111;" class="text-black font-weight-bold m-0">
+                                        {{order.deliveryDetails.name}}</p>
+                                    <p style="color: #111;" class="text-black font-weight-bold m-0">
+                                        {{order.deliveryDetails.phoneNumber}}</p>
+                                    <p style="color: #111;" class="text-black font-weight-bold">
+                                        {{order.deliveryDetails.address}},
                                         {{order.deliveryDetails.locality}},
                                         {{order.deliveryDetails.city}}
                                         ,
@@ -155,13 +189,15 @@
                                         <p class="text-black font-weight-bold m-0">{{inc @index}}.</p>
                                     </div>
                                     <div class="w-75">
-                                        <p  style="color: #111;" class="text-black font-weight-bold m-0">{{this.product.productName}}</p>
+                                        <p style="color: #111;" class="text-black font-weight-bold m-0">
+                                            {{this.product.productName}}</p>
                                     </div>
                                     <div style="width:20%" class="">
                                         <p class="text-black font-weight-bold m-0"> x{{this.quantity}}</p>
                                     </div>
                                     <div style="width: 15%" class="">
-                                        <p  style="color: #111;" class="text-danger font-weight-bold m-0">₹ {{this.totalPrice}}</p>
+                                        <p style="color: #111;" class="text-danger font-weight-bold m-0">₹
+                                            {{this.totalPrice}}</p>
                                     </div>
                                 </div>
                                 {{/each}}
@@ -270,22 +306,24 @@
 <!-- Footer Section End -->
 
 <script>
-    function changeProductOrderStatus(orderedProductId, status) {
-        swal({
-            text: "Are you sure that you want to cancel this product?",
-            icon: "warning",
-            buttons: true,
-            dangerMode: true,
-        }).then((willDelete) => {
-            if (willDelete) {
-                $.ajax({
-                    url: '/changeOrderStatus',
-                    method: 'post',
-                    data: {
-                        orderedProductId,
-                        status
-                    },
-                    success: (response) => {
+function changeProductOrderStatus(orderedProductId, status){
+    swal({
+        text: "Are you sure that you want to cancel this product?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: '/changeOrderStatus',
+                method: 'post',
+                data: {
+                    orderedProductId,
+                    status
+                },
+                success: (response) => {
+                    console.log(response)
+                    if (response.status) {
                         swal("Your order have been cancelled.", {
                             icon: "success",
                             button: false
@@ -294,9 +332,48 @@
                             location.reload()
                         }, 1000)
                     }
-                })
-            }
-        });
+                }
+            })
+        }
+    });
+}
 
-    }
+
+
+
 </script>
+
+
+{{!-- 
+function returnProduct(orderedProductId, status) {
+    swal({
+        text: "Are you sure that you want to return this product?",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    }).then((willDelete) => {
+        if (willDelete) {
+            $.ajax({
+                url: '/changeOrderStatus',
+                method: 'post',
+                data: {
+                    orderedProductId,
+                    status
+                },
+                success: (response) => {
+                    console.log(response)
+                    if (response.status) {
+                        swal({
+                            text: "Your return has been applied. Our staff will connect with you in 24 hours."
+                            icon: "success",
+                            button: false
+                        });
+                        setTimeout(() => {
+                            location.reload()
+                        }, 10000)
+                    }
+                }
+            })
+        }
+    });
+} --}}
