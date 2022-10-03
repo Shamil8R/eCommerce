@@ -3,6 +3,7 @@ const userHelper = require('../helpers/userHelper');
 const categoryHelper = require('../helpers/categoryHelper');
 const productModel = require('../models/productModel');
 const addressHelper = require('../helpers/addressHelper');
+const couponHelper = require('../helpers/couponHelper');
 const orderHelper = require('../helpers/orderHelper');
 const auth = require('../config/auth');
 
@@ -49,7 +50,7 @@ module.exports = {
             } else {
                 req.session.userData = req.body;
                 await auth.sendOtp(req.body);
-                res.render('user/otp',{layout: 'layout', phoneNumber: req.body.phoneNumber});
+                res.render('user/otp', { layout: 'layout', phoneNumber: req.body.phoneNumber });
             }
         } catch (err) {
             console.log(err)
@@ -57,20 +58,20 @@ module.exports = {
         }
     },
 
-    otpVerification: async (req,res,next) => {
-        try{
+    otpVerification: async (req, res, next) => {
+        try {
             const otp = req.body.f1 + req.body.f2 + req.body.f3 + req.body.f4 + req.body.f5 + req.body.f6;
-            const result = await auth.verifyOtp(otp,req.session.userData.phoneNumber);
-            if(result){
+            const result = await auth.verifyOtp(otp, req.session.userData.phoneNumber);
+            if (result) {
                 // console.log(result);
                 await userHelper.doSignup(req.session.userData);
                 res.redirect('/login')
-            }else{
+            } else {
                 req.session.signupErr = true;
                 req.session.errMessage = "The otp entered is invalid! Please try again!";
                 res.redirect('/signup');
             }
-        }catch(err){
+        } catch (err) {
             console.log(err);
             next(err)
         }
@@ -231,12 +232,16 @@ module.exports = {
                 productHelper.getCartItems(req.params.id),
                 productHelper.getTotalPrice(req.session.user._id),
                 productHelper.getCartProductsCount(req.session.user._id),
-                productHelper.getWishlistProductsCount(req.session.user._id)
+                productHelper.getWishlistProductsCount(req.session.user._id),
             ]);
             req.session.user.cartCount = cartCount.value;
             req.session.user.wishlistCount = wishlistCount.value;
-            // console.log(totalPrice.value);
-            // console.log(cartData);
+
+            if (cartData.value) {
+                for (let i = 0; i < cartData.value.products.length; i++) {
+                    cartData.value.products[i].totalPrice = totalPrice.value.productPrice[i];
+                }
+            }
             // console.log(totalPrice.value);
             res.render('user/cart', { cartData: cartData.value, user: req.session.user, price: totalPrice.value.total })
         } catch (error) {
@@ -315,12 +320,13 @@ module.exports = {
 
     checkout: async (req, res, next) => {
         try {
-            const [cartData, totalPrice, cartCount, wishlistCount, address] = await Promise.allSettled([
+            const [cartData, totalPrice, cartCount, wishlistCount, address, coupons] = await Promise.allSettled([
                 productHelper.getCartItems(req.session.user._id),
                 productHelper.getTotalPrice(req.session.user._id),
                 productHelper.getCartProductsCount(req.session.user._id),
                 productHelper.getWishlistProductsCount(req.session.user._id),
-                addressHelper.getAddresses(req.session.user._id)
+                addressHelper.getAddresses(req.session.user._id),
+                couponHelper.getAllCoupons()
             ]);
             req.session.user.cartCount = cartCount.value;
             req.session.user.wishlistCount = wishlistCount.value;
@@ -333,18 +339,20 @@ module.exports = {
 
             // console.log(products);
             // console.log(cartData.value.products);
-            if(address.value){
+            if (address.value) {
                 res.render('user/checkout', {
                     products,
                     user: req.session.user,
                     totalPrice: totalPrice.value.total,
-                    address: address.value.addressObj
+                    address: address.value.addressObj,
+                    coupons: coupons.value
                 })
-            }else{
+            } else {
                 res.render('user/checkout', {
                     products,
                     user: req.session.user,
                     totalPrice: totalPrice.value.total,
+                    coupons: coupons.value
                 })
             }
         } catch (error) {
@@ -407,11 +415,11 @@ module.exports = {
 
             for (let i = 0; i < products.length; i++) {
                 products[i].totalPrice = totalPrice.value.productPrice[i];
-                if(req.body.payment === 'COD')
-                    products[i].status = "Placed"
+                if (req.body.payment === 'COD')
+                    products[i].status = "Placed";
             }
 
-            
+
             const orderId = await orderHelper.placeOrder(req.body, products, total, req.session.user._id)
             const stringId = orderId.toString()
             await productHelper.removeCartItems(req.session.user._id);
@@ -465,7 +473,7 @@ module.exports = {
             console.log(orders.value);
             req.session.user.wishlistCount = wishlistCount.value;
             req.session.user.cartCount = cartCount.value;
-            res.render('user/viewOrderedProducts',{layout: 'user-layout', order: orders.value, user: req.session.user})
+            res.render('user/viewOrderedProducts', { layout: 'user-layout', order: orders.value, user: req.session.user })
         } catch (error) {
             console.log(error)
             console.log("what error");
@@ -473,27 +481,37 @@ module.exports = {
         }
     },
 
-    verifyPayment: async (req,res,next) => {
-        try{
+    verifyPayment: async (req, res, next) => {
+        try {
             const result = await orderHelper.verifyPayment(req.body)
-            if(result.status){
+            if (result.status) {
                 await orderHelper.changePaymentStatus(req.body['order[receipt]'])
-                res.json({status: true, url: '/orderPlaced'})
-            }else{
+                res.json({ status: true, url: '/orderPlaced' })
+            } else {
                 console.log("Payment failed");
-                res.json({status: false})
+                res.json({ status: false })
             }
-        }catch(err){
+        } catch (err) {
             console.log(err)
             next(err)
         }
     },
 
 
-    changeOrderStatus: async (req,res,next) => {
+    changeOrderStatus: async (req, res, next) => {
         try {
             await orderHelper.changeOrderStatusUser(req.body.orderedProductId, req.body.status);
-            res.json({status: true});            
+            res.json({ status: true });
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+
+    verifyCoupon: async (req, res, next) => {
+        try {
+            const response = await couponHelper.verifyCoupon(req.session.user._id, req.body.coupon);
+            res.json(response)
         } catch (error) {
             console.log(error);
             next(error);

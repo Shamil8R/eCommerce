@@ -52,25 +52,28 @@ router.get('/viewOrderedProducts/:id', userController.getSingleOrder)
 router.get('/products', userController.getProducts);
 router.get('/category/:id', userController.productsByCategory);
 router.get('/productDetails/:id', userController.productDetails);
+
+
+//Cart
 router.post('/addToCart', userController.addProductToCart);
 router.get('/cart/:id', userController.viewCart);
 router.post('/changeProductQuantity', userController.changeProductQuantity);
 router.post('/removeProduct', userController.removeProduct);
+
+//Orders
 router.get('/checkout',userAuth, userController.checkout);
-router.post('/addToWishlist', userController.addToWishlist);
-router.get('/wishlist', userAuth, userController.getWishlist);
-router.post('/removeWishlistProduct', userController.removeWishlistProduct);
 router.post('/placeOrder', userController.placeOrder);
 router.get('/orderPlaced',userAuth,userController.orderPlaced);
 router.post('/verifyPayment', userController.verifyPayment);
 router.post('/changeOrderStatus', userController.changeOrderStatus);
 
+//Coupons
+router.post('/applyCoupon',userController.verifyCoupon);
 
-// router.use((err,req,res,next) => {
-//     console.log("user error route handler")
-//     res.status(err.status || 500);
-//     res.render('user/error',{layout: 'layout'});
-// })
+// Wishlist
+router.post('/addToWishlist', userController.addToWishlist);
+router.get('/wishlist', userAuth, userController.getWishlist);
+router.post('/removeWishlistProduct', userController.removeWishlistProduct);
 
 
 module.exports = router;

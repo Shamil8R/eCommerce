@@ -204,9 +204,9 @@
                             </div>
                             <hr>
                             <ul>
-                                {{!-- <li>Subtotal <span>$ 750.0</span></li> --}}
-                                {{!-- <li>Coupon Discount<span>$ 750.0</span></li> --}}
-                                <li>Total <span id="price">₹ {{order.amount}}</span></li>
+                                <li>Subtotal <span>₹ {{order.subTotal}}</span></li>
+                                <li>Coupon Discount<span class="text-success">₹ {{order.couponDiscount}}</span></li>
+                                <li>Total <span id="price">₹ {{order.total}}</span></li>
                                 {{!-- <li>Convenience Fee<span>$ 750.0</span></li> --}}
 
                             </ul>
