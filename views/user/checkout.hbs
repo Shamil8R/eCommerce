@@ -23,7 +23,8 @@
                 <h6 class="coupon__link">
                     <span class="icon_tag_alt"></span>
                     <a href="#">Have a coupon?</a>
-                    Click here to enter your code.</h6>
+                    Click here to enter your code.
+                </h6>
             </div>
         </div>
         <form action="#" id="checkoutForm" class="checkout__form">
@@ -31,11 +32,12 @@
                 <div class="col-lg-8">
                     <h3 class="pb-5 text-center font-weight-bold">Address</h3>
                     <div class="row">
-                        {{!-- Name  --}}
+                        {{!-- Name --}}
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
                                 <label for="name" class="text-dark font-weight-bold">Name:</label>
-                                <input type="text" name="name" id="name" class="form-control" placeholder="Name" required/>
+                                <input type="text" name="name" id="name" class="form-control" placeholder="Name"
+                                    required />
                             </div>
                         </div>
 
@@ -43,7 +45,8 @@
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
                                 <label for="phoneNumber" class="text-dark font-weight-bold">Phone:</label>
-                                <input type="text" name="phoneNumber" id="phoneNumber" class="form-control" placeholder="Phone" required>
+                                <input type="text" name="phoneNumber" id="phoneNumber" class="form-control"
+                                    placeholder="Phone" required>
                             </div>
                         </div>
 
@@ -51,7 +54,8 @@
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
                                 <label for="zip" class="text-dark font-weight-bold">Pincode:</label>
-                                <input type="text" name="zip" id="zip" class="form-control" placeholder="Pincode/Zipcode" required/>
+                                <input type="text" name="zip" id="zip" class="form-control"
+                                    placeholder="Pincode/Zipcode" required />
                             </div>
                         </div>
 
@@ -59,7 +63,8 @@
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
                                 <label for="state" class="text-dark font-weight-bold">State:</label>
-                                <input type="text" name="state" id="state" class="form-control" placeholder="State" required>
+                                <input type="text" name="state" id="state" class="form-control" placeholder="State"
+                                    required>
                             </div>
                         </div>
 
@@ -67,7 +72,8 @@
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
                                 <label for="address" class="text-dark font-weight-bold">Address:</label>
-                                <input type="text" name="address" id="address" class="form-control" placeholder="Address" required/>
+                                <input type="text" name="address" id="address" class="form-control"
+                                    placeholder="Address" required />
                             </div>
                         </div>
 
@@ -75,7 +81,8 @@
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
                                 <label for="locality" class="text-dark font-weight-bold">Locality:</label>
-                                <input type="text" name="locality" id="locality" class="form-control" placeholder="Locality" required>
+                                <input type="text" name="locality" id="locality" class="form-control"
+                                    placeholder="Locality" required>
                             </div>
                         </div>
 
@@ -83,13 +90,47 @@
                         <div class="col-lg-6">
                             <div class="form-outline mb-3">
                                 <label for="city" class="text-dark font-weight-bold">City:</label>
-                                <input type="text" name="city" id="city" class="form-control" placeholder="City" required>
+                                <input type="text" name="city" id="city" class="form-control" placeholder="City"
+                                    required>
                             </div>
                         </div>
                         {{!-- Existing addresses --}}
                     </div>
                 </div>
                 <div class="col-lg-4">
+                    <div class="discount__content pb-5">
+                        <h6>Discount codes</h6>
+                            <input type="text" id="coupon" name="couponName" class="form-control" placeholder="Enter your coupon code">
+                            <input type="text" id="discountPrice" name="discountPrice" class="form-control" hidden>
+                            <button class="btn btn-primary mt-2" data-target="#showCoupons"
+                                data-toggle="modal">Coupons</button>
+                            <button onclick="applyCoupon()" class="btn btn-danger mt-2">Apply</button>
+
+                        <div class="modal fade" id="showCoupons" tabindex="-1" role="dialog"
+                            aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Coupons</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">X</span>
+                                        </button>
+                                    </div>
+                                    {{#each coupons}}
+                                    <div class="modal-body">
+                                        <input type="text" id="{{this.name}}" value="{{this.name}}"
+                                            class="form-control font-weight-bold pl-2 m-0" readonly>
+                                        <label for="{{this.name}}">{{this.description}}</label>
+                                    </div>
+                                    {{/each}}
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary"
+                                            data-dismiss="modal">Close</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="checkout__order">
                         <h5>Your order</h5>
                         <div class="checkout__order__product">
@@ -99,17 +140,20 @@
                                     <span class="top__text__right">Total</span>
                                 </li>
                                 {{#each products}}
-                                    <li>{{this.product.productName}}
-                                        <span>₹{{this.totalPrice}}</span>
-                                    </li>
+                                <li>
+                                    {{inc @index}}. {{this.product.productName}} &nbsp; &nbsp; &nbsp;
+                                    &nbsp;x{{this.quantity}}
+                                    <span>₹{{this.totalPrice}}</span>
+                                </li>
                                 {{/each}}
                             </ul>
                         </div>
                         <div class="checkout__order__total">
                             <ul>
-                                {{!-- <li>Subtotal <span>$ 750.0</span></li> --}}
+                                <li>Subtotal <span>₹ &nbsp;<span id="subTotal">{{totalPrice}}</span></span></li>
+                                <li>Coupon <span class="text-success" id="couponDiscount">Nil</span></li>
                                 <li>Total
-                                    <span>₹
+                                    <span id="totalPrice">₹
                                         {{totalPrice}}</span>
                                 </li>
                             </ul>
@@ -148,47 +192,48 @@
     </div>
     <div class="row gutters-sm">
         {{#each address}}
-            <div class="col-12">
-                <div class="col-sm-6 mb-3">
-                    <div class="card" style="">
-                        <div class="">
-                            <div class="pt-2 pr-2">
-                                <a class="btn btn-primary float-right" onclick="selectAddress('{{this._id}}')">Select</a>
-                            </div>
+        <div class="col-12">
+            <div class="col-sm-6 mb-3">
+                <div class="card" style="">
+                    <div class="">
+                        <div class="pt-2 pr-2">
+                            <a class="btn btn-primary float-right" onclick="selectAddress('{{this._id}}')">Select</a>
                         </div>
-                        <div class="card-body p-3">
-                            <p class="card-title">
-                                <span class="text-black font-weight-bold">{{this.name}}</span>
-                            </p>
+                    </div>
+                    <div class="card-body p-3">
+                        <p class="card-title">
+                            <span class="text-black font-weight-bold">{{this.name}}</span>
+                        </p>
 
-                            {{!-- PinCode  --}}
-                            <p class="mb-2">
-                                <span class="text-black font-weight-bold">{{this.address}},
-                                    {{this.locality}},
-                                    {{this.city}}
-                                    ,
-                                    {{this.state}}
-                                    -
-                                    {{this.zip}}
-                                </span>
-                            </p>
+                        {{!-- PinCode --}}
+                        <p class="mb-2">
+                            <span class="text-black font-weight-bold">{{this.address}},
+                                {{this.locality}},
+                                {{this.city}}
+                                ,
+                                {{this.state}}
+                                -
+                                {{this.zip}}
+                            </span>
+                        </p>
 
-                            <p class="mb-2">
-                                <span class="text-black font-weight-bold">{{this.phoneNumber}}</span>
-                            </p>
-                        </div>
+                        <p class="mb-2">
+                            <span class="text-black font-weight-bold">{{this.phoneNumber}}</span>
+                        </p>
+                    </div>
 
-                        <div class="row">
-                            {{!-- <div class="col-6">
-                            <a href="#" data-target="#editAddress" data-id="{{this._id}}" data-toggle="modal" class="text-info">Edit</a>
+                    <div class="row">
+                        {{!-- <div class="col-6">
+                            <a href="#" data-target="#editAddress" data-id="{{this._id}}" data-toggle="modal"
+                                class="text-info">Edit</a>
                         </div>
                         <div class="col-6">
                             <a href="#" onclick="deleteAddress('{{this._id}}')" class="text-danger">Delete</a>
                         </div> --}}
-                        </div>
                     </div>
                 </div>
             </div>
+        </div>
         {{/each}}
     </div>
 </section>
@@ -262,7 +307,7 @@
                         <a href="./index.html"><img src="img/logo.png" alt=""></a>
                     </div>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
-                                                                                                                                                                                                                        cilisis.</p>
+                        cilisis.</p>
                     <div class="footer__payment">
                         <a href="#"><img src="img/payment/payment-1.png" alt=""></a>
                         <a href="#"><img src="img/payment/payment-2.png" alt=""></a>
@@ -322,8 +367,7 @@
             </div>
         </div>
         <div class="row">
-            <div
-                class="col-lg-12">
+            <div class="col-lg-12">
                 <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                 <div class="footer__copyright__text">
                     <p>Copyright &copy;
@@ -331,7 +375,7 @@
                             document.write(new Date().getFullYear());
                         </script>
                         All rights reserved | This template
-                                                                                                                                                                                                                        is made with
+                        is made with
                         <i class="fa fa-heart" aria-hidden="true"></i>
                         by
                         <a href="https://colorlib.com" target="_blank">Colorlib</a>
@@ -429,8 +473,7 @@
 
 
     $('#checkoutForm').submit((e) => {
-        e.preventDefault()
-
+        e.preventDefault();
         $.ajax({
             url: '/placeOrder',
             method: 'post',
@@ -490,13 +533,29 @@
             }
         })
     }
+
+
+    //Apply Coupon
+    function applyCoupon(){
+        event.preventDefault()
+        const coupon = document.getElementById('coupon').value;
+        const totalPrice = parseInt(document.getElementById('subTotal').innerHTML);
+        $.ajax({
+            url: '/applyCoupon',
+            method: 'post',
+            data: {
+                coupon
+            },
+            success: (response) => {
+                if (response.status) {
+                    document.getElementById('couponDiscount').innerHTML = `₹ ${response.couponData.discountPrice}`;
+                    const grandTotal = totalPrice - response.couponData.discountPrice;
+                    document.getElementById('totalPrice').innerHTML =`₹ ${grandTotal}`; 
+                    document.getElementById('discountPrice').value = response.couponData.discountPrice;
+                }else{
+                    swal({text: "Expired or invalid coupon!"});
+                }
+            }
+        })
+    }
 </script>
-
-
-{{!-- 
-            alert(response.error.code);
-            alert(response.error.source);
-            alert(response.error.step);
-            alert(response.error.reason);
-            alert(response.error.metadata.order_id);
-            alert(response.error.metadata.payment_id); --}}

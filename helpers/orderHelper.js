@@ -1,4 +1,5 @@
 const RazorPay = require('razorpay');
+const couponModel = require('../models/couponModel');
 
 const orderModel = require('../models/orderModel');
 
@@ -10,9 +11,15 @@ const instance = new RazorPay({
 module.exports = {
 
 
-    placeOrder: (orderDetails, products, totalPrice, userId) => {
+    placeOrder: (orderDetails, products, subTotal, userId) => {
         return new Promise(async (resolve, reject) => {
-            // console.log(products)
+
+            let discountPrice = 0;
+            if(orderDetails.discountPrice){
+                discountPrice = parseInt(orderDetails.discountPrice);
+                await couponModel.updateOne({name: orderDetails.couponName}, {$push: {users: userId}})
+            }
+            const total = subTotal - discountPrice;
             try {
                 const date = new Date();
                 const orderDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + (date.getHours() + 1) + ":" + (date.getMinutes() + 1);
@@ -20,7 +27,9 @@ module.exports = {
                     userId: userId,
                     products: products,
                     deliveryDetails: orderDetails,
-                    amount: totalPrice,
+                    subTotal: subTotal,
+                    couponDiscount: discountPrice,
+                    total: total,
                     paymentMethod: orderDetails.payment,
                     date: orderDate
                 })
@@ -189,6 +198,7 @@ module.exports = {
                     {
                         "products.$.status": status
                     })
+                resolve();    
             } catch (error) {
                 reject(error);
             }

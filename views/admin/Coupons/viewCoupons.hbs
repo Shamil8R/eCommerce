@@ -1,0 +1,112 @@
+<div class="container-fluid">
+    <div>
+        <h1 class="text-center">Coupons</h1>
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="content">
+                <div class="animated fadeIn">
+                    <div class="card">
+                        <div class="card-header d-flex justify-content-between">
+                            <strong class="card-title">Coupons</strong>
+                            <a href="/admin/addCoupon" class="btn btn-primary " style="border-radius: 0.5rem;">Add
+                                Coupons</a>
+                        </div>
+                                    {{#if coupons}}
+                        <div class="table-stats order-table ov-h">
+                            <table class="table ">
+                                <thead>
+                                    <tr>
+                                        {{!-- <th>ID</th> --}}
+                                        <th>Name</th>
+                                        <th>Description</th>
+                                        <th>Discount Price</th>
+                                        <th>Expiry Date</th>
+                                        <th>Edit</th>
+                                        <th>Delete</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {{#each coupons}}
+                                    <tr>
+                                        <td>{{this.name}}</td>
+                                        <td>{{this.description}}</td>
+                                        <td>{{this.discountPrice}}</td>
+                                        <td>{{this.expiryDate}}</td>
+                                        <td> <a href="/admin/editCoupon/{{this._id}}" class="btn btn-success">Edit</a>
+                                        </td>
+                                        <td> <a href="/admin/deleteCoupon/{{this._id}}"
+                                                class="btn btn-danger">Delete</a></td>
+                                    </tr>
+                                    {{/each}}
+                                </tbody>
+                            </table>
+                        </div> <!-- /.table-stats -->
+                                    {{/if}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <div class="content">
+        <div class="animated fadeIn">
+            <div class="row mt-5 pt-5">
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-header">
+                            <strong>Add Coupon</strong>
+                        </div>
+                        <div class="card-body card-block">
+                            <form action="" method="post" class="form-horizontal">
+                                <div class="row form-group">
+                                    <div class="col col-md-3"><label class=" form-control-label">Name
+                                        </label>
+                                    </div>
+                                    <div class="col-12 col-md-9 pb-2"><input type="text" id="text-input" name="name"
+                                            class="form-control"></div>
+
+
+                                    <div class="col col-md-3"><label class=" form-control-label">Description
+                                        </label>
+                                    </div>
+                                    <div class="col-12 col-md-9 pb-2"><input type="text" id="text-input" name="desc"
+                                            class="form-control"></div>
+
+
+                                    <div class="col col-md-3"><label class=" form-control-label">Discount Price
+                                        </label>
+                                    </div>
+                                    <div class="col-12 col-md-9 pb-2"><input type="text" id="text-input" name="price"
+                                            class="form-control"></div>
+
+
+                                    <div class="col col-md-3"><label class=" form-control-label">Expiry Date
+                                        </label>
+                                    </div>
+                                    <div class="col-12 col-md-9 pb-2"><input type="Date" id="text-input" name="expDate"
+                                            class="form-control"></div>
+                                </div>
+                                <div class="pt-3 ">
+                                    <div class="d-inline pr-3">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            Submit
+                                        </button>
+                                    </div>
+                                    <div class="d-inline">
+                                        <button type="reset" class="btn btn-danger btn-sm">
+                                            <i class="fa fa-ban"></i> Reset
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

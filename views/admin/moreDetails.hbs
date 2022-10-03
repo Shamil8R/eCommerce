@@ -23,29 +23,67 @@
                                         lead-in
                                         to
                                         additional content. This content is a little bit longer.</p> --}}
-                                    <div class="">
-                                        <div class="">
-                                            <p class="card-text text-danger font-weight-bold mb-0">₹ {{this.totalPrice}}
-                                            </p>
-                                            <p class="text-dark mb-0">Quantity:
-                                                <span class="font-weight-bold">{{this.quantity}}</span>
-                                            </p>
-                                            {{!-- <p class="text-dark mb-0">Status:
-                                                <span class="font-weight-bold"></span>
-                                            </p> --}}
-                                        </div>
-                                    </div>
-
-                                    <div class="">
+                                    <div id="statusDiv">
                                         <div>
-                                            <p class="card-text pr-2" style="font-size: 13px;">Order Date:
-                                                <span class="font-weight-bold">{{../this.date}}</span>
-                                            </p>
+                                            <div class="">
+                                                <p class="card-text text-danger font-weight-bold mb-0">₹
+                                                    {{this.product.price}}
+                                                </p>
+                                                <p class="text-dark mb-0">Status:
+                                                    <span class="font-weight-bold">{{this.status}}</span>
+                                                </p>
+
+                                                {{#if (cancelled this.status)}}
+                                                <p class="text-dark mb-0">User cancelled this order.
+                                                </p>
+                                                {{/if}}
+                                                {{#if (delivered this.status)}}
+                                                <p class="text-dark mb-0">Delivery date: Monday 24/10/2022
+                                                </p>
+                                                {{/if}}
+
+                                                {{#if (rejected this.status)}}
+                                                <p class="text-dark mb-0">You cancelled this order.
+                                                </p>
+                                                {{/if}}
+
+
+                                            </div>
                                         </div>
-                                        {{!-- <div>
-                                            <a href="/moreDetails/{{this._id}}" class="card-text text-primary"
-                                                style="font-size: 13px;">More Details</a>
-                                        </div> --}}
+                                        <div class="">
+                                            <div class="">
+                                                {{#if (not (delivered this.status))}}
+                                                {{#if (not (outForDelivery this.status))}}
+                                                {{#if (not (shipped this.status))}}
+                                                {{#if (not (cancelled this.status))}}
+                                                <a onclick="changeProductOrderStatus('{{this._id}}','Shipped')"
+                                                    class="btn btn-primary mt-2">Ship</a>
+                                                {{/if}}
+                                                {{/if}}
+                                                {{/if}}
+                                                {{/if}}
+
+                                                {{#if (shipped this.status)}}
+                                                <a onclick="changeProductOrderStatus('{{this._id}}','Out For Delivery')"
+                                                    class="btn btn-primary mt-2">Out For Delivery</a>                                                
+                                                {{/if}}
+
+
+                                                {{#if (outForDelivery this.status)}}
+                                                <a onclick="changeProductOrderStatus('{{this._id}}','Delivered')"
+                                                    class="btn btn-success mt-2">Delivered</a>
+                                                {{/if}}
+                                                
+                                                {{#if (not (delivered this.status))}}
+                                                {{#if (not (cancelled this.status))}}
+                                                {{#if (not (rejected this.status))}}
+                                                <a onclick="cancelOrder('{{this._id}}','Rejected')"
+                                                    class="btn btn-danger mt-2">Cancel</a>
+                                                {{/if}}
+                                                {{/if}}
+                                                {{/if}}
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -58,9 +96,13 @@
                         <div class="cart__total__procced">
                             <div class="pt-4">
                                 <div>
-                                    <p style="color: #111;" class="text-black font-weight-bold">Order ID: {{orders._id}}
+                                    <p style="color: #111;" class="text-black font-weight-bold m-0">Order ID:
+                                        {{orders._id}}
                                     </p>
-                                    <p style="color: #111;" class="text-black font-weight-bold">Payment Method:
+                                    <p style="color: #111;" class="card-text pr-2 font-weight-bold m-0">Order Date:
+                                        <span class="font-weight-bold">{{orders.date}}</span>
+                                    </p>
+                                    <p style="color: #111;" class="text-black font-weight-bold m-0">Payment Method:
                                         {{orders.paymentMethod}}</p>
                                 </div>
                             </div>
@@ -101,6 +143,7 @@
                                         <p class="text-danger font-weight-bold m-0">₹ {{this.totalPrice}}</p>
                                     </div>
                                 </div>
+
                                 {{/each}}
                             </div>
                             <hr>
@@ -113,7 +156,8 @@
                                         <p style="color: #111;" class="text-black font-weight-bold">Total </p>
                                     </div>
                                     <div>
-                                        <p style="" class="text-danger font-weight-bold pr-5" id="price">₹ {{orders.amount}}</p>
+                                        <p style="" class="text-danger font-weight-bold pr-5" id="price">₹
+                                            {{orders.amount}}</p>
                                     </div>
                                 </div>
                                 {{!-- <li>Convenience Fee<span>$ 750.0</span></li> --}}
@@ -127,4 +171,64 @@
     </section>
     <!-- Shop Cart Section End -->
 
+
 </div>
+
+<script>
+
+    function changeProductOrderStatus(orderedProductId, status) {
+        $.ajax({
+            url: '/admin/changeOrderStatus',
+            type: 'POST',
+            data: {
+                orderedProductId,
+                status
+            },
+            success: (response) => {
+                if (response.status) {
+                    Swal.fire({
+                        text: 'Order has been updated.',
+                        icon: 'success',
+                    })
+                    setTimeout(() => {
+                        location.reload()
+                    }, 500)
+                }
+            }
+        })
+    }
+
+    function cancelOrder(orderedProductId, status) {
+        Swal.fire({
+            text: "Are you sure in cancelling this order?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: '/admin/changeOrderStatus',
+                    type: 'POST',
+                    data: {
+                        orderedProductId,
+                        status
+                    },
+                    success: (response) => {
+                        if (response.status) {
+                            Swal.fire({
+                                text: 'Order has been cancelled.',
+                                icon: 'success',
+                            })
+                            setTimeout(() => {
+                                location.reload()
+                            }, 500)
+                        }
+                    }
+                })
+            }
+        })
+    }
+
+</script>

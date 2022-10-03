@@ -3,6 +3,8 @@ const categoryHelper = require('../helpers/categoryHelper');
 const orderHelper = require('../helpers/orderHelper');
 const productHelper = require('../helpers/productHelper');
 const userHelper = require('../helpers/userHelper');
+const couponHelper = require('../helpers/couponHelper');
+const userModel = require('../models/userModel');
 
 module.exports = {
 
@@ -25,8 +27,8 @@ module.exports = {
                 res.redirect('/admin')
             }
         } catch (err) {
-            console.log(error)
-            next(error);
+            console.log(err)
+            next(err);
         }
     },
 
@@ -36,11 +38,24 @@ module.exports = {
     },
 
     // Get Admin Home Page
-    adminHome: (req, res) => {
-        res.render('admin/adminHome', { layout: 'admin-layout' })
+    adminHome: async (req, res) => {
+        try {
+            const [userCount] = await Promise.allSettled([
+                await userModel.count()
+            ])
+            const data = {}
+            data.userCount = userCount.value;
+            res.render('admin/adminHome', { layout: 'admin-layout', data })
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
     },
 
     // View Products
+
+
+
     viewProducts: async (req, res,next) => {
         try {
             const products = await productHelper.getAllProducts();
@@ -50,6 +65,8 @@ module.exports = {
             next(error);
         }
     },
+
+
 
     getAddProducts: async (req, res,next) => {
         try {
@@ -61,15 +78,17 @@ module.exports = {
         }
     },
 
+
     postAddProducts: async (req, res,next) => {
         try {
             await productHelper.addProduct(req.body, req.files['product-images'])
             res.redirect('/admin/viewProducts')
         } catch (err) {
-            console.log(error)
-            next(error);
+            console.log(err)
+            next(err);
         }
     },
+
 
     deleteProduct: async (req, res,next) => {
         try {
@@ -80,6 +99,7 @@ module.exports = {
             next(error);
         }
     },
+
 
     viewEditProduct: async (req, res,next) => {
         try {
@@ -98,6 +118,8 @@ module.exports = {
         }
     },
 
+
+
     updateProductDetails: async (req, res,next) => {
         try {
             req.body.id = req.params.id;
@@ -109,6 +131,7 @@ module.exports = {
             next(error);
         }
     },
+
 
     featuredProduct: async (req, res,next) => {
         try {
@@ -153,7 +176,7 @@ module.exports = {
         }
     },
 
-    getOrderedProducts: async (req,res,next) => {
+    getOrderedProducts: async (req, res, next) => {
         try {
             const orders = await orderHelper.getOrderDetails(req.params.id);
             res.render('admin/moreDetails', {layout: 'admin-layout', orders})
@@ -164,13 +187,55 @@ module.exports = {
         }
     },
 
-    changeDeliveryStatus: async (req,res,next) => {
+    changeDeliveryStatus: async (req, res, next) => {
         try {
             await orderHelper.changeDeliveryStatus(req.body.orderId)
             res.json(true);
         } catch (error) {
             console.log(error);
             next(error)
+        }
+    },
+
+    changeOrderedProductStatus: async (req, res, next) => {
+        try {
+            await orderHelper.changeOrderStatusUser(req.body.orderedProductId, req.body.status);
+            res.json({ status: true })
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+
+    getCoupons: async (req, res, next) => {
+        try {
+            const coupons = await couponHelper.getAllCoupons();
+            console.log(coupons);
+            res.render('admin/Coupons/viewCoupons', { layout: 'admin-layout', coupons });
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+
+    addCoupon: async (req, res, next) => {
+        try {
+            await couponHelper.addCoupon(req.body);
+            res.redirect('/admin/coupons');
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+
+    deleteCoupon: async (req, res, next) => {
+        try {
+            console.log(req.params.id);
+            await couponHelper.deleteCoupon(req.params.id);
+            res.redirect('/admin/coupons');
+        } catch (error) {
+            console.log(error);
+            next(error);
         }
     }
 }

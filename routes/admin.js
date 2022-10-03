@@ -64,6 +64,13 @@ router.get('/categoryDelete/:id',adminAuth, categoryController.deleteCategory);
 router.get('/orders', adminAuth, adminController.viewOrders);
 router.get('/viewProducts/:id',adminAuth, adminController.getOrderedProducts);
 router.post('/changeDeliveryStatus',adminController.changeDeliveryStatus);
+router.post('/changeOrderStatus',adminController.changeOrderedProductStatus);
+
+
+// Coupons
+router.get('/coupons',adminAuth,adminController.getCoupons)
+      .post('/coupons',adminController.addCoupon);
+router.get('/deleteCoupon/:id',adminController.deleteCoupon);
 
 router.use((req,res,next) => {
       next(createError(404))

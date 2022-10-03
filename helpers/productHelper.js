@@ -247,11 +247,6 @@ module.exports = {
             try {
                 const cartData = await cartModel.findOne({ userId: userID }).populate({ path: 'products.product' })
                 if (cartData) {
-                    // const totalPrice = cartData.products.reduce((total, curr) => {
-                    //     total = total + (curr.product.price * curr.quantity);
-                    //     return total;
-                    // }, 0)
-                    // console.log(totalPrice);
                     let total = 0;
                     const productPrice = [];
                     cartData.products.map((i) => {

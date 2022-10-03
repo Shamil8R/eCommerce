@@ -76,6 +76,7 @@ function changeQuantity(cartId, count) {
                 document.getElementById(cartId).value = quantity + count;
                 document.getElementById('price').innerHTML = "₹ " + response.price;
             }
+            $('#quantity').load(location.href + " #quantity");
         }
     })
 }

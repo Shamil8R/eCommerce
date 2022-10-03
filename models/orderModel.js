@@ -22,9 +22,16 @@ const orderSchema = new mongoose.Schema({
             default: "Pending"
         },    
     }],
-    amount: {
+    subTotal: {
         type: Number,
         required: true
+    },
+    couponDiscount: {
+        type: Number,
+        default: 0
+    },
+    total:{
+        type: Number
     },
     deliveryDetails: {
         type: Object,
