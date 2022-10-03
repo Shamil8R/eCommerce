@@ -67,6 +67,7 @@ router.get('/orderPlaced',userAuth,userController.orderPlaced);
 router.post('/verifyPayment', userController.verifyPayment);
 router.post('/changeOrderStatus', userController.changeOrderStatus);
 
+
 //Coupons
 router.post('/applyCoupon',userController.verifyCoupon);
 

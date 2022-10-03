@@ -339,7 +339,7 @@ module.exports = {
 
             // console.log(products);
             // console.log(cartData.value.products);
-            if (address.value) {
+            if(address.value){
                 res.render('user/checkout', {
                     products,
                     user: req.session.user,
@@ -347,7 +347,7 @@ module.exports = {
                     address: address.value.addressObj,
                     coupons: coupons.value
                 })
-            } else {
+            }else{
                 res.render('user/checkout', {
                     products,
                     user: req.session.user,

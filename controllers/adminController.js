@@ -53,7 +53,10 @@ module.exports = {
     },
 
     // View Products
-    viewProducts: async (req, res, next) => {
+
+
+
+    viewProducts: async (req, res,next) => {
         try {
             const products = await productHelper.getAllProducts();
             res.render('admin/viewProducts', { layout: 'admin-layout', products: products })
@@ -63,7 +66,9 @@ module.exports = {
         }
     },
 
-    getAddProducts: async (req, res, next) => {
+
+
+    getAddProducts: async (req, res,next) => {
         try {
             const categories = await categoryHelper.getAllCategories();
             res.render('admin/addProduct', { layout: 'admin-layout', categories })
@@ -73,7 +78,8 @@ module.exports = {
         }
     },
 
-    postAddProducts: async (req, res, next) => {
+
+    postAddProducts: async (req, res,next) => {
         try {
             await productHelper.addProduct(req.body, req.files['product-images'])
             res.redirect('/admin/viewProducts')
@@ -83,7 +89,8 @@ module.exports = {
         }
     },
 
-    deleteProduct: async (req, res, next) => {
+
+    deleteProduct: async (req, res,next) => {
         try {
             await productHelper.deleteProduct(req.params.id);
             res.redirect('/admin/viewProducts');
@@ -93,7 +100,8 @@ module.exports = {
         }
     },
 
-    viewEditProduct: async (req, res, next) => {
+
+    viewEditProduct: async (req, res,next) => {
         try {
             const product = await productHelper.getOneProduct(req.params.id);
             const categories = await categoryHelper.getAllCategories();
@@ -110,7 +118,9 @@ module.exports = {
         }
     },
 
-    updateProductDetails: async (req, res, next) => {
+
+
+    updateProductDetails: async (req, res,next) => {
         try {
             req.body.id = req.params.id;
             console.log(req.files);
@@ -122,7 +132,8 @@ module.exports = {
         }
     },
 
-    featuredProduct: async (req, res, next) => {
+
+    featuredProduct: async (req, res,next) => {
         try {
             await productHelper.featuredOption(req.params.id)
             res.redirect('/admin/viewProducts')
@@ -134,7 +145,7 @@ module.exports = {
 
 
 
-    getUsersData: async (req, res, next) => {
+    getUsersData: async (req, res,next) => {
         try {
             const userData = await userHelper.getAllUserData();
             res.render('admin/viewUsers', { layout: 'admin-layout', userData })
@@ -168,7 +179,7 @@ module.exports = {
     getOrderedProducts: async (req, res, next) => {
         try {
             const orders = await orderHelper.getOrderDetails(req.params.id);
-            res.render('admin/moreDetails', { layout: 'admin-layout', orders })
+            res.render('admin/moreDetails', {layout: 'admin-layout', orders})
         } catch (error) {
             console.log(error);
             console.log("catch");
@@ -227,6 +238,4 @@ module.exports = {
             next(error);
         }
     }
-
-
 }
