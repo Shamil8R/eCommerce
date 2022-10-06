@@ -20,9 +20,8 @@ module.exports = {
                 await couponModel.updateOne({name: orderDetails.couponName}, {$push: {users: userId}})
             }
             const total = subTotal - discountPrice;
+            const isoDate = new Date()
             try {
-                const date = new Date();
-                const orderDate = date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " " + (date.getHours() + 1) + ":" + (date.getMinutes() + 1);
                 const order = new orderModel({
                     userId: userId,
                     products: products,
@@ -31,7 +30,7 @@ module.exports = {
                     couponDiscount: discountPrice,
                     total: total,
                     paymentMethod: orderDetails.payment,
-                    date: orderDate
+                    date: isoDate
                 })
                 const result = await order.save()
                 resolve(result._id)
@@ -199,6 +198,82 @@ module.exports = {
                         "products.$.status": status
                     })
                 resolve();    
+            } catch (error) {
+                reject(error);
+            }
+        })
+    },
+
+    getTotalRevenueList: () => {
+        return new Promise(async (resolve,reject) => {
+            try {
+                const today = new Date()
+                const before = new Date(new Date().getTime() - (250 * 24 * 60 * 60 * 1000));
+                let revenue = await orderModel.aggregate([
+                    {
+                        $match: {
+                            createdAt: { 
+                                $gte: before,
+                                $lte: today
+                            }
+                        }
+                    },
+                    {
+                        $project: {
+                            paymentMethod: 1, total: 1, createdAt: 1
+                        }
+                    },
+                    {
+                        $group: {
+                            _id: {date: {$dateToString: {format: "%m-%Y", date: "$createdAt"}}, method: "$paymentMethod"},
+                            amount: {$sum: "$total"}
+                        }
+                    },
+                    {
+                        $project: {
+                            date: "$_id.date",
+                            method: "$_id.method",
+                            amount: "$amount",
+                            _id: 0
+                        }
+                    }
+                ])
+                let obj = {
+                    date: [], cod: [0,0,0,0,0,0,0,0], online: [0,0,0,0,0,0,0,0],
+                }
+                let month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+                let a = today.getMonth() - 6;
+                for(let i=0; i<8; i++){
+                    for(let k = 0; k< revenue.length; k++){
+                        if(Number(revenue[k].date.slice(0,2) == Number(a + i))){        //
+                            if(revenue[k].method == 'UPI'){
+                                obj.online[i] = revenue[k].amount; 
+                            }else{
+                                obj.cod[i] = revenue[k].amount; 
+                            }
+                        }
+                    }
+                    obj.date[i] = month[a + i - 1];
+                }
+                resolve(obj);
+            } catch (error) {
+                reject(error);
+            }
+        })
+    },
+
+    getCountByPayment: () => {
+        return new Promise(async (resolve,reject) => {
+            try {
+                const [codCount,upiCount] = await Promise.allSettled([
+                    orderModel.count({paymentMethod: 'COD'}),
+                    orderModel.count({paymentMethod: 'UPI'})                
+                ])
+                const obj = {
+                    paymentMethod: ["COD","UPI"],
+                    count: [codCount.value,upiCount.value]
+                }
+                resolve(obj);
             } catch (error) {
                 reject(error);
             }

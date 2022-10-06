@@ -410,7 +410,7 @@ module.exports = {
             ]);
 
             const products = cartData.value.products
-            const total = totalPrice.value.total;
+            let total = totalPrice.value.total;
 
 
             for (let i = 0; i < products.length; i++) {
@@ -421,6 +421,11 @@ module.exports = {
 
 
             const orderId = await orderHelper.placeOrder(req.body, products, total, req.session.user._id)
+            let discountPrice = 0;
+            if(req.body.discountPrice){
+                discountPrice = parseInt(req.body.discountPrice);
+            }
+            total = total - discountPrice
             const stringId = orderId.toString()
             await productHelper.removeCartItems(req.session.user._id);
             if (req.body.payment == 'COD') {
