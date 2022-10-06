@@ -23,7 +23,7 @@
                                         <th>Description</th>
                                         <th>Discount Price</th>
                                         <th>Expiry Date</th>
-                                        <th>Edit</th>
+                                        {{!-- <th>Edit</th> --}}
                                         <th>Delete</th>
                                     </tr>
                                 </thead>
@@ -34,8 +34,8 @@
                                         <td>{{this.description}}</td>
                                         <td>{{this.discountPrice}}</td>
                                         <td>{{this.expiryDate}}</td>
-                                        <td> <a href="/admin/editCoupon/{{this._id}}" class="btn btn-success">Edit</a>
-                                        </td>
+                                        {{!-- <td> <a href="/admin/editCoupon/{{this._id}}" class="btn btn-success">Edit</a>
+                                        </td> --}}
                                         <td> <a href="/admin/deleteCoupon/{{this._id}}"
                                                 class="btn btn-danger">Delete</a></td>
                                     </tr>

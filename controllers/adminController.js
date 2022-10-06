@@ -5,6 +5,8 @@ const productHelper = require('../helpers/productHelper');
 const userHelper = require('../helpers/userHelper');
 const couponHelper = require('../helpers/couponHelper');
 const userModel = require('../models/userModel');
+const productModel = require('../models/productModel');
+const orderModel = require('../models/orderModel');
 
 module.exports = {
 
@@ -38,14 +40,44 @@ module.exports = {
     },
 
     // Get Admin Home Page
-    adminHome: async (req, res) => {
+    adminHome: async (req, res,next) => {
         try {
-            const [userCount] = await Promise.allSettled([
-                await userModel.count()
+            const [userCount,productCount,orderCount,orders] = await Promise.allSettled([
+                await userModel.count(),
+                await productModel.count(),
+                await orderModel.count(),
+                await orderModel.find({})
             ])
+            const total = orders.value.reduce((totalPrice,curr)=> {
+                totalPrice = totalPrice + curr.total;
+                return totalPrice;
+            },0)
             const data = {}
             data.userCount = userCount.value;
+            data.productCount = productCount.value;
+            data.orderCount = orderCount.value;
+            data.total = parseInt(total);
             res.render('admin/adminHome', { layout: 'admin-layout', data })
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+
+    revenue: async (req,res,next) => {
+        try {
+            const chartData = await orderHelper.getTotalRevenueList();
+            res.json(chartData);
+        } catch (error) {
+            next(error);
+        }
+    },
+
+    productsByCategoryGraph: async (req,res,next) => {
+        try {
+            const categoryNames = await adminHelper.getAllCategoryNames();
+            const chartData = await adminHelper.getProductsCountByCategory(categoryNames);
+            res.json(chartData);
         } catch (error) {
             console.log(error);
             next(error);
@@ -219,9 +251,18 @@ module.exports = {
 
     deleteCoupon: async (req, res, next) => {
         try {
-            console.log(req.params.id);
             await couponHelper.deleteCoupon(req.params.id);
             res.redirect('/admin/coupons');
+        } catch (error) {
+            console.log(error);
+            next(error);
+        }
+    },
+
+    paymentCount: async (req,res,next) => {
+        try {
+            const obj = await orderHelper.getCountByPayment();
+            res.json(obj);
         } catch (error) {
             console.log(error);
             next(error);
