@@ -228,30 +228,24 @@ module.exports = {
 
     viewCart: async (req, res, next) => {
         try {
-            console.log("ivde ethi")
             const [cartData, totalPrice, cartCount, wishlistCount] = await Promise.all([
                 productHelper.getCartItems(req.session.user._id),
                 productHelper.getTotalPrice(req.session.user._id),
                 productHelper.getCartProductsCount(req.session.user._id),
                 productHelper.getWishlistProductsCount(req.session.user._id),
             ]);
+            
+            req.session.user.cartCount = cartCount;
+            req.session.user.wishlistCount = wishlistCount;
+
+            if (cartData) {
+                for (let i = 0; i < cartData.products.length; i++) {
+                    cartData.products[i].totalPrice = totalPrice.productPrice[i];
+                }
+            }
             console.log(cartData);
             console.log(totalPrice);
-            console.log(cartCount);
-            console.log(wishlistCount);
-            
-
-            req.session.user.cartCount = cartCount.value;
-            req.session.user.wishlistCount = wishlistCount.value;
-
-            if (cartData.value) {
-                for (let i = 0; i < cartData.value.products.length; i++) {
-                    cartData.value.products[i].totalPrice = totalPrice.value.productPrice[i];
-                }
-                console.log(cartData.value);
-            }
-            // console.log(totalPrice.value);
-            res.render('user/cart', { cartData: cartData.value, user: req.session.user, price: totalPrice.value.total })
+            res.render('user/cart', { cartData: cartData, user: req.session.user, price: totalPrice.total })
         } catch (error) {
             console.log(error)
             next(error);
