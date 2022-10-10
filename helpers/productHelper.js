@@ -246,16 +246,16 @@ module.exports = {
         return new Promise(async (resolve, reject) => {
             try {
                 const cartData = await cartModel.findOne({ userId: userID }).populate({ path: 'products.product' })
+                let total = 0;
+                const productPrice = [];
                 if (cartData) {
-                    let total = 0;
-                    const productPrice = [];
                     cartData.products.map((i) => {
                         total = total + (i.product.price * i.quantity);
                         productPrice.push(i.product.price * i.quantity); 
                     })
                     resolve({total, productPrice})
                 }
-                resolve({total: 0,productPrice:0})
+                resolve({total,productPrice})
             } catch (error) {
                 reject(error);
             }
