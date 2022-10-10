@@ -78,6 +78,7 @@
                                     </div>
                                     <div class="d-flex">
                                         <p class="card-text font-weight-bold pr-2 mb-1">
+
                                             Qty: <span style="color: #111;">{{this.quantity}}</span>
                                         </p>
                                     </div>
@@ -102,10 +103,6 @@
                                 <p class="text-muted">Delivered on Monday, 23/10/2022</p>
                                 </p>
                                 {{/if}}
-
-
-
-
                                 {{!-- <div class="cart__quantity">
                                     <div class="pro-qty">
                                         <input type="text" value={{this.quantity}}>
@@ -113,6 +110,7 @@
                                 </div> --}}
 
                                 <div class="d-flex">
+
                                     {{!-- {{#if (delivered this.status)}}
                                     <div>
                                         <a href="#" onclick="returnProduct('{{this._id}}','Return Applied')"
@@ -124,6 +122,7 @@
                                     {{#if (not (delivered this.status))}}
                                     {{#if (not (rejected this.status))}}
                                     {{#if (not (cancelled this.status))}}
+
                                     <div>
                                         <a href="#" onclick="changeProductOrderStatus('{{this._id}}', 'Cancelled')"
                                             class="card-text text-danger pr-2" style="font-size: 13px;">Cancel</a>
@@ -131,6 +130,7 @@
                                     {{/if}}
                                     {{/if}}
                                     {{/if}}
+
                                     {{!-- <div>
                                         <a href="" class="card-text text-secondary" style="font-size: 13px;">Move to
                                             Wishlist</a>
@@ -151,6 +151,7 @@
                         <div class="cart__total__procced">
                             <div class="">
                                 <div>
+
                                     <p class="text-black font-weight-bold m-0">Order ID: <span style="color: #111;"
                                             class="">{{order._id}}</span>
                                     </p>
@@ -166,6 +167,7 @@
                             <div class="">
                                 <div>
                                     <p class="text-black font-weight-bold">Address: </p>
+
                                     <p style="color: #111;" class="text-black font-weight-bold m-0">
                                         {{order.deliveryDetails.name}}</p>
                                     <p style="color: #111;" class="text-black font-weight-bold m-0">
@@ -189,24 +191,30 @@
                                         <p class="text-black font-weight-bold m-0">{{inc @index}}.</p>
                                     </div>
                                     <div class="w-75">
+
                                         <p style="color: #111;" class="text-black font-weight-bold m-0">
                                             {{this.product.productName}}</p>
+
                                     </div>
                                     <div style="width:20%" class="">
                                         <p class="text-black font-weight-bold m-0"> x{{this.quantity}}</p>
                                     </div>
                                     <div style="width: 15%" class="">
+
                                         <p style="color: #111;" class="text-danger font-weight-bold m-0">₹
                                             {{this.totalPrice}}</p>
+
                                     </div>
                                 </div>
                                 {{/each}}
                             </div>
                             <hr>
                             <ul>
+
                                 <li>Subtotal <span>₹ {{order.subTotal}}</span></li>
                                 <li>Coupon Discount<span class="text-success">₹ {{order.couponDiscount}}</span></li>
                                 <li>Total <span id="price">₹ {{order.total}}</span></li>
+
                                 {{!-- <li>Convenience Fee<span>$ 750.0</span></li> --}}
 
                             </ul>
@@ -306,6 +314,7 @@
 <!-- Footer Section End -->
 
 <script>
+
 function changeProductOrderStatus(orderedProductId, status){
     swal({
         text: "Are you sure that you want to cancel this product?",
@@ -339,41 +348,5 @@ function changeProductOrderStatus(orderedProductId, status){
 }
 
 
-
-
 </script>
 
-
-{{!-- 
-function returnProduct(orderedProductId, status) {
-    swal({
-        text: "Are you sure that you want to return this product?",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-    }).then((willDelete) => {
-        if (willDelete) {
-            $.ajax({
-                url: '/changeOrderStatus',
-                method: 'post',
-                data: {
-                    orderedProductId,
-                    status
-                },
-                success: (response) => {
-                    console.log(response)
-                    if (response.status) {
-                        swal({
-                            text: "Your return has been applied. Our staff will connect with you in 24 hours."
-                            icon: "success",
-                            button: false
-                        });
-                        setTimeout(() => {
-                            location.reload()
-                        }, 10000)
-                    }
-                }
-            })
-        }
-    });
-} --}}

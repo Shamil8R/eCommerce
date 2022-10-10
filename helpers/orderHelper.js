@@ -13,6 +13,7 @@ module.exports = {
 
     placeOrder: (orderDetails, products, subTotal, userId) => {
         return new Promise(async (resolve, reject) => {
+
             let discountPrice = 0;
             if(orderDetails.discountPrice){
                 discountPrice = parseInt(orderDetails.discountPrice);
