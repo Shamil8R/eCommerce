@@ -78,7 +78,6 @@ app.engine('hbs', hbs.engine(
         }
       } 
     },
-
     extname: 'hbs', defaultLayout: 'user-layout', layoutsDir: __dirname + '/views/layout/'
   }))
 
