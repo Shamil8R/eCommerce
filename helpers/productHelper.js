@@ -255,7 +255,7 @@ module.exports = {
                     })
                     resolve({total, productPrice})
                 }
-                resolve(0)
+                resolve({total: 0,productPrice:0})
             } catch (error) {
                 reject(error);
             }
