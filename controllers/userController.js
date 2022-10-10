@@ -107,9 +107,9 @@ module.exports = {
                 res.redirect('/login')
             }
         }).catch((err) => {
-            console.log(error)
-            next(error);
-        })
+            console.log(err)
+            next(err);
+        });
     },
 
     logout: (req, res) => {
@@ -166,13 +166,12 @@ module.exports = {
             const [products, categories] = await Promise.allSettled([
                 productHelper.getAllProducts(),
                 categoryHelper.getAllCategories(),
-
             ]);
             if (req.session.user) {
                 const [cartCount, wishlistCount] = await Promise.allSettled([
                     productHelper.getCartProductsCount(req.session.user._id),
                     productHelper.getWishlistProductsCount(req.session.user._id)
-                ])
+                ]);
                 req.session.user.cartCount = cartCount.value;
                 req.session.user.wishlistCount = wishlistCount.value;
             }
@@ -180,8 +179,8 @@ module.exports = {
             // console.log(products[0].img);
             res.render('user/shop', { products: products.value, categories: categories.value, user: req.session.user });
         } catch (err) {
-            console.log(error)
-            next(error);
+            console.log(err)
+            next(err);
         }
     },
 
@@ -221,13 +220,13 @@ module.exports = {
                 res.json({ status: false, url: '/login' })
             }
         } catch (err) {
-            console.log(error)
-            next(error);
+            console.log(err)
+            next(err);
         }
     },
 
     viewCart: async (req, res, next) => {
-        
+        try {
             const [cartData, totalPrice, cartCount, wishlistCount] = await Promise.all([
                 productHelper.getCartItems(req.session.user._id),
                 productHelper.getTotalPrice(req.session.user._id),
@@ -243,7 +242,11 @@ module.exports = {
                     cartData.products[i].totalPrice = totalPrice.productPrice[i];
                 }
             }
-            res.render('user/cart', { cartData: cartData, user: req.session.user, price: totalPrice.total })
+            res.render('user/cart', { cartData: cartData, user: req.session.user, price: totalPrice.total });
+        } catch (error) {
+            console.log(error);
+            next(error);   
+        }     
     },
 
     changeProductQuantity: async (req, res, next) => {
