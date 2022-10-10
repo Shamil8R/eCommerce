@@ -227,7 +227,7 @@ module.exports = {
     },
 
     viewCart: async (req, res, next) => {
-        try {
+        
             const [cartData, totalPrice, cartCount, wishlistCount] = await Promise.all([
                 productHelper.getCartItems(req.session.user._id),
                 productHelper.getTotalPrice(req.session.user._id),
@@ -243,13 +243,7 @@ module.exports = {
                     cartData.products[i].totalPrice = totalPrice.productPrice[i];
                 }
             }
-            console.log(cartData);
-            console.log(totalPrice);
             res.render('user/cart', { cartData: cartData, user: req.session.user, price: totalPrice.total })
-        } catch (error) {
-            console.log(error)
-            next(error);
-        }
     },
 
     changeProductQuantity: async (req, res, next) => {
