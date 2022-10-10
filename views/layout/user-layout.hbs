@@ -49,7 +49,7 @@
         <ul class="offcanvas__widget">
             <li><span class="icon_search search-switch"></span></li>
             <li><a href="/wishlist"><span class="icon_heart_alt"></span></a></li>
-            <li><a href="/cart/{{user._id}}"><i class="fa fa-shopping-cart"></i>
+            <li><a href="/cart"><i class="fa fa-shopping-cart"></i>
                 </a></li>
         </ul>
         <div class="offcanvas__logo">
@@ -108,7 +108,7 @@
 
                             <li>
                                 <div id="cartItemsCount">
-                                    <a href="/cart/{{user._id}}"><i class="fa fa-shopping-cart"></i>
+                                    <a href="/cart"><i class="fa fa-shopping-cart"></i>
                                         {{#if user.cartCount}}<div class="tip" id="cartCount">{{user.cartCount}}</div>
                                         {{/if}}
                                     </a>

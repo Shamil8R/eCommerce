@@ -229,7 +229,7 @@ module.exports = {
     viewCart: async (req, res, next) => {
         try {
             const [cartData, totalPrice, cartCount, wishlistCount] = await Promise.allSettled([
-                productHelper.getCartItems(req.params.id),
+                productHelper.getCartItems(req.session.user._id),
                 productHelper.getTotalPrice(req.session.user._id),
                 productHelper.getCartProductsCount(req.session.user._id),
                 productHelper.getWishlistProductsCount(req.session.user._id),
