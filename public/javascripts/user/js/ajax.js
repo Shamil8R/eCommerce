@@ -14,7 +14,6 @@ function addToCart(productID) {
                     icon: "success",
                 })
                 $("#cartItemsCount").load(location.href + " #cartItemsCount ");
-                document.getElementById('cartCount').innerHTML = response.cartCount;
             } else {
                 swal({
                     text: "Please login first!",
