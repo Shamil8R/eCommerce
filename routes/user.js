@@ -44,7 +44,6 @@ router.post('/addAddress',userController.addAddress);
 router.post('/editAddress', userController.editAddress);
 router.post('/updateAddress', userController.updateAddress);
 router.post('/deleteAddress',userController.deleteAddress);
-router.get('/orders',userController.getOrders);
 router.get('/moreDetails/:id', userController.getSingleOrder)
 router.get('/viewOrderedProducts/:id', userController.getSingleOrder)
 
@@ -56,16 +55,17 @@ router.get('/productDetails/:id', userController.productDetails);
 
 //Cart
 router.post('/addToCart', userController.addProductToCart);
-router.get('/cart/:id', userController.viewCart);
+router.get('/cart', userController.viewCart);
 router.post('/changeProductQuantity', userController.changeProductQuantity);
 router.post('/removeProduct', userController.removeProduct);
+router.get('/checkout',userAuth, userController.checkout);
 
 //Orders
-router.get('/checkout',userAuth, userController.checkout);
 router.post('/placeOrder', userController.placeOrder);
 router.get('/orderPlaced',userAuth,userController.orderPlaced);
 router.post('/verifyPayment', userController.verifyPayment);
 router.post('/changeOrderStatus', userController.changeOrderStatus);
+router.get('/orders',userController.getOrders);
 
 //Coupons
 router.post('/applyCoupon',userController.verifyCoupon);
